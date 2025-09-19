@@ -6,7 +6,7 @@ extends Area2D
 
 func _ready():
     print("Hello, world!")
-    print(5*23)
+    print(5*278)
 
 func _process(delta):
     var velocity = Vector2.ZERO # The player's movement vector.
@@ -23,3 +23,4 @@ func _process(delta):
         velocity = velocity.normalized() * speed
 
     position += velocity * delta
+
