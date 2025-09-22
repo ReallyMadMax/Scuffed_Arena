@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxqonlmouayns"]
+
+[ext_resource type="Texture2D" uid="uid://bq1js4c6knxoe" path="res://assets/Icons/Iicon_32_13.png" id="1_b6ki8"]
+
+[node name="sword1" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("1_b6ki8")
+
+[node name="Area2D" type="Area2D" parent="Sprite2D"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Sprite2D/Area2D"]
+polygon = PackedVector2Array(-10, 3, 7, -16, 16, -7, -3, 10)
