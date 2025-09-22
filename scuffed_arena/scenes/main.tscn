@@ -1,7 +1,7 @@
 [gd_scene load_steps=29 format=3 uid="uid://dw1g4o7udjcs0"]
 
-[ext_resource type="Script" uid="uid://w7vsy53wn3my" path="res://player.gd" id="1_0xm2m"]
-[ext_resource type="Texture2D" uid="uid://dpdh7igljusq2" path="res://assets/8-Directional Gameboy Character Template/loose sprites gbstudio.png" id="2_0xm2m"]
+[ext_resource type="Script" uid="uid://w7vsy53wn3my" path="res://scripts/player.gd" id="1_0aq6d"]
+[ext_resource type="Texture2D" uid="uid://dpdh7igljusq2" path="res://assets/8-Directional Gameboy Character Template/loose sprites gbstudio.png" id="2_irwmq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0xm2m"]
 size = Vector2(148, 186)
@@ -144,10 +144,10 @@ transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition
 
 [node name="Player" type="CharacterBody2D" parent="."]
 position = Vector2(325, 235)
-script = ExtResource("1_0xm2m")
+script = ExtResource("1_0aq6d")
 
 [node name="Sprite2D" type="Sprite2D" parent="Player"]
-texture = ExtResource("2_0xm2m")
+texture = ExtResource("2_irwmq")
 hframes = 8
 vframes = 8
 

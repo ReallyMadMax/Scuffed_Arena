@@ -1,12 +1,11 @@
 63f7b34db8d8cdea90c76aacccf841ec
-::res://::1758506221
-icon.svg::CompressedTexture2D::3625885797087938024::1758244183::1758248334::1::::<><><>0<>0<>9267040bbcab2caa590a005da8b8324b<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
-main.tscn::PackedScene::8757507308375128061::1758506119::0::1::::<><><>0<>0<><>::uid://w7vsy53wn3my::::res://player.gd<>uid://dpdh7igljusq2::::res://assets/8-Directional Gameboy Character Template/loose sprites gbstudio.png
-player.gd::GDScript::1611523157511680104::1758506119::0::1::::<>Area2D<><>0<>0<><>::
-Sprite-godot.webp::CompressedTexture2D::1573781597713111595::1758247769::1758248334::1::::<><><>0<>0<>43b4f1a177ee677de6eb278b20718ec2<>res://.godot/imported/Sprite-godot.webp-8923b0c4ca5765fe8bbf2e4c3bfa902f.ctex::
-::res://assets/::1758489517
-::res://assets/8-Directional Gameboy Character Template/::1758489570
+::res://::1758507580
+::res://assets/::1758507580
+Sprite-godot.webp::CompressedTexture2D::1573781597713111595::1758247769::1758507581::1::::<><><>0<>0<>f952f8837b85166992b0e958329fcdf7<>res://.godot/imported/Sprite-godot.webp-aff2e128676c6f155164b3292fd2fdff.ctex::
+::res://assets/8-Directional Gameboy Character Template/::1758507520
 loose sprites gbstudio.png::CompressedTexture2D::8218770433234541971::1758489446::1758489570::1::::<><><>0<>0<>4f3d3ae5faa05e78ea53f0aa785c3283<>res://.godot/imported/loose sprites gbstudio.png-f38508b89da9d7c8666e32128c59a75e.ctex::
 loose sprites.png::CompressedTexture2D::768867871761569475::1758489446::1758489570::1::::<><><>0<>0<>c18576170e29080707a9a96f899b6651<>res://.godot/imported/loose sprites.png-24f3ef7fabeba44ac7e0c902871ea945.ctex::
-::res://assets/8-Directional Gameboy Character Template/aseprite/::1758489446
-::res://assets/8-Directional Gameboy Character Template/gif/::1758489447
+::res://scenes/::1758507576
+main.tscn::PackedScene::8757507308375128061::1758507564::0::1::::<><><>0<>0<><>::uid://w7vsy53wn3my::::res://scripts/player.gd<>uid://dpdh7igljusq2::::res://assets/8-Directional Gameboy Character Template/loose sprites gbstudio.png
+::res://scripts/::1758507576
+player.gd::GDScript::1611523157511680104::1758506526::0::1::::<>CharacterBody2D<><>0<>0<><>::
