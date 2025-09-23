@@ -5,3 +5,4 @@ scuffed_arena\.godot
 /scuffed_arena/.godot/editor
 *.import
 *.uid
+*.cfg
