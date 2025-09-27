@@ -1,3 +1,9 @@
+PointLight2D
+CanvasGroup
+CanvasModulate
+CanvasLayer
+TileMapLayer
+TileMap
 AnimationTree
 AnimationPlayer
 CharacterBody2D

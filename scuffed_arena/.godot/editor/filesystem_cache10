@@ -1,11 +1,37 @@
 63f7b34db8d8cdea90c76aacccf841ec
-::res://::1758507580
-::res://assets/::1758507580
+::res://::1758932127
+::res://assets/::1758852201
 Sprite-godot.webp::CompressedTexture2D::1573781597713111595::1758247769::1758507581::1::::<><><>0<>0<>f952f8837b85166992b0e958329fcdf7<>res://.godot/imported/Sprite-godot.webp-aff2e128676c6f155164b3292fd2fdff.ctex::
 ::res://assets/8-Directional Gameboy Character Template/::1758507520
 loose sprites gbstudio.png::CompressedTexture2D::8218770433234541971::1758489446::1758489570::1::::<><><>0<>0<>4f3d3ae5faa05e78ea53f0aa785c3283<>res://.godot/imported/loose sprites gbstudio.png-f38508b89da9d7c8666e32128c59a75e.ctex::
 loose sprites.png::CompressedTexture2D::768867871761569475::1758489446::1758489570::1::::<><><>0<>0<>c18576170e29080707a9a96f899b6651<>res://.godot/imported/loose sprites.png-24f3ef7fabeba44ac7e0c902871ea945.ctex::
-::res://scenes/::1758507576
-main.tscn::PackedScene::8757507308375128061::1758507564::0::1::::<><><>0<>0<><>::uid://w7vsy53wn3my::::res://scripts/player.gd<>uid://dpdh7igljusq2::::res://assets/8-Directional Gameboy Character Template/loose sprites gbstudio.png
-::res://scripts/::1758507576
-player.gd::GDScript::1611523157511680104::1758506526::0::1::::<>CharacterBody2D<><>0<>0<><>::
+::res://assets/FREE_Adventurer 2D Pixel Art/::1758851816
+::res://assets/FREE_Adventurer 2D Pixel Art/Sprites/::1758850503
+::res://assets/FREE_Adventurer 2D Pixel Art/Sprites/ATTACK 1/::1758851827
+::res://assets/FREE_Adventurer 2D Pixel Art/Sprites/ATTACK 2/::1758851827
+::res://assets/FREE_Adventurer 2D Pixel Art/Sprites/IDLE/::1758851827
+::res://assets/FREE_Adventurer 2D Pixel Art/Sprites/RUN/::1758851827
+::res://assets/Sprite Sheet/::1758851827
+::res://assets/Tech Dungeon Roguelite - Asset Pack (DEMO)/::1758852202
+Read Me.txt::TextFile::-1::1758852201::0::1::::<><><>0<>0<><>::
+tileset x1.png::CompressedTexture2D::7087184860542344045::1758852201::1758852201::1::::<><><>0<>0<>fad9d01906b1ca3282e32c96f328c307<>res://.godot/imported/tileset x1.png-819f3e219bb39ea6e8fe730d1aeea2fc.ctex::
+tileset x2.png::CompressedTexture2D::5925522735666173247::1758852201::1758852202::1::::<><><>0<>0<>7a740b209d00ac1c151614132cf67a50<>res://.godot/imported/tileset x2.png-9bfc8874feaf5659208199c8f9f93ed3.ctex::
+tileset x3.png::CompressedTexture2D::5712251137329547026::1758852201::1758852202::1::::<><><>0<>0<>0222dbf34e0e41d81afb227fb512e953<>res://.godot/imported/tileset x3.png-29610980c00e1af6bc03d420034a20d6.ctex::
+::res://assets/Tech Dungeon Roguelite - Asset Pack (DEMO)/Players/::1758852201
+8x13 Cells.txt::TextFile::-1::1758852201::0::1::::<><><>0<>0<><>::
+players blue x1.png::CompressedTexture2D::8969120249741570892::1758852201::1758852201::1::::<><><>0<>0<>891964105cebee89c2358a2ff2c23b7f<>res://.godot/imported/players blue x1.png-4db3ace1fe8c9b7f5983740d03dbaa5c.ctex::
+players blue x2.png::CompressedTexture2D::506822098097347523::1758852201::1758852201::1::::<><><>0<>0<>09147816e620202f233932680ad9e6b5<>res://.godot/imported/players blue x2.png-608fa76ad93d18f15676440c70b90e8f.ctex::
+players blue x3.png::CompressedTexture2D::858233485546991590::1758852201::1758852201::1::::<><><>0<>0<>e92f8035a0f42c499cf6febe6928f0e2<>res://.godot/imported/players blue x3.png-6645d38afe6dc266ac0b1847ccd4e2d0.ctex::
+::res://assets/Tech Dungeon Roguelite - Asset Pack (DEMO)/Players/No Outlines/::1758852201
+players blue x1.png::CompressedTexture2D::3973193529537197445::1758852201::1758852201::1::::<><><>0<>0<>86ece38216fa2adaa547b1712449601f<>res://.godot/imported/players blue x1.png-0810587acbc29841b4abb7b484d6dcba.ctex::
+players blue x2.png::CompressedTexture2D::6890954714875647945::1758852201::1758852201::1::::<><><>0<>0<>56a34fc95e7dfff9aad9c4d323c8dcda<>res://.godot/imported/players blue x2.png-99d2260713834a6bf639829e73e72e71.ctex::
+players blue x3.png::CompressedTexture2D::1076961316241167314::1758852201::1758852201::1::::<><><>0<>0<>640f033ef63dfc6c9ce493be162ddc09<>res://.godot/imported/players blue x3.png-161b848055ffcd6498e6cf28c726156c.ctex::
+::res://assets/Tech Dungeon Roguelite - Asset Pack (DEMO)/UI/::1758852202
+20x11 Cells.txt::TextFile::-1::1758852201::0::1::::<><><>0<>0<><>::
+ui x1.png::CompressedTexture2D::8209439964984267508::1758852201::1758852201::1::::<><><>0<>0<>d54633a34a1345a44dd826b7e3d746b6<>res://.godot/imported/ui x1.png-6681afb0733eeafbd9f385d8b074bfee.ctex::
+ui x2.png::CompressedTexture2D::2647338078193286798::1758852201::1758852201::1::::<><><>0<>0<>cdf4951343ba1aa99b5dee9f9e2b037d<>res://.godot/imported/ui x2.png-0c859b1a5bf2f81cd0d883958f525073.ctex::
+ui x3.png::CompressedTexture2D::5838571537507991088::1758852201::1758852202::1::::<><><>0<>0<>b295cf0f4c0854c1cb08ac790ade616f<>res://.godot/imported/ui x3.png-d5b51ec2289bf97cfc2fadab0afa0e2c.ctex::
+::res://scenes/::1758909541
+main.tscn::PackedScene::8757507308375128061::1758909541::0::1::::<><><>0<>0<><>::uid://w7vsy53wn3my::::res://scripts/player.gd<>uid://c78c5tqivj0wf::::res://assets/Tech Dungeon Roguelite - Asset Pack (DEMO)/tileset x1.png<>uid://dpdh7igljusq2::::res://assets/8-Directional Gameboy Character Template/loose sprites gbstudio.png
+::res://scripts/::1758851827
+player.gd::GDScript::1611523157511680104::1758851816::0::1::::<>CharacterBody2D<><>0<>0<><>::
