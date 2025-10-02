@@ -313,6 +313,6 @@ rotation = -0.5375614
 [node name="Camera2D" type="Camera2D" parent="Player"]
 
 [node name="Ghost" parent="." instance=ExtResource("3_sugp2")]
-position = Vector2(-764, 21)
+position = Vector2(203, 129)
 scale = Vector2(1.5, 1.5)
 speed = 150

@@ -30,7 +30,7 @@ func _physics_process(_delta):
 		# Check if player is within detection range
 		if distance_to_player <= detection_range and distance_to_player > stop_distance:
 			# Calculate direction to player
-			var direction = (player.global_position - global_position).normalized()
+			direction = (player.global_position - global_position).normalized()
 		   
 			# Move towards player (speed is already in pixels per second)
 			velocity = direction * speed
