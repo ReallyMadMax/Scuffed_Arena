@@ -1,4 +1,6 @@
 scuffed_arena/.godot
+scuffed_arena/.godot*
+scuffed_arena/.godot/*
 scuffed_arena\.godot
 /scuffed_arena/.godot
 *.import
@@ -15,3 +17,6 @@ dist/
 *.tmp
 *blend1
 *.DS_Store
+scuffed_arena/.godot/editor/*
+scuffed_arena/.godot/editor/editor_layout.cfg
+scuffed_arena/.godot/editor/script_editor_cache.cfg
