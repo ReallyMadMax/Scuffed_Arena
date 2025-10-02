@@ -1,8 +1,8 @@
 [gd_scene load_steps=35 format=3 uid="uid://dw1g4o7udjcs0"]
 
 [ext_resource type="Script" uid="uid://w7vsy53wn3my" path="res://scripts/player.gd" id="1_0aq6d"]
-[ext_resource type="Texture2D" uid="uid://bhqfa5acl785b" path="res://assets/FREE_Adventurer 2D Pixel Art/Sprites/RUN/spritesheet(1).png" id="2_sugp2"]
-[ext_resource type="PackedScene" uid="uid://cxqonlmouayns" path="res://scenes/sword_1.tscn" id="3_jyhfs"]
+[ext_resource type="Texture2D" uid="uid://d0tcvdwtbubne" path="res://assets/FREE_Adventurer 2D Pixel Art/Sprites/RUN/spritesheet(1).png" id="2_sugp2"]
+[ext_resource type="PackedScene" path="res://scenes/sword_1.tscn" id="3_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://dkuysuskp3vvn" path="res://scenes/ghost.tscn" id="3_sugp2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0xm2m"]
@@ -313,6 +313,6 @@ rotation = -0.5375614
 [node name="Camera2D" type="Camera2D" parent="Player"]
 
 [node name="Ghost" parent="." instance=ExtResource("3_sugp2")]
-position = Vector2(193, 144)
+position = Vector2(-764, 21)
 scale = Vector2(1.5, 1.5)
 speed = 150

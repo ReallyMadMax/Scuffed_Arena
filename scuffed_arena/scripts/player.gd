@@ -3,7 +3,7 @@ extends player_class
 
 func _init():
 	speed = 350
-	
+
 func _ready():
 	animation_tree.active = true
 	print("Hello, world!")
