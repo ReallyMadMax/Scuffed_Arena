@@ -21,7 +21,7 @@ func _process(delta):
 	if velocity.length() > 0:
 		velocity = velocity.normalized() * speed
 
-	position += velocity * delta
+	move_and_slide()
 	update_animation_parameters()
 
 func update_animation_parameters():

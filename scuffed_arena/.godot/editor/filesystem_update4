@@ -1,3 +1,2 @@
-res://player.gd
-res://main.tscn
-res://scripts/main.tscn
+res://scenes/main.tscn
+res://scripts/player.gd
