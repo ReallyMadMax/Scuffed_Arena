@@ -1,4 +1,9 @@
+CanvasModulate
+CanvasLayer
 Camera2D
+PointLight2D
+TileMapLayer
+AnimationTree
 AnimationPlayer
 CollisionPolygon2D
 Area2D
