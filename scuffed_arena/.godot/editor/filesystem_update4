@@ -1,2 +1,7 @@
+res://ghost.tscn
 res://main.tscn
-res://player.gd
+res://scripts/ghost.gd
+res://scripts/player.gd
+res://Player_parent.gd
+res://scenes/main.tscn
+res://scenes/sword_1.tscn
