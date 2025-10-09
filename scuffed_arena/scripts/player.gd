@@ -6,10 +6,8 @@ func _init():
 
 func _ready():
 	animation_tree.active = true
-	print("Hello, world!")
-	print(5*23)
 
-func _process(delta):
+func _process(_delta):
 	if not Engine.is_editor_hint():
 		var dir = Input.get_vector("move_left", "move_right", "move_up", "move_down").normalized();
 		if dir:
@@ -21,5 +19,5 @@ func _process(delta):
 		if velocity.length() > 0:
 			velocity = velocity.normalized() * speed
 
-		position += velocity * delta
+		move_and_slide()
 		update_animation_parameters()
