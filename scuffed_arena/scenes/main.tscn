@@ -1,8 +1,9 @@
-[gd_scene load_steps=35 format=3 uid="uid://dw1g4o7udjcs0"]
+[gd_scene load_steps=38 format=3 uid="uid://dw1g4o7udjcs0"]
 
 [ext_resource type="Script" uid="uid://w7vsy53wn3my" path="res://scripts/player.gd" id="1_0aq6d"]
-[ext_resource type="Texture2D" uid="uid://d0tcvdwtbubne" path="res://assets/FREE_Adventurer 2D Pixel Art/Sprites/RUN/spritesheet(1).png" id="2_sugp2"]
-[ext_resource type="PackedScene" path="res://scenes/sword_1.tscn" id="3_jyhfs"]
+[ext_resource type="PackedScene" uid="uid://duihfy8h7tcnu" path="res://scenes/map.tscn" id="1_tbgi4"]
+[ext_resource type="Texture2D" uid="uid://bhqfa5acl785b" path="res://assets/FREE_Adventurer 2D Pixel Art/Sprites/RUN/spritesheet(1).png" id="2_sugp2"]
+[ext_resource type="PackedScene" uid="uid://cxqonlmouayns" path="res://scenes/sword_1.tscn" id="3_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://dkuysuskp3vvn" path="res://scenes/ghost.tscn" id="3_sugp2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0xm2m"]
@@ -274,7 +275,21 @@ states/Start/position = Vector2(161.33333, 152.8889)
 transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_82xsv"), "Idle", "Move", SubResource("AnimationNodeStateMachineTransition_getpj"), "Move", "Idle", SubResource("AnimationNodeStateMachineTransition_ryguw"), "Move", "Attack", SubResource("AnimationNodeStateMachineTransition_1u8w0"), "Attack", "Move", SubResource("AnimationNodeStateMachineTransition_0odxb"), "Attack", "Idle", SubResource("AnimationNodeStateMachineTransition_lswn8"), "Idle", "Attack", SubResource("AnimationNodeStateMachineTransition_a6jrf")]
 graph_offset = Vector2(-47, -40)
 
+[sub_resource type="Gradient" id="Gradient_tbgi4"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_tefeu"]
+gradient = SubResource("Gradient_tbgi4")
+width = 256
+height = 266
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+metadata/_snap_enabled = true
+
 [node name="Main" type="Node"]
+
+[node name="Map" parent="." instance=ExtResource("1_tbgi4")]
 
 [node name="Player" type="CharacterBody2D" parent="."]
 position = Vector2(325, 235)
@@ -311,6 +326,11 @@ position = Vector2(20, -7)
 rotation = -0.5375614
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
+zoom = Vector2(0.5, 0.5)
+
+[node name="PointLight2D" type="PointLight2D" parent="Player"]
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_tefeu")
 
 [node name="Ghost" parent="." instance=ExtResource("3_sugp2")]
 position = Vector2(203, 129)
