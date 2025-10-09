@@ -10,6 +10,8 @@ extends CharacterBody2D
 @export var dash_cd = 5
 
 @onready var animation_tree : AnimationTree = $AnimationTree
+# Load the Ability script as a resource so that it can be used in sub player characters
+@onready var Ability = preload("res://scripts/ability.gd")
 
 var direction : Vector2
 
