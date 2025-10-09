@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://o8hoysea3o7i"]
+
+[ext_resource type="Script" uid="uid://crdvxqiodives" path="res://scripts/skelly.gd" id="1_5nkx5"]
+[ext_resource type="Texture2D" uid="uid://wol7nwadxk2f" path="res://assets/Sprite-godot.webp" id="2_twhyi"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_twhyi"]
+radius = 17.0
+height = 42.0
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+script = ExtResource("1_5nkx5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_twhyi")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(1, -2.0000002)
+scale = Vector2(0.21153845, 0.20108697)
+texture = ExtResource("2_twhyi")
