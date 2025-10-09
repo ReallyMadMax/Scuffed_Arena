@@ -17,6 +17,5 @@ tile_map_data = PackedByteArray("AAAZABcAAAABAAAAAAAaABcAAAAEAAAAAAAbABcAAAACAAA
 tile_set = ExtResource("1_4xfga")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
-texture_filter = 1
 material = SubResource("CanvasItemMaterial_4xfga")
-color = Color(0.3180198, 0.31801978, 0.31801975, 1)
+color = Color(0.1584723, 0.15847233, 0.1584723, 1)
