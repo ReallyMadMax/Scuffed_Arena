@@ -19,3 +19,6 @@ tile_set = ExtResource("1_4xfga")
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 material = SubResource("CanvasItemMaterial_4xfga")
 color = Color(0.1584723, 0.15847233, 0.1584723, 1)
+
+[node name="Spawn" type="Node2D" parent="." groups=["PlayerSpawnPoint"]]
+position = Vector2(194, 342)
