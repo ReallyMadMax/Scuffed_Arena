@@ -295,6 +295,7 @@ properties/1/spawn = true
 properties/1/replication_mode = 1
 
 [node name="Player" type="CharacterBody2D"]
+collision_layer = 2
 script = ExtResource("1_qhqgy")
 speed = 350
 
@@ -327,9 +328,6 @@ parameters/Move/blend_position = Vector2(0, 0)
 position = Vector2(20, -7)
 rotation = -0.5375614
 
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(0.5, 0.5)
-
 [node name="PointLight2D" type="PointLight2D" parent="."]
 range_item_cull_mask = 3
 shadow_enabled = true
@@ -338,3 +336,5 @@ texture = SubResource("GradientTexture2D_tefeu")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_qhqgy")
+
+[node name="Camera2D" type="Camera2D" parent="."]

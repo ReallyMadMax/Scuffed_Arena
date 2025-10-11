@@ -1,15 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://dw1g4o7udjcs0"]
+[gd_scene load_steps=4 format=3 uid="uid://dw1g4o7udjcs0"]
 
-[ext_resource type="Script" uid="uid://qtjm0mxp5rec" path="res://scenes/main.gd" id="1_jyhfs"]
+[ext_resource type="Script" uid="uid://qtjm0mxp5rec" path="res://scripts/main.gd" id="1_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://duihfy8h7tcnu" path="res://scenes/map.tscn" id="1_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://cktx12vx6t52c" path="res://scenes/player.tscn" id="2_tbgi4"]
-[ext_resource type="PackedScene" uid="uid://dkuysuskp3vvn" path="res://scenes/ghost.tscn" id="3_sugp2"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_jyhfs")
 PlayerScene = ExtResource("2_tbgi4")
 
 [node name="Map" parent="." instance=ExtResource("1_tbgi4")]
-
-[node name="Ghost" parent="." instance=ExtResource("3_sugp2")]
-position = Vector2(203, 129)
