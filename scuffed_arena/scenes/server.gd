@@ -13,6 +13,7 @@ enum Message {
 }
 
 var peer = WebSocketMultiplayerPeer.new()
+var port = 6000
 var users = {}
 var lobby = {}
 var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMMNOPQRSTUVWXYZ1234567890"
@@ -92,7 +93,7 @@ func generate_random_string():
 	return result
 
 func start_server():
-	peer.create_server(6000)
+	peer.create_server(port)
 	print("started server")
 
 func _on_start_server_button_down():

@@ -78,10 +78,34 @@ func createPeer(id:int):
 		var ext_peer : WebRTCPeerConnection = WebRTCPeerConnection.new()
 		#TODO: this is what need need to figure out for pure p2p
 		ext_peer.initialize({
-			"ice_server" : [{ "urls": ["stun:stun.l.google.com:19302"]}]
+			"iceServers" : [
+				{ "urls": ["stun:stun.l.google.com:19302"]},
+				{ "urls": ["stun:stun1.l.google.com:19302"]},
+				{
+					"urls": ["turn:openrelay.metered.ca:80"],
+					"username": "openrelayproject",
+					"credential": "openrelayproject"
+				}
+			]
 		})
 		print("binding id " + str(id) + " my id " + str(client_id))
-	
+		
+		var check_connection = func():
+			await get_tree().create_timer(0.5).timeout
+			for i in range(20):  # Check for 10 seconds
+				if rtc_peer.has_peer(id):
+					var state = rtc_peer.get_peer(id).connection.get_connection_state()
+					var ice_state = rtc_peer.get_peer(id).connection.get_gathering_state()					
+					if state == WebRTCPeerConnection.STATE_CONNECTED:
+						print("WebRTC CONNECTED to peer " + str(id))
+						break
+					elif state == WebRTCPeerConnection.STATE_FAILED:
+						print("WebRTC FAILED to connect to peer " + str(id))
+						break
+				await get_tree().create_timer(0.5).timeout
+		
+		check_connection.call()
+		
 		ext_peer.session_description_created.connect(self.offer_created.bind(id))
 		ext_peer.ice_candidate_created.connect(self.ice_candidate_created.bind(id))
 		rtc_peer.add_peer(ext_peer, id)
@@ -138,13 +162,13 @@ func ice_candidate_created(mid_name, index_name, sdp_name, id:int):
 
 
 
-func connectToServer(ip):
-	peer.create_client("ws://"+ip+":6000")
+func connectToServer(ip, port):
+	peer.create_client("ws://"+ip+":"+str(port))
 	print("started Client")
 
 
 func _on_start_client_button_down() -> void:
-	connectToServer($IpAddress.text)
+	connectToServer($IpAddress.text, 6000)
 
 
 func _on_ping_button_down() -> void:
@@ -156,6 +180,14 @@ func start_game():
 	get_tree().root.add_child(scene)
 
 func _on_join_lobby_button_down() -> void:
+	if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
+		print("Not connected to server yet! Please wait...")
+		return
+	
+	if client_id == 0:
+		print("Waiting for server to assign client ID...")
+		return
+	
 	var message = {
 		"id" : client_id,
 		"message" : Message.LOBBY,
@@ -163,3 +195,4 @@ func _on_join_lobby_button_down() -> void:
 		"lobby_id" : $LobbyID.text
 	}
 	peer.put_packet(JSON.stringify(message).to_utf8_buffer())
+	print("Sent lobby join request")
