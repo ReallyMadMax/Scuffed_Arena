@@ -95,7 +95,7 @@ func createPeer(id:int):
 			for i in range(20):  # Check for 10 seconds
 				if rtc_peer.has_peer(id):
 					var state = rtc_peer.get_peer(id).connection.get_connection_state()
-					var ice_state = rtc_peer.get_peer(id).connection.get_gathering_state()					
+					var ice_state = rtc_peer.get_peer(id).connection.get_gathering_state()
 					if state == WebRTCPeerConnection.STATE_CONNECTED:
 						print("WebRTC CONNECTED to peer " + str(id))
 						break
@@ -112,7 +112,6 @@ func createPeer(id:int):
 		
 		if id < rtc_peer.get_unique_id():
 			ext_peer.create_offer()
-	
 
 func offer_created(type:String, data, id:int):
 	if !rtc_peer.has_peer(id):
@@ -178,6 +177,7 @@ func _on_ping_button_down() -> void:
 func start_game():
 	var scene = load("res://scenes/main.tscn").instantiate()
 	get_tree().root.add_child(scene)
+	get_parent().hide()
 
 func _on_join_lobby_button_down() -> void:
 	if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
