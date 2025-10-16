@@ -1,0 +1,70 @@
+[gd_scene load_steps=3 format=3 uid="uid://behv3l6lgx8ot"]
+
+[ext_resource type="Script" uid="uid://b8oksxf1h4ea6" path="res://scripts/client.gd" id="1_cpweu"]
+[ext_resource type="Script" uid="uid://bieb0ucj2jogv" path="res://scenes/server.gd" id="2_b1fx8"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Client" type="Node" parent="."]
+script = ExtResource("1_cpweu")
+
+[node name="LobbyID" type="LineEdit" parent="Client"]
+offset_left = 151.0
+offset_top = 107.0
+offset_right = 472.0
+offset_bottom = 138.0
+placeholder_text = "lobby ID"
+
+[node name="IpAddress" type="LineEdit" parent="Client"]
+offset_left = 58.0
+offset_top = 172.0
+offset_right = 463.0
+offset_bottom = 203.0
+placeholder_text = "IP address"
+
+[node name="Server" type="Node" parent="."]
+script = ExtResource("2_b1fx8")
+
+[node name="StartServer" type="Button" parent="."]
+layout_mode = 0
+offset_left = 404.0
+offset_top = 21.0
+offset_right = 502.0
+offset_bottom = 52.0
+text = "start server"
+
+[node name="StartClient" type="Button" parent="."]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 21.0
+offset_right = 135.0
+offset_bottom = 52.0
+text = "start client
+"
+
+[node name="JoinLobby" type="Button" parent="."]
+layout_mode = 0
+offset_left = 49.0
+offset_top = 110.0
+offset_right = 133.0
+offset_bottom = 141.0
+text = "join lobby"
+
+[node name="Ping" type="Button" parent="."]
+layout_mode = 0
+offset_left = 45.0
+offset_top = 67.0
+offset_right = 87.0
+offset_bottom = 98.0
+text = "ping"
+
+[connection signal="button_down" from="StartServer" to="Server" method="_on_start_server_button_down"]
+[connection signal="button_down" from="StartClient" to="Client" method="_on_start_client_button_down"]
+[connection signal="button_down" from="JoinLobby" to="Client" method="_on_join_lobby_button_down"]
+[connection signal="button_down" from="Ping" to="Client" method="_on_ping_button_down"]

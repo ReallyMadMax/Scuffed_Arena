@@ -1,7 +1,10 @@
-[gd_scene load_steps=34 format=3 uid="uid://dkuysuskp3vvn"]
+[gd_scene load_steps=35 format=3 uid="uid://dkuysuskp3vvn"]
 
-[ext_resource type="Script" uid="uid://cjjm0s10aa1yc" path="res://scripts/ghost.gd" id="1_6attn"]
+[ext_resource type="Script" uid="uid://txksal0o5q1p" path="res://scripts/ghost.gd" id="1_6attn"]
 [ext_resource type="Texture2D" uid="uid://mut5mk6nu3cq" path="res://assets/Sprite Sheet/Sword.png" id="2_obmiq"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_l5lq6"]
+light_mode = 2
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_p0uf5"]
 atlas = ExtResource("2_obmiq")
@@ -227,10 +230,18 @@ animations = [{
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ol1b1"]
 
 [node name="Ghost" type="CharacterBody2D"]
+light_mask = 2
+visibility_layer = 2
+material = SubResource("CanvasItemMaterial_l5lq6")
+scale = Vector2(1.5, 1.5)
 script = ExtResource("1_6attn")
+speed = 150
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+light_mask = 2
+visibility_layer = 2
 texture_filter = 1
+use_parent_material = true
 position = Vector2(-32, -3)
 sprite_frames = SubResource("SpriteFrames_0a5t7")
 animation = &"hit"
