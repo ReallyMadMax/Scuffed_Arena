@@ -95,7 +95,7 @@ func createPeer(id:int):
 			for i in range(20):  # Check for 10 seconds
 				if rtc_peer.has_peer(id):
 					var state = rtc_peer.get_peer(id).connection.get_connection_state()
-					var ice_state = rtc_peer.get_peer(id).connection.get_gathering_state()
+					var _ice_state = rtc_peer.get_peer(id).connection.get_gathering_state()
 					if state == WebRTCPeerConnection.STATE_CONNECTED:
 						print("WebRTC CONNECTED to peer " + str(id))
 						break
@@ -165,34 +165,27 @@ func connectToServer(ip, port):
 	peer.create_client("ws://"+ip+":"+str(port))
 	print("started Client")
 
-
-func _on_start_client_button_down() -> void:
-	connectToServer($IpAddress.text, 6000)
-
-
-func _on_ping_button_down() -> void:
-	start_game.rpc()
-
 @rpc("any_peer", "call_local")
 func start_game():
 	var scene = load("res://scenes/main.tscn").instantiate()
 	get_tree().root.add_child(scene)
 	get_parent().hide()
 
-func _on_join_lobby_button_down() -> void:
+func join_lobby(lobbyId:String) -> bool:
 	if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
 		print("Not connected to server yet! Please wait...")
-		return
+		return false
 	
 	if client_id == 0:
 		print("Waiting for server to assign client ID...")
-		return
+		return false
 	
 	var message = {
 		"id" : client_id,
 		"message" : Message.LOBBY,
 		"name" : "",
-		"lobby_id" : $LobbyID.text
+		"lobby_id" : lobbyId
 	}
 	peer.put_packet(JSON.stringify(message).to_utf8_buffer())
 	print("Sent lobby join request")
+	return true

@@ -11,12 +11,14 @@ config_version=5
 [application]
 
 config/name="Scuffed_Arena"
-run/main_scene="res://scenes/main.tscn"
+run/main_scene="uid://k0b7d88pg0p1"
 config/features=PackedStringArray("4.5", "C#", "Forward Plus")
 
 [autoload]
 
 GameManager="*res://scripts/game_manager.gd"
+Client="*res://scripts/network/client.gd"
+Server="*res://scripts/network/server.gd"
 
 [dotnet]
 

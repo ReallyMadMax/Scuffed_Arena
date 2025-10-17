@@ -1,5 +1,7 @@
 extends Node
 
+signal lobby_created(lobbyID:String)
+
 enum Message {
 	ID,
 	JOIN,
@@ -54,6 +56,8 @@ func peer_disconnected(_id:int):
 func join_lobby(user):
 	if user.lobby_id == "":
 		user.lobby_id = generate_random_string()
+		lobby_created.emit(user.lobby_id)
+		
 		lobby[user.lobby_id] = Lobby.new(user.id)
 	
 	lobby[user.lobby_id].add_player(user.id, user.name)

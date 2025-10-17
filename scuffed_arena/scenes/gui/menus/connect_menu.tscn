@@ -1,0 +1,80 @@
+[gd_scene load_steps=2 format=3 uid="uid://behv3l6lgx8ot"]
+
+[ext_resource type="Script" uid="uid://bk0uunipye765" path="res://scripts/gui/menus/connect_menu.gd" id="1_b4l0o"]
+
+[node name="ConnectMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_b4l0o")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.22612381, 0.33884308, 0.5780358, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -87.0
+offset_top = -85.5
+offset_right = 87.0
+offset_bottom = 85.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Control"]
+layout_mode = 2
+
+[node name="StartClient" type="Button" parent="HBoxContainer/Control/HBoxContainer"]
+layout_mode = 2
+text = "start client
+"
+
+[node name="IpAddress" type="LineEdit" parent="HBoxContainer/Control/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "IP address"
+
+[node name="ClientErrorMsg" type="Label" parent="HBoxContainer/Control"]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/Control"]
+layout_mode = 2
+
+[node name="JoinLobby" type="Button" parent="HBoxContainer/Control/HBoxContainer2"]
+layout_mode = 2
+text = "join lobby"
+
+[node name="LobbyID" type="LineEdit" parent="HBoxContainer/Control/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "lobby ID"
+
+[node name="LobbyErrorMsg" type="Label" parent="HBoxContainer/Control"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/ScrollContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+
+[connection signal="button_down" from="HBoxContainer/Control/HBoxContainer/StartClient" to="." method="_on_start_client_button_down"]
+[connection signal="button_down" from="HBoxContainer/Control/HBoxContainer2/JoinLobby" to="." method="_on_join_lobby_button_down"]
