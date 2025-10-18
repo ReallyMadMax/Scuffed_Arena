@@ -1,2 +1,29 @@
+<<<<<<< Updated upstream
 res://main.tscn
 res://player.gd
+=======
+res://Item1/item.tscn
+res://Item1/item.gd
+res://scripts/player.gd
+res://scripts/Player_parent.gd
+res://scenes/main.tscn
+res://scripts/event_controller.gd
+res://scripts/game_controller.gd
+res://Inventory/inventory.gd
+res://Item1/item_display.gd
+res://Inventory/inv_master.tscn
+res://Inventory/inv_Control.gd
+res://Inventory/inv_ui_slot.tscn
+res://Inventory/playerInv.tres
+res://Inventory/Item1/item.tscn
+res://Inventory/Items/Item1/item.tscn
+res://Inventory/Items/Item1/sword_1.tscn
+res://Inventory/Items/Item 2/sword_2.tscn
+res://Inventory/Items/Item 2/sword_2.gd
+res://Inventory/Items/Item 2/stick_2.tres
+res://Inventory/Items/Item1/item_display.gd
+res://Inventory/Items/Item1/sword_1.tres
+res://Inventory/Items/Item1/Sword_1.gd
+res://Inventory/inventory_item.gd
+res://Inventory/item_display.gd
+>>>>>>> Stashed changes

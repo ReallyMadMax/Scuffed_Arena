@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddvc2fh8lb4c3"]
+
+[ext_resource type="Script" uid="uid://b415u6ytaggkt" path="res://Inventory/inv_Control.gd" id="1_iv7if"]
+[ext_resource type="PackedScene" uid="uid://d3eoua4qil574" path="res://Inventory/inv_ui_slot.tscn" id="3_06lhv"]
+
+[node name="Inventory" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_iv7if")
+
+[node name="background_colour" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = -3.0
+offset_right = 74.0
+offset_bottom = 19.0
+color = Color(0.29411766, 1, 1, 0.13333334)
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 1
+offset_left = -1.0
+offset_top = 2.0
+offset_right = 71.0
+offset_bottom = 17.0
+columns = 4
+
+[node name="InvUI_slot" parent="GridContainer" instance=ExtResource("3_06lhv")]
+layout_mode = 2
+
+[node name="InvUI_slot2" parent="GridContainer" instance=ExtResource("3_06lhv")]
+layout_mode = 2
+
+[node name="InvUI_slot3" parent="GridContainer" instance=ExtResource("3_06lhv")]
+layout_mode = 2
+
+[node name="InvUI_slot4" parent="GridContainer" instance=ExtResource("3_06lhv")]
+layout_mode = 2

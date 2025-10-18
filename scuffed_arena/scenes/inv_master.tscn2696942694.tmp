@@ -1,0 +1,79 @@
+[gd_scene load_steps=2 format=3 uid="uid://ddvc2fh8lb4c3"]
+
+[ext_resource type="Script" uid="uid://b415u6ytaggkt" path="res://scenes/inv_master.gd" id="1_iv7if"]
+
+[node name="InvMaster" type="Control"]
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -32.0
+offset_top = 21.0
+offset_right = 55.0
+offset_bottom = 41.0
+grow_horizontal = 0
+script = ExtResource("1_iv7if")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -2.0
+offset_right = -18.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.29411766, 1, 1, 0.13333334)
+
+[node name="Inventory Con_" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -21.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Inventory Con_"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 2.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GridContainer" type="GridContainer" parent="Inventory Con_/VBoxContainer"]
+layout_mode = 2
+columns = 4
+
+[node name="ColorRect" type="ColorRect" parent="Inventory Con_/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+color = Color(1, 1, 1, 0.68235296)
+
+[node name="ColorRect" type="ColorRect" parent="Inventory Con_/VBoxContainer/GridContainer/ColorRect"]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 0
+offset_left = 17.0
+offset_right = 32.0
+offset_bottom = 15.0
+color = Color(1, 1, 1, 0.68235296)
+
+[node name="ColorRect" type="ColorRect" parent="Inventory Con_/VBoxContainer/GridContainer/ColorRect/ColorRect"]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 0
+offset_left = 17.0
+offset_right = 32.0
+offset_bottom = 15.0
+color = Color(1, 1, 1, 0.68235296)
+
+[node name="ColorRect" type="ColorRect" parent="Inventory Con_/VBoxContainer/GridContainer/ColorRect/ColorRect/ColorRect"]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 0
+offset_left = 17.0
+offset_right = 32.0
+offset_bottom = 15.0
+color = Color(1, 1, 1, 0.68235296)
