@@ -1,4 +1,4 @@
-@tool
+#@tool
 extends player_class
 
 # who is skelly???
@@ -12,8 +12,13 @@ extends player_class
 @onready var main = get_tree().get_root().get_node("Main")
 @onready var attack = load("res://scenes/gem.tscn")
 
+@export var shoot_cooldown : float = 0.5  # Time before gem respawns
+
+var wand_gem : AnimatedSprite2D  # The visual gem on the wand
+var can_shoot : bool = true
+
 func _init():
-	speed = 250
+	speed = 400
 	# Create a new ability instance
 	"""
 	var my_ability = Ability.new()
@@ -25,7 +30,25 @@ func _init():
 	my_ability.damage = 15.0
 	"""
 
+func _ready():
+	# Create the visual gem that sits on the wand
+	# Load a gem instance to get its sprite frames
+	var temp_gem = attack.instantiate()
+	var gem_sprite = temp_gem.get_node("AnimatedSprite2D")
+
+	wand_gem = AnimatedSprite2D.new()
+	wand_gem.sprite_frames = gem_sprite.sprite_frames
+	wand_gem.scale = Vector2(0.25, 0.25)
+	wand_gem.position = Vector2(-48, -64)  # Same offset as spawn position
+	wand_gem.autoplay = "spin"  # Set autoplay
+	add_child(wand_gem)
+
+	temp_gem.queue_free()  # Clean up the temporary gem
+
 func shoot():
+	if not can_shoot:
+		return
+
 	var instance = attack.instantiate()
 	var mouse_position = get_global_mouse_position()
 
@@ -38,14 +61,42 @@ func shoot():
 	var direction_to_mouse = actual_spawn_position.direction_to(mouse_position)
 	var angle_to_mouse = direction_to_mouse.angle()
 
+	# Calculate the angle the gem was at on the wand (for lerping)
+	var wand_angle = rotation + spawn_offset.angle()
+
 	instance.dir = angle_to_mouse
 	instance.spawn_position = actual_spawn_position
-	instance.spawn_rotation = angle_to_mouse
+	instance.spawn_rotation = wand_angle
 	main.add_child.call_deferred(instance)
+
+	# Hide the wand gem and start cooldown
+	wand_gem.visible = false
+	can_shoot = false
+
+	# Create timer to respawn the gem
+	var timer = Timer.new()
+	timer.wait_time = shoot_cooldown
+	timer.one_shot = true
+	timer.timeout.connect(_on_gem_respawn)
+	add_child(timer)
+	timer.start()
+
+func _on_gem_respawn():
+	wand_gem.visible = true
+	can_shoot = true
+
+	# Animate the gem zooming in from nothing
+	wand_gem.scale = Vector2.ZERO
+	var tween = create_tween()
+	tween.tween_property(wand_gem, "scale", Vector2(0.25, 0.25), 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _process(_delta):
 	if not Engine.is_editor_hint():
+		# Keep the wand gem animation playing
+		if wand_gem and wand_gem.visible and not wand_gem.is_playing():
+			wand_gem.play("spin")
+
 		var dir = Input.get_vector("move_left", "move_right", "move_up", "move_down").normalized();
 		if dir:
 			direction = dir

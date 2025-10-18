@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://ytdmbdh0fya0"]
 
-[ext_resource type="Script" uid="uid://cd4qy5bvft2m" path="res://gem.gd" id="1_mpwtx"]
+[ext_resource type="Script" uid="uid://ckbwj6xns45f5" path="res://scripts/gem.gd" id="1_mpwtx"]
 [ext_resource type="Texture2D" uid="uid://bxffa467r466v" path="res://assets/gem_idle.png" id="2_bhq7q"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rj4j3"]
@@ -42,7 +42,7 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eaa7k"]
 size = Vector2(106.6182, 92.70871)
 
-[node name="CharacterBody2D" type="CharacterBody2D"]
+[node name="Gem" type="CharacterBody2D"]
 script = ExtResource("1_mpwtx")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

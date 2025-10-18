@@ -8,15 +8,22 @@ var dir : float
 var spawn_position : Vector2
 var spawn_rotation : float
 
+var rotation_lerp_time : float = 0.3  # Time to lerp rotation
+var rotation_timer : float = 0.0
+var start_rotation : float
+var target_rotation : float
+
 func _init():
     scale = Vector2(0.25, 0.25)
 
 func _ready():
     global_position = spawn_position
-    global_rotation = spawn_rotation
 
-    # Rotate only the sprite by 45 degrees
-    animated_sprite.rotation = deg_to_rad(90)
+    # Set up rotation lerping
+    # Apply -90 degree offset to both to compensate for sprite being drawn pointing up
+    start_rotation = spawn_rotation - deg_to_rad(90)
+    target_rotation = dir - deg_to_rad(90)
+    global_rotation = start_rotation
 
     # Disable collision
     collision_layer = 0
@@ -32,6 +39,16 @@ func _ready():
 
 
 func _physics_process(_delta):
+    # Lerp rotation over time
+    if rotation_timer < rotation_lerp_time:
+        rotation_timer += _delta
+        var t = rotation_timer / rotation_lerp_time
+        # Use smoothstep for a nicer easing
+        t = t * t * (3.0 - 2.0 * t)
+        global_rotation = lerp_angle(start_rotation, target_rotation, t)
+    else:
+        global_rotation = target_rotation
+
     velocity = Vector2(speed, 0).rotated(dir)
     animated_sprite.play("spin")
     move_and_slide()
