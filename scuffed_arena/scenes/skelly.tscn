@@ -9,6 +9,7 @@ height = 42.0
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 script = ExtResource("1_5nkx5")
+speed = 250
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_twhyi")
