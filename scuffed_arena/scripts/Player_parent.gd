@@ -2,6 +2,7 @@
 class_name player_class
 extends CharacterBody2D
 
+@export var inv: Inv
 @export var speed = 300
 @export var health = 1000
 @export var basic_attack_cd = 1

@@ -1,8 +1,9 @@
-[gd_scene load_steps=37 format=3 uid="uid://cktx12vx6t52c"]
+[gd_scene load_steps=38 format=3 uid="uid://cktx12vx6t52c"]
 
 [ext_resource type="Script" uid="uid://w7vsy53wn3my" path="res://scripts/player.gd" id="1_qhqgy"]
 [ext_resource type="Texture2D" uid="uid://bhqfa5acl785b" path="res://assets/FREE_Adventurer 2D Pixel Art/Sprites/RUN/spritesheet(1).png" id="2_dqkch"]
 [ext_resource type="PackedScene" uid="uid://cxqonlmouayns" path="res://scenes/sword_1.tscn" id="3_qlg0r"]
+[ext_resource type="PackedScene" path="res://Inventory/inv_master.tscn" id="4_dqkch"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0xm2m"]
 size = Vector2(22, 31)
@@ -338,3 +339,9 @@ texture = SubResource("GradientTexture2D_tefeu")
 replication_config = SubResource("SceneReplicationConfig_qhqgy")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Inventory" parent="." instance=ExtResource("4_dqkch")]
+offset_left = -34.0
+offset_top = 25.0
+offset_right = -34.0
+offset_bottom = 25.0
