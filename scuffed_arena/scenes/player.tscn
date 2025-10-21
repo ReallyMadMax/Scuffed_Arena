@@ -1,7 +1,9 @@
-[gd_scene load_steps=36 format=3 uid="uid://d225n5jsld3ee"]
+[gd_scene load_steps=38 format=3 uid="uid://cktx12vx6t52c"]
 
-[ext_resource type="Script" uid="uid://crdvxqiodives" path="res://scripts/skelly.gd" id="1_v6fml"]
-[ext_resource type="Texture2D" uid="uid://dxh7qahqmw73q" path="res://assets/skele_walk.png" id="2_kne1u"]
+[ext_resource type="Script" uid="uid://w7vsy53wn3my" path="res://scripts/player.gd" id="1_qhqgy"]
+[ext_resource type="Texture2D" uid="uid://bhqfa5acl785b" path="res://assets/FREE_Adventurer 2D Pixel Art/Sprites/RUN/spritesheet(1).png" id="2_dqkch"]
+[ext_resource type="PackedScene" uid="uid://cxqonlmouayns" path="res://scenes/sword_1.tscn" id="3_qlg0r"]
+[ext_resource type="PackedScene" path="res://Inventory/inv_master.tscn" id="4_dqkch"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e80uo"]
 size = Vector2(106, 160)
@@ -273,4 +275,12 @@ shadow_enabled = true
 texture = SubResource("GradientTexture2D_d6rpx")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_v6fml")
+replication_config = SubResource("SceneReplicationConfig_qhqgy")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Inventory" parent="." instance=ExtResource("4_dqkch")]
+offset_left = -34.0
+offset_top = 25.0
+offset_right = -34.0
+offset_bottom = 25.0

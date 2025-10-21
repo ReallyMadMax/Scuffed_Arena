@@ -1,9 +1,33 @@
-[gd_scene load_steps=3 format=3 uid="uid://dw1g4o7udjcs0"]
+[gd_scene load_steps=8 format=3 uid="uid://dw1g4o7udjcs0"]
 
-[ext_resource type="Script" uid="uid://b21cstmohy271" path="res://scripts/main.gd" id="1_sugp2"]
+[ext_resource type="Script" uid="uid://sqpld6u480he" path="res://scripts/main.gd" id="1_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://duihfy8h7tcnu" path="res://scenes/map.tscn" id="1_tbgi4"]
+[ext_resource type="Resource" uid="uid://cbv80nqjab13t" path="res://Inventory/Items/Item1/sword_1.tres" id="2_tefeu"]
+[ext_resource type="PackedScene" uid="uid://cktx12vx6t52c" path="res://scenes/player.tscn" id="4_jyhfs"]
+[ext_resource type="PackedScene" path="res://Inventory/Items/Item 2/sword_2.tscn" id="6_o6xl0"]
+[ext_resource type="PackedScene" path="res://Inventory/Items/Item1/sword_1.tscn" id="6_tefeu"]
+[ext_resource type="Resource" uid="uid://bn0yy8sjb35qn" path="res://Inventory/playerInv.tres" id="6_tipki"]
 
 [node name="Main" type="Node"]
-script = ExtResource("1_sugp2")
+script = ExtResource("1_jyhfs")
 
 [node name="Map" parent="." instance=ExtResource("1_tbgi4")]
+
+[node name="sword_1 #1" parent="." instance=ExtResource("6_tefeu")]
+position = Vector2(373, 257)
+item = ExtResource("2_tefeu")
+
+[node name="sword_1 #2" parent="." instance=ExtResource("6_tefeu")]
+position = Vector2(271, 164)
+item = ExtResource("2_tefeu")
+
+[node name="sword_1 #3" parent="." instance=ExtResource("6_tefeu")]
+position = Vector2(425, 168)
+item = ExtResource("2_tefeu")
+
+[node name="sword_2" parent="." instance=ExtResource("6_o6xl0")]
+position = Vector2(234, 220)
+
+[node name="Player" parent="." instance=ExtResource("4_jyhfs")]
+position = Vector2(112, 110)
+inv = ExtResource("6_tipki")
