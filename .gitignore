@@ -21,3 +21,4 @@ scuffed_arena/.godot/editor/*
 scuffed_arena/.godot/editor/editor_layout.cfg
 scuffed_arena/.godot/editor/script_editor_cache.cfg
 /.idea
+*.import
