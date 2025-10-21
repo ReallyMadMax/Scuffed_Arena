@@ -1,4 +1,4 @@
-@tool
+#@tool
 extends player_class
 
 # Enemy properties
