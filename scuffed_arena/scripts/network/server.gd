@@ -1,6 +1,8 @@
 extends Node
 
 signal lobby_created(lobbyID:String)
+signal player_joined
+signal player_left
 
 enum Message {
 	ID,
@@ -17,7 +19,7 @@ enum Message {
 var peer = WebSocketMultiplayerPeer.new()
 var port = 6000
 var users = {}
-var lobby = {}
+var lobby:Lobby
 var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMMNOPQRSTUVWXYZ1234567890"
 
 
@@ -48,34 +50,35 @@ func peer_connected(id:int):
 		"message" : Message.ID
 	}
 	send_to_player(id, users[id])
-	pass
+	player_joined.emit()
 
 func peer_disconnected(_id:int):
-	pass
+	player_left.emit()
 
 func join_lobby(user):
 	if user.lobby_id == "":
 		user.lobby_id = generate_random_string()
 		lobby_created.emit(user.lobby_id)
 		
-		lobby[user.lobby_id] = Lobby.new(user.id)
+		lobby = Lobby.new(user.id)
 	
-	lobby[user.lobby_id].add_player(user.id, user.name)
+	lobby.add_player(user.id, user.name)
 	
-	for p in lobby[user.lobby_id].Players:
+	for p in lobby.Players:
 		send_connection_packet(user.id, p, null)
 		send_connection_packet(p, user.id, null)
 		
 		var lobby_info = {
 			"message" : Message.LOBBY,
-			"players" : lobby[user.lobby_id].Players,
+			"players" : lobby.Players,
 			"lobby_id" : user.lobby_id
 		}
 		send_to_player(p, lobby_info)
 	
-	send_connection_packet(user.id, user.id, lobby[user.lobby_id])
+	send_connection_packet(user.id, user.id, lobby)
+	player_joined.emit()
 
-func send_connection_packet(sender_id:int, receiver_id:int, new_lobby):
+func send_connection_packet(sender_id:int, receiver_id:int, new_lobby:Lobby):
 	var data = {
 		"message" : Message.USER_CONNECTED,
 		"sender_id" : sender_id,

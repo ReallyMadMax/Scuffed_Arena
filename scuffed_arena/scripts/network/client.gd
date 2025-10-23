@@ -159,8 +159,6 @@ func ice_candidate_created(mid_name, index_name, sdp_name, id:int):
 	
 	peer.put_packet(JSON.stringify(message).to_utf8_buffer())
 
-
-
 func connectToServer(ip, port):
 	peer.create_client("ws://"+ip+":"+str(port))
 	print("started Client")
@@ -168,8 +166,10 @@ func connectToServer(ip, port):
 @rpc("any_peer", "call_local")
 func start_game():
 	var scene = load("res://scenes/main.tscn").instantiate()
+	for child in get_tree().root.get_children():
+		child.queue_free()
 	get_tree().root.add_child(scene)
-	get_parent().hide()
+	
 
 func join_lobby(lobbyId:String) -> bool:
 	if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
