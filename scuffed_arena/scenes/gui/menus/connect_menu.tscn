@@ -55,20 +55,6 @@ placeholder_text = "IP address"
 [node name="ClientErrorMsg" type="Label" parent="HBoxContainer/Control"]
 layout_mode = 2
 
-[node name="JoinBox" type="HBoxContainer" parent="HBoxContainer/Control"]
-visible = false
-layout_mode = 2
-
-[node name="JoinLobby" type="Button" parent="HBoxContainer/Control/JoinBox"]
-layout_mode = 2
-text = "join lobby"
-
-[node name="LobbyID" type="LineEdit" parent="HBoxContainer/Control/JoinBox"]
-custom_minimum_size = Vector2(300, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "lobby ID"
-
 [node name="LobbyErrorMsg" type="Label" parent="HBoxContainer/Control"]
 layout_mode = 2
 
@@ -82,4 +68,3 @@ layout_mode = 2
 [connection signal="button_down" from="HBoxContainer/Control/StartBox/StartClient" to="." method="_on_start_client_button_down"]
 [connection signal="text_changed" from="HBoxContainer/Control/StartBox/IpAddress" to="." method="_on_ip_address_text_changed"]
 [connection signal="text_submitted" from="HBoxContainer/Control/StartBox/IpAddress" to="." method="start_client"]
-[connection signal="button_down" from="HBoxContainer/Control/JoinBox/JoinLobby" to="." method="_on_join_lobby_button_down"]

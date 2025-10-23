@@ -5,7 +5,8 @@ enum Message {
 	JOIN,
 	USER_CONNECTED,
 	USER_DISCONNECTED,
-	LOBBY,
+	CREATE_LOBBY,
+	JOIN_LOBBY,
 	CANDIDATE,
 	OFFER,
 	ANSWER,
@@ -50,8 +51,8 @@ func _process(_delta):
 			connected(client_id)
 		if data.message == Message.USER_CONNECTED:
 			createPeer(data.sender_id)
-			
-		if data.message == Message.LOBBY:
+		
+		if data.message == Message.JOIN_LOBBY:
 			GameManager.Players = data.players
 			lobby_id = data.lobby_id
 		
@@ -169,9 +170,8 @@ func start_game():
 	for child in get_tree().root.get_children():
 		child.queue_free()
 	get_tree().root.add_child(scene)
-	
 
-func join_lobby(lobbyId:String) -> bool:
+func create_lobby() -> bool:
 	if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
 		print("Not connected to server yet! Please wait...")
 		return false
@@ -182,9 +182,28 @@ func join_lobby(lobbyId:String) -> bool:
 	
 	var message = {
 		"id" : client_id,
-		"message" : Message.LOBBY,
+		"message" : Message.CREATE_LOBBY,
 		"name" : "",
-		"lobby_id" : lobbyId
+		"lobby_id" : Server.LOBBY_ID
+	}
+	peer.put_packet(JSON.stringify(message).to_utf8_buffer())
+	print("Sent lobby join request")
+	return true
+
+func join_lobby(_lobbyId:String) -> bool:
+	if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
+		print("Not connected to server yet! Please wait...")
+		return false
+	
+	if client_id == 0:
+		print("Waiting for server to assign client ID...")
+		return false
+	
+	var message = {
+		"id" : client_id,
+		"message" : Message.JOIN_LOBBY,
+		"name" : "",
+		"lobby_id" : Server.LOBBY_ID
 	}
 	peer.put_packet(JSON.stringify(message).to_utf8_buffer())
 	print("Sent lobby join request")

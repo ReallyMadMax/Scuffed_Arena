@@ -9,7 +9,8 @@ enum Message {
 	JOIN,
 	USER_CONNECTED,
 	USER_DISCONNECTED,
-	LOBBY,
+	CREATE_LOBBY,
+	JOIN_LOBBY,
 	CANDIDATE,
 	OFFER,
 	ANSWER,
@@ -20,6 +21,7 @@ var peer = WebSocketMultiplayerPeer.new()
 var port = 6000
 var users = {}
 var lobby:Lobby
+var LOBBY_ID:String = "BAHAHAHAHA"
 var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMMNOPQRSTUVWXYZ1234567890"
 
 
@@ -35,7 +37,9 @@ func _process(_delta):
 			var dataString = packet.get_string_from_utf8()
 			var data = JSON.parse_string(dataString)
 			print(data)
-			if data.message == Message.LOBBY:
+			if data.message == Message.CREATE_LOBBY:
+				create_lobby(data)
+			if data.message == Message.JOIN_LOBBY:
 				join_lobby(data)
 			
 			if data.message == Message.OFFER || data.message == Message.ANSWER || data.message == Message.CANDIDATE:
@@ -52,16 +56,20 @@ func peer_connected(id:int):
 	send_to_player(id, users[id])
 	player_joined.emit()
 
-func peer_disconnected(_id:int):
+func peer_disconnected(id:int):
+	lobby.remove_player(id)
+	users.erase(id)
 	player_left.emit()
 
-func join_lobby(user):
-	if user.lobby_id == "":
-		user.lobby_id = generate_random_string()
-		lobby_created.emit(user.lobby_id)
-		
-		lobby = Lobby.new(user.id)
+func create_lobby(user):
+	user.lobby_id = LOBBY_ID
+	lobby_created.emit(user.lobby_id)
 	
+	lobby = Lobby.new(user.id)
+	
+	join_lobby(user)
+
+func join_lobby(user):
 	lobby.add_player(user.id, user.name)
 	
 	for p in lobby.Players:
@@ -69,7 +77,7 @@ func join_lobby(user):
 		send_connection_packet(p, user.id, null)
 		
 		var lobby_info = {
-			"message" : Message.LOBBY,
+			"message" : Message.JOIN_LOBBY,
 			"players" : lobby.Players,
 			"lobby_id" : user.lobby_id
 		}
