@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://blbaxcxp55ndk"]
+[gd_scene load_steps=5 format=3 uid="uid://c3jw60mm3voxq"]
 
-[ext_resource type="Script" uid="uid://bqxuphqrnbabu" path="res://Inventory/Items/Item 2/sword_2.gd" id="1_dh1ur"]
+[ext_resource type="Script" uid="uid://dvcyuqujsquud" path="res://Inventory/Items/Item 2/sword_2.gd" id="1_dh1ur"]
 [ext_resource type="Resource" uid="uid://r0xef3sviqtx" path="res://Inventory/Items/Item 2/sword_2.tres" id="2_ei8tc"]
 [ext_resource type="Texture2D" uid="uid://cfvk3eqemrlev" path="res://assets/Icons/Iicon_32_04.png" id="2_lukom"]
 
@@ -22,5 +22,4 @@ position = Vector2(-5.9604645e-08, 5.9604645e-08)
 scale = Vector2(0.35, 0.35)
 shape = SubResource("RectangleShape2D_dh1ur")
 
-[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

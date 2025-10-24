@@ -35,5 +35,6 @@ func player():
 	pass
 
 func collect(item):
+	print(1)
 	inv.insert(item)
 	
