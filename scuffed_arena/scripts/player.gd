@@ -6,6 +6,7 @@ func _init():
 
 func _ready():
 	animation_tree.active = true
+	print(4)
 	"""
 	$MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
 	if str(name).to_int() != multiplayer.get_unique_id():
@@ -31,26 +32,6 @@ func _process(_delta):
 		move_and_slide()
 		update_animation_parameters()
 
-func update_animation_parameters():
-	if (velocity == Vector2.ZERO):
-		animation_tree["parameters/conditions/is_idle"] = true
-		animation_tree["parameters/conditions/is_moving"] = false
-	else:
-		animation_tree["parameters/conditions/is_idle"] = false
-		animation_tree["parameters/conditions/is_moving"] = true
-	
-	if Input.is_action_just_pressed("attack"):
-		animation_tree["parameters/conditions/attack"] = true
-	else:
-		animation_tree["parameters/conditions/attack"] = false
-	
-	animation_tree["parameters/Idle/blend_position"] = direction
-	animation_tree["parameters/Move/blend_position"] = direction
-	animation_tree["parameters/Attack/blend_position"] = direction
-
-func player():
-	pass
-
 func collect(item):
+	print(1)
 	inv.insert(item)
-	

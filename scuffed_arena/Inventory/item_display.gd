@@ -6,6 +6,7 @@ func update(slot: InvSlot):
 	if !slot.item:
 		item_visual.visible = false
 		amount_text.visible = false
+
 	else:
 		item_visual.visible = true
 		item_visual.texture = slot.item.texture
