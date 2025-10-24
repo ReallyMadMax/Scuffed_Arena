@@ -166,10 +166,26 @@ func connectToServer(ip, port):
 
 @rpc("any_peer", "call_local")
 func start_game():
+	print("start_game() called!")
+	print("GameManager.Players before scene change: ", GameManager.Players)
+	print("Loading main scene...")
 	var scene = load("res://scenes/main.tscn").instantiate()
+	print("Scene loaded, clearing existing children...")
+
+	# List of autoload singletons to keep (don't delete these!)
+	var autoloads = ["GameManager", "Client", "Server"]
+
 	for child in get_tree().root.get_children():
-		child.queue_free()
+		if child.name not in autoloads:
+			print("Removing child: ", child.name)
+			child.queue_free()
+		else:
+			print("Keeping autoload: ", child.name)
+
+	print("Adding main scene to tree...")
 	get_tree().root.add_child(scene)
+	print("Main scene added!")
+	print("GameManager.Players after scene change: ", GameManager.Players)
 
 func create_lobby() -> bool:
 	if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:

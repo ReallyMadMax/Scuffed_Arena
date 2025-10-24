@@ -1,7 +1,7 @@
 [gd_scene load_steps=27 format=3 uid="uid://cqrtk0v26y2jo"]
 
-[ext_resource type="Script" uid="uid://byk7j1bhl4j6e" path="res://scripts/ghost.gd" id="1_6attn"]
-[ext_resource type="Texture2D" uid="uid://dp0n4b2boidyr" path="res://assets/Sprite Sheet/Sword.png" id="2_obmiq"]
+[ext_resource type="Script" uid="uid://cjjm0s10aa1yc" path="res://scripts/ghost.gd" id="1_6attn"]
+[ext_resource type="Texture2D" uid="uid://mut5mk6nu3cq" path="res://assets/Sprite Sheet/Sword.png" id="2_obmiq"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xtt71"]
 atlas = ExtResource("2_obmiq")
@@ -173,7 +173,9 @@ animations = [{
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ol1b1"]
 
 [node name="Ghost" type="CharacterBody2D"]
+scale = Vector2(1.5, 1.5)
 script = ExtResource("1_6attn")
+speed = 150
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1

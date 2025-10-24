@@ -44,12 +44,19 @@ func _ready():
 	wand_gem.play("spin")  # Start playing the spin animation
 
 	temp_gem.queue_free()  # Clean up the temporary gem
-	animation_tree.active = true
-	"""
-	$MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
-	if str(name).to_int() != multiplayer.get_unique_id():
-		remove_child($Camera2D)
-	"""
+	#animation_tree.active = true
+
+	# Only run multiplayer authority checks when in multiplayer mode
+	if multiplayer.has_multiplayer_peer():
+		var my_id = str(name).to_int()
+		print("Setting authority - Node name: ", name, " -> ID: ", my_id, " | My multiplayer ID: ", multiplayer.get_unique_id())
+		$MultiplayerSynchronizer.set_multiplayer_authority(my_id)
+		if my_id != multiplayer.get_unique_id():
+			print("Removing camera - not my character")
+			remove_child($Camera2D)
+		else:
+			print("This is MY character - keeping camera and control")
+	
 func shoot():
 	if not can_shoot:
 		return
@@ -83,7 +90,7 @@ func shoot():
 	add_child(timer)
 	timer.start()
 
-#@rpc("any_peer", "call_local")
+@rpc("any_peer", "call_local")
 func spawn_projectile(dir: float, spawn_pos: Vector2, spawn_rot: float, shooter: int):
 	var instance = attack.instantiate()
 	instance.dir = dir
@@ -103,10 +110,12 @@ func _on_gem_respawn():
 
 
 func _process(_delta):
-	"""
-	if $MultiplayerSynchronizer.get_multiplayer_authority() != multiplayer.get_unique_id():
-		return
-	"""
+	# Only check authority in multiplayer mode
+	if multiplayer.has_multiplayer_peer():
+		if $MultiplayerSynchronizer.get_multiplayer_authority() != multiplayer.get_unique_id():
+			# This is not our character, don't process input
+			return
+
 	if not Engine.is_editor_hint():
 		# Keep the wand gem animation playing
 		if wand_gem and wand_gem.visible and not wand_gem.is_playing():

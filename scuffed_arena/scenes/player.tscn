@@ -255,6 +255,7 @@ libraries = {
 }
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
+deterministic = false
 tree_root = SubResource("AnimationNodeStateMachine_oudfo")
 anim_player = NodePath("../AnimationPlayer")
 parameters/conditions/attack = false

@@ -41,6 +41,11 @@ func _ready():
     collision_layer = 2  # Projectile layer
     collision_mask = 1   # Collides with player layer (adjust if needed)
 
+    # Add collision exception for the shooter so the bullet passes through them
+    var shooter = get_node("/root/Main/" + str(shooter_id))
+    if shooter:
+        add_collision_exception_with(shooter)
+
     # Create a timer to despawn after lifetime expires
     var timer = Timer.new()
     timer.wait_time = lifetime
