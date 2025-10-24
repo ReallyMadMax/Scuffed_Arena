@@ -2,11 +2,13 @@ extends CharacterBody2D
 
 @export var speed : float = 500
 @export var lifetime : float = 3.0  # Time in seconds before despawning
+@export var damage : int = 50  # Damage dealt on hit
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 var dir : float
 var spawn_position : Vector2
 var spawn_rotation : float
+var shooter_id : int  # ID of the player who shot this projectile
 
 var rotation_lerp_time : float = 0.3  # Time to lerp rotation
 var rotation_timer : float = 0.0
@@ -31,9 +33,13 @@ func _ready():
 
     global_rotation = start_rotation
 
-    # Disable collision
-    collision_layer = 0
-    collision_mask = 0
+    # Start the spin animation
+    animated_sprite.play("spin")
+
+    # Enable collision for hitting players
+    # Set appropriate collision layers based on your project setup
+    collision_layer = 2  # Projectile layer
+    collision_mask = 1   # Collides with player layer (adjust if needed)
 
     # Create a timer to despawn after lifetime expires
     var timer = Timer.new()
@@ -58,6 +64,20 @@ func _physics_process(_delta):
     velocity = Vector2(speed, 0).rotated(dir)
     animated_sprite.play("spin")
     move_and_slide()
+
+    # Check for collisions after moving
+    for i in get_slide_collision_count():
+        var collision = get_slide_collision(i)
+        var collider = collision.get_collider()
+
+        # Check if we hit a player
+        if collider is player_class:
+            # Don't damage the player who shot this projectile
+            if collider.name != str(shooter_id):
+                # Deal damage via RPC to work with multiplayer
+                collider.take_damage.rpc(damage)
+                queue_free()  # Despawn the projectile
+                return
 
 func _on_lifetime_timeout():
     queue_free()

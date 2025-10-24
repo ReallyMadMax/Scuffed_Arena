@@ -35,3 +35,14 @@ func update_animation_parameters():
 	animation_tree["parameters/Idle/blend_position"] = direction
 	animation_tree["parameters/Move/blend_position"] = direction
 	animation_tree["parameters/Attack/blend_position"] = direction
+
+@rpc("any_peer", "call_local")
+func take_damage(amount: int):
+	health -= amount
+	print("Player took ", amount, " damage. Health: ", health)
+	if health <= 0:
+		die()
+
+func die():
+	print("Player died!")
+	# Add death logic here (respawn, game over, etc.)

@@ -40,16 +40,20 @@ func _ready():
 	wand_gem.sprite_frames = gem_sprite.sprite_frames
 	wand_gem.scale = Vector2(0.25, 0.25)
 	wand_gem.position = Vector2(-48, -64)  # Same offset as spawn position
-	wand_gem.autoplay = "spin"  # Set autoplay
 	add_child(wand_gem)
+	wand_gem.play("spin")  # Start playing the spin animation
 
 	temp_gem.queue_free()  # Clean up the temporary gem
-
+	animation_tree.active = true
+	"""
+	$MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
+	if str(name).to_int() != multiplayer.get_unique_id():
+		remove_child($Camera2D)
+	"""
 func shoot():
 	if not can_shoot:
 		return
 
-	var instance = attack.instantiate()
 	var mouse_position = get_global_mouse_position()
 
 	# Offset to spawn from top-left of character (adjust offset values as needed)
@@ -64,10 +68,8 @@ func shoot():
 	# Get the actual global rotation of the wand gem before we shoot it
 	var wand_angle = wand_gem.global_rotation
 
-	instance.dir = angle_to_mouse
-	instance.spawn_position = actual_spawn_position
-	instance.spawn_rotation = wand_angle
-	main.add_child.call_deferred(instance)
+	# Spawn on all clients via RPC
+	spawn_projectile.rpc(angle_to_mouse, actual_spawn_position, wand_angle, str(name).to_int())
 
 	# Hide the wand gem and start cooldown
 	wand_gem.visible = false
@@ -81,6 +83,15 @@ func shoot():
 	add_child(timer)
 	timer.start()
 
+#@rpc("any_peer", "call_local")
+func spawn_projectile(dir: float, spawn_pos: Vector2, spawn_rot: float, shooter: int):
+	var instance = attack.instantiate()
+	instance.dir = dir
+	instance.spawn_position = spawn_pos
+	instance.spawn_rotation = spawn_rot
+	instance.shooter_id = shooter
+	main.add_child.call_deferred(instance)
+
 func _on_gem_respawn():
 	wand_gem.visible = true
 	can_shoot = true
@@ -92,6 +103,10 @@ func _on_gem_respawn():
 
 
 func _process(_delta):
+	"""
+	if $MultiplayerSynchronizer.get_multiplayer_authority() != multiplayer.get_unique_id():
+		return
+	"""
 	if not Engine.is_editor_hint():
 		# Keep the wand gem animation playing
 		if wand_gem and wand_gem.visible and not wand_gem.is_playing():

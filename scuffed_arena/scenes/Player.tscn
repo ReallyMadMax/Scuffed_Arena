@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://d22g83eus2yhf"]
+[gd_scene load_steps=36 format=3 uid="uid://d225n5jsld3ee"]
 
 [ext_resource type="Script" uid="uid://crdvxqiodives" path="res://scripts/skelly.gd" id="1_v6fml"]
 [ext_resource type="Texture2D" uid="uid://dxh7qahqmw73q" path="res://assets/skele_walk.png" id="2_kne1u"]
@@ -224,6 +224,17 @@ fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.5, 0)
 metadata/_snap_enabled = true
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_v6fml"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath("Sprite2D:frame_coords")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:health")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_v6fml")
 speed = 250
@@ -259,3 +270,6 @@ zoom = Vector2(0.5, 0.5)
 [node name="PointLight2D" type="PointLight2D" parent="."]
 shadow_enabled = true
 texture = SubResource("GradientTexture2D_d6rpx")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_v6fml")

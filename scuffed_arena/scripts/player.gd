@@ -1,4 +1,4 @@
-@tool
+#@tool
 extends player_class
 
 func _init():
