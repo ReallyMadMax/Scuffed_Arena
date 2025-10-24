@@ -10,7 +10,9 @@ func _ready():
 	update_slots()
 
 func update_slots():
+	print(0)
 	for i in range(min(inv.slots.size(), slots.size())):
+		print(2)
 		slots[i].update(inv.slots[i])
 
 func _process(_delta):
@@ -19,9 +21,11 @@ func _process(_delta):
 			close()
 		else:
 			open()
+			
 func open():
 	self.visible = true
 	is_open = true
+	
 func close():
 	visible = false
 	is_open = false

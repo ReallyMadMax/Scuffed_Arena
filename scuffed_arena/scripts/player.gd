@@ -6,6 +6,7 @@ func _init():
 
 func _ready():
 	animation_tree.active = true
+	print(4)
 	"""
 	$MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
 	if str(name).to_int() != multiplayer.get_unique_id():
@@ -32,5 +33,5 @@ func _process(_delta):
 		update_animation_parameters()
 
 func collect(item):
+	print(1)
 	inv.insert(item)
-	

@@ -1,14 +1,16 @@
-[gd_scene load_steps=4 format=3 uid="uid://2d8nhiqup8c2"]
+[gd_scene load_steps=5 format=3 uid="uid://dr2blaib6a3r2"]
 
-[ext_resource type="Script" uid="uid://b1hfdwfbs2h26" path="res://Inventory/Items/Item1/Sword_1.gd" id="1_vljjh"]
+[ext_resource type="Script" uid="uid://dbhig4n1blr4e" path="res://Inventory/Items/Item1/Sword_1.gd" id="1_vljjh"]
+[ext_resource type="Resource" uid="uid://cbv80nqjab13t" path="res://Inventory/Items/Item1/sword_1.tres" id="2_p7wk8"]
 [ext_resource type="Texture2D" uid="uid://bpbsgms6uhofs" path="res://assets/Icons/Iicon_32_03.png" id="2_ys7tt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6muww"]
-size = Vector2(22, 23)
+size = Vector2(22, 22)
 
 [node name="Sword_1" type="Node2D"]
 scale = Vector2(0.5, 0.5)
 script = ExtResource("1_vljjh")
+item = ExtResource("2_p7wk8")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_ys7tt")

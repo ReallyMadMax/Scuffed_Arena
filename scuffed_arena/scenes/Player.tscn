@@ -284,3 +284,7 @@ offset_left = -34.0
 offset_top = 25.0
 offset_right = -34.0
 offset_bottom = 25.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1, 3.5)
+shape = SubResource("RectangleShape2D_0xm2m")
