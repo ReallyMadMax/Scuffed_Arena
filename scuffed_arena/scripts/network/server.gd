@@ -1,11 +1,16 @@
 extends Node
 
+signal lobby_created(lobbyID:String)
+signal player_joined
+signal player_left
+
 enum Message {
 	ID,
 	JOIN,
 	USER_CONNECTED,
 	USER_DISCONNECTED,
-	LOBBY,
+	CREATE_LOBBY,
+	JOIN_LOBBY,
 	CANDIDATE,
 	OFFER,
 	ANSWER,
@@ -15,7 +20,8 @@ enum Message {
 var peer = WebSocketMultiplayerPeer.new()
 var port = 6000
 var users = {}
-var lobby = {}
+var lobby:Lobby
+var LOBBY_ID:String = "BAHAHAHAHA"
 var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMMNOPQRSTUVWXYZ1234567890"
 
 
@@ -31,7 +37,9 @@ func _process(_delta):
 			var dataString = packet.get_string_from_utf8()
 			var data = JSON.parse_string(dataString)
 			print(data)
-			if data.message == Message.LOBBY:
+			if data.message == Message.CREATE_LOBBY:
+				create_lobby(data)
+			if data.message == Message.JOIN_LOBBY:
 				join_lobby(data)
 			
 			if data.message == Message.OFFER || data.message == Message.ANSWER || data.message == Message.CANDIDATE:
@@ -46,32 +54,39 @@ func peer_connected(id:int):
 		"message" : Message.ID
 	}
 	send_to_player(id, users[id])
-	pass
+	player_joined.emit()
 
-func peer_disconnected(_id:int):
-	pass
+func peer_disconnected(id:int):
+	lobby.remove_player(id)
+	users.erase(id)
+	player_left.emit()
+
+func create_lobby(user):
+	user.lobby_id = LOBBY_ID
+	lobby_created.emit(user.lobby_id)
+	
+	lobby = Lobby.new(user.id)
+	
+	join_lobby(user)
 
 func join_lobby(user):
-	if user.lobby_id == "":
-		user.lobby_id = generate_random_string()
-		lobby[user.lobby_id] = Lobby.new(user.id)
+	lobby.add_player(user.id, user.name)
 	
-	lobby[user.lobby_id].add_player(user.id, user.name)
-	
-	for p in lobby[user.lobby_id].Players:
+	for p in lobby.Players:
 		send_connection_packet(user.id, p, null)
 		send_connection_packet(p, user.id, null)
 		
 		var lobby_info = {
-			"message" : Message.LOBBY,
-			"players" : lobby[user.lobby_id].Players,
+			"message" : Message.JOIN_LOBBY,
+			"players" : lobby.Players,
 			"lobby_id" : user.lobby_id
 		}
 		send_to_player(p, lobby_info)
 	
-	send_connection_packet(user.id, user.id, lobby[user.lobby_id])
+	send_connection_packet(user.id, user.id, lobby)
+	player_joined.emit()
 
-func send_connection_packet(sender_id:int, receiver_id:int, new_lobby):
+func send_connection_packet(sender_id:int, receiver_id:int, new_lobby:Lobby):
 	var data = {
 		"message" : Message.USER_CONNECTED,
 		"sender_id" : sender_id,
