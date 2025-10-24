@@ -61,8 +61,8 @@ func shoot():
 	var direction_to_mouse = actual_spawn_position.direction_to(mouse_position)
 	var angle_to_mouse = direction_to_mouse.angle()
 
-	# Calculate the angle the gem was at on the wand (for lerping)
-	var wand_angle = rotation + spawn_offset.angle()
+	# Get the actual global rotation of the wand gem before we shoot it
+	var wand_angle = wand_gem.global_rotation
 
 	instance.dir = angle_to_mouse
 	instance.spawn_position = actual_spawn_position

@@ -23,6 +23,12 @@ func _ready():
     # Apply -90 degree offset to both to compensate for sprite being drawn pointing up
     start_rotation = spawn_rotation - deg_to_rad(90)
     target_rotation = dir - deg_to_rad(90)
+
+    # Ensure we take the shortest rotation path by normalizing the angle difference
+    # This fixes the issue where shooting left would rotate the long way around
+    var diff = fposmod(target_rotation - start_rotation + PI, TAU) - PI
+    target_rotation = start_rotation + diff
+
     global_rotation = start_rotation
 
     # Disable collision
