@@ -12,9 +12,10 @@ grow_vertical = 2
 script = ExtResource("1_j1600")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-layout_mode = 0
-offset_right = 1152.0
-offset_bottom = 648.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.2818543, 0.16164371, 0.13537553, 1)
@@ -46,6 +47,13 @@ text = "Host Game"
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 placeholder_text = "Local IP Address"
+
+[node name="ExtIpAddress" type="LineEdit" parent="VBoxContainer"]
+layout_mode = 2
+placeholder_text = "External IP Address"
+editable = false
+deselect_on_focus_loss_enabled = false
+select_all_on_focus = true
 
 [node name="StartGame" type="Button" parent="VBoxContainer"]
 layout_mode = 2

@@ -1,6 +1,7 @@
 extends Control
 
 @onready var IpAddress = $VBoxContainer/HBoxContainer/IpAddress
+@onready var ExtIpAddress = $VBoxContainer/ExtIpAddress
 @onready var StartGame = $VBoxContainer/StartGame
 @onready var HostGame = $VBoxContainer/HBoxContainer/HostGame
 
@@ -8,6 +9,7 @@ func _ready() -> void:
 	Server.player_joined.connect(_on_players_updated)
 	Server.player_left.connect(_on_players_updated)
 	IpAddress.text = IP.get_local_addresses()[1]
+	ExtIpAddress.text = Server.ext_ip
 
 func _on_host_game_button_down() -> void:
 	host_game(IpAddress.text)
@@ -22,6 +24,7 @@ func host_game(ip:String) -> void:
 
 func _on_start_game_button_down() -> void:
 	Client.start_game.rpc()
+	queue_free()
 
 func _on_players_updated():
 	$VBoxContainer2/PlayerCount.text = "Players Connected: " + str(Server.users.size()) + "/8"

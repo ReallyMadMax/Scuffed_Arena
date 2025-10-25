@@ -55,6 +55,7 @@ func _process(_delta):
 		if data.message == Message.JOIN_LOBBY:
 			GameManager.Players = data.players
 			lobby_id = data.lobby_id
+			Server.punch_hole(data.ip, Server.port)
 		
 		if data.message == Message.CANDIDATE:
 			if rtc_peer.has_peer(data.org_peer):
@@ -89,7 +90,6 @@ func createPeer(id:int):
 				}
 			]
 		})
-		print("binding id " + str(id) + " my id " + str(client_id))
 		
 		var check_connection = func():
 			await get_tree().create_timer(0.5).timeout
@@ -166,26 +166,18 @@ func connectToServer(ip, port):
 
 @rpc("any_peer", "call_local")
 func start_game():
-	print("start_game() called!")
-	print("GameManager.Players before scene change: ", GameManager.Players)
 	print("Loading main scene...")
 	var scene = load("res://scenes/main.tscn").instantiate()
-	print("Scene loaded, clearing existing children...")
 
 	# List of autoload singletons to keep (don't delete these!)
 	var autoloads = ["GameManager", "Client", "Server"]
 
 	for child in get_tree().root.get_children():
 		if child.name not in autoloads:
-			print("Removing child: ", child.name)
 			child.queue_free()
-		else:
-			print("Keeping autoload: ", child.name)
 
 	print("Adding main scene to tree...")
 	get_tree().root.add_child(scene)
-	print("Main scene added!")
-	print("GameManager.Players after scene change: ", GameManager.Players)
 
 func create_lobby() -> bool:
 	if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
@@ -200,7 +192,8 @@ func create_lobby() -> bool:
 		"id" : client_id,
 		"message" : Message.CREATE_LOBBY,
 		"name" : "",
-		"lobby_id" : Server.LOBBY_ID
+		"lobby_id" : Server.LOBBY_ID,
+		"ip" : ""
 	}
 	peer.put_packet(JSON.stringify(message).to_utf8_buffer())
 	print("Sent lobby join request")
@@ -219,7 +212,8 @@ func join_lobby(_lobbyId:String) -> bool:
 		"id" : client_id,
 		"message" : Message.JOIN_LOBBY,
 		"name" : "",
-		"lobby_id" : Server.LOBBY_ID
+		"lobby_id" : Server.LOBBY_ID,
+		"ip" : Server.ext_ip
 	}
 	peer.put_packet(JSON.stringify(message).to_utf8_buffer())
 	print("Sent lobby join request")
