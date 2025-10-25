@@ -30,6 +30,10 @@ window/stretch/scale=3.0
 
 project/assembly_name="Scuffed_Arena"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/tube/plugin.cfg")
+
 [input]
 
 move_right={
