@@ -2,7 +2,7 @@ extends Node
 
 @export var PlayerScene : PackedScene
 
-@onready var musicAudioStreamBG = $"AudioStreamPlayer2D-BGM"
+@onready var musicAudioStreamBG = $"AudioStreamPlayer-BGM"
 var backgroundMusicOn = true
 
 
