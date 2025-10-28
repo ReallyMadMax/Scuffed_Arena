@@ -10,7 +10,7 @@ script = ExtResource("1_sugp2")
 [node name="Map" parent="." instance=ExtResource("1_tbgi4")]
 
 [node name="AudioStreamPlayer2D-BGM" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(588, 347)
 stream = ExtResource("3_sugp2")
 volume_db = -17.669
-autoplay = true
 bus = &"Music"

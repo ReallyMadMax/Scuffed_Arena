@@ -32,12 +32,11 @@ func _ready():
 			print("WARNING: No PlayerSpawnPoint found!")
 
 func _process(delta):
-	update_music_status()
+	update_music_stats()
 
-func update_music_status()
+func update_music_stats():
 	if backgroundMusicOn:
-		if !musicAudioStreamBG.playing
-			musicAudioStream.play()
+		if !musicAudioStreamBG.playing:
+			musicAudioStreamBG.play()
 	else: 
 		musicAudioStreamBG.stop()
-		
