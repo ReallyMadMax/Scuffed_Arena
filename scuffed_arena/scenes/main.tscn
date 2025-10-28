@@ -1,9 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://dw1g4o7udjcs0"]
+[gd_scene load_steps=4 format=3 uid="uid://dw1g4o7udjcs0"]
 
-[ext_resource type="Script" uid="uid://b21cstmohy271" path="res://scripts/main.gd" id="1_sugp2"]
+[ext_resource type="Script" uid="uid://6pvqn8abtd88" path="res://scripts/main.gd" id="1_sugp2"]
 [ext_resource type="PackedScene" uid="uid://duihfy8h7tcnu" path="res://scenes/map.tscn" id="1_tbgi4"]
+[ext_resource type="AudioStream" uid="uid://k5uhiy6713yx" path="res://assets/scuffed arena combat music test.mp3" id="3_sugp2"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_sugp2")
 
 [node name="Map" parent="." instance=ExtResource("1_tbgi4")]
+
+[node name="AudioStreamPlayer2D-BGM" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_sugp2")
+volume_db = -17.669
+autoplay = true
+bus = &"Music"

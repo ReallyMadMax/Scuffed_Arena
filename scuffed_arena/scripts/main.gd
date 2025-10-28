@@ -2,6 +2,10 @@ extends Node
 
 @export var PlayerScene : PackedScene
 
+@onready var musicAudioStreamBG = $"AudioStreamPlayer2D-BGM"
+var backgroundMusicOn = true
+
+
 func _ready():
 	print("Main scene _ready() called!")
 	print("Main scene ready - GameManager.Players: ", GameManager.Players)
@@ -26,3 +30,14 @@ func _ready():
 			print("Player spawned at: ", spawn.global_position)
 		else:
 			print("WARNING: No PlayerSpawnPoint found!")
+
+func _process(delta):
+	update_music_status()
+
+func update_music_status()
+	if backgroundMusicOn:
+		if !musicAudioStreamBG.playing
+			musicAudioStream.play()
+	else: 
+		musicAudioStreamBG.stop()
+		
