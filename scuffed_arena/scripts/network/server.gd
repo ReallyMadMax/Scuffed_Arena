@@ -23,43 +23,35 @@ var users = {}
 var lobby:Lobby
 var LOBBY_ID:String = "BAHAHAHAHA"
 var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMMNOPQRSTUVWXYZ1234567890"
-var udp = PacketPeerUDP.new()
-var ext_ip:String
+# External IP is only used for display purposes (so host knows what IP to share)
+# WebRTC handles all NAT traversal, this is NOT used for hole punching
+var ext_ip:String = ""
+
+# C# Signaling Server Process
+var signaling_server_pid: int = -1
+var signaling_server_running: bool = false
 
 func _ready():
 	peer.connect("peer_connected", peer_connected)
 	peer.connect("peer_disconnected", peer_disconnected)
-	
+
+	# Fetch external IP to display to the host (for sharing with other players)
 	var http = HTTPRequest.new()
 	add_child(http)
-	http.request_completed.connect(_on_http_request_completed)
+	http.request_completed.connect(_on_ext_ip_fetched)
 	http.request("https://ipv4.icanhazip.com")
 
-func _on_http_request_completed(_result:int, response_code:int, _headers:PackedStringArray, body:PackedByteArray) -> void:
+func _exit_tree():
+	# Clean up signaling server when game exits
+	stop_signaling_server()
+
+func _on_ext_ip_fetched(_result:int, response_code:int, _headers:PackedStringArray, body:PackedByteArray) -> void:
 	if response_code == 200:
 		ext_ip = body.get_string_from_utf8().strip_edges()
+		print("[Server] External IP: %s (for display only, share this with other players)" % ext_ip)
 	else:
-		print("Failed to get external IP, response code: ", response_code)
-
-func punch_hole(remote_ip:String, remote_port:int):
-	# Bind to your local port
-	if udp.is_bound():
-		return
-	
-	var err = udp.bind(port)
-	if err != OK:
-		print("Failed to bind port: ", err)
-		return
-	
-	# Set destination (other player's IP and port)
-	udp.set_dest_address(remote_ip, remote_port)
-	
-	# Send multiple packets to punch the hole (UDP can drop packets)
-	for i in range(10):
-		udp.put_packet("PUNCH".to_utf8_buffer())
-		await get_tree().create_timer(0.1).timeout
-	
-	print("Hole punched on port ", port)
+		ext_ip = "Unable to fetch"
+		print("[Server] Failed to get external IP, response code: %d" % response_code)
 
 func _process(_delta):
 	peer.poll()
@@ -101,9 +93,7 @@ func create_lobby(user):
 
 func join_lobby(user):
 	lobby.add_player(user.id, user.name)
-	if user.ip:
-		punch_hole(user.ip, port)
-	
+
 	for p in lobby.Players:
 		send_connection_packet(user.id, p, null)
 		send_connection_packet(p, user.id, null)
@@ -111,8 +101,7 @@ func join_lobby(user):
 		var lobby_info = {
 			"message" : Message.JOIN_LOBBY,
 			"players" : lobby.Players,
-			"lobby_id" : user.lobby_id,
-			"ip" : Server.ext_ip
+			"lobby_id" : user.lobby_id
 		}
 		send_to_player(p, lobby_info)
 	
@@ -127,8 +116,7 @@ func send_connection_packet(sender_id:int, receiver_id:int, new_lobby:Lobby):
 	if new_lobby:
 		data["host"] = new_lobby.HostId
 		data["player"] = new_lobby.Players[sender_id]
-		data["ip"] = ext_ip
-	
+
 	send_to_player(receiver_id, data)
 
 func send_to_player(user_id:int, data):
@@ -147,3 +135,46 @@ func start_server():
 
 func _on_start_server_button_down():
 	start_server()
+
+# Auto-start C# Signaling Server
+func start_signaling_server() -> bool:
+	if signaling_server_running:
+		print("[SignalingServer] Already running")
+		return true
+
+	# Determine the path to the signaling server
+	# res:// points to scuffed_arena/, we need to go up one level to reach SignalingServer/
+	var project_root = ProjectSettings.globalize_path("res://")
+	var parent_dir = project_root.get_base_dir()  # /mnt/Extra/GODOT/Scuffed_Arena/scuffed_arena
+	var signaling_server_path = parent_dir.get_base_dir() + "/SignalingServer"  # /mnt/Extra/GODOT/Scuffed_Arena/SignalingServer
+
+	print("[SignalingServer] Starting from: " + signaling_server_path)
+
+	# Check if SignalingServer directory exists
+	if not DirAccess.dir_exists_absolute(signaling_server_path):
+		print("[SignalingServer] ERROR: SignalingServer directory not found at: " + signaling_server_path)
+		return false
+
+	# Start the signaling server process (dotnet run will build automatically if needed)
+	print("[SignalingServer] Launching server...")
+	var args = ["run", "--project", signaling_server_path, str(port)]
+	signaling_server_pid = OS.create_process("dotnet", args, false)
+
+	if signaling_server_pid > 0:
+		signaling_server_running = true
+		print("[SignalingServer] Started successfully (PID: " + str(signaling_server_pid) + ")")
+		print("[SignalingServer] Server running on port " + str(port))
+		print("[SignalingServer] Connect using: ws://localhost:" + str(port))
+		await get_tree().create_timer(2.0).timeout  # Give server time to build and start
+		return true
+	else:
+		print("[SignalingServer] ERROR: Failed to start process")
+		return false
+
+func stop_signaling_server():
+	if signaling_server_running and signaling_server_pid > 0:
+		print("[SignalingServer] Stopping server (PID: " + str(signaling_server_pid) + ")")
+		OS.kill(signaling_server_pid)
+		signaling_server_pid = -1
+		signaling_server_running = false
+		print("[SignalingServer] Stopped")
