@@ -25,6 +25,8 @@ var is_host: bool = false
 # UDP socket for hole punching
 var udp_socket: PacketPeerUDP = PacketPeerUDP.new()
 
+var is_websocket_connected = false
+
 func _ready() -> void:
 	multiplayer.connected_to_server.connect(RTCServerConnected)
 	multiplayer.peer_connected.connect(RTCPeerConnected)
@@ -44,6 +46,16 @@ func RTCPeerDisconnected(id):
 
 func _process(_delta):
 	peer.poll()
+	
+	# Check WebSocket connection status
+	var status = peer.get_connection_status()
+	if status == MultiplayerPeer.CONNECTION_CONNECTED and not is_websocket_connected:
+		is_websocket_connected = true
+		print("WebSocket connected to signaling server!")
+	elif status == MultiplayerPeer.CONNECTION_DISCONNECTED and is_websocket_connected:
+		is_websocket_connected = false
+		print("WebSocket disconnected from signaling server!")
+	
 	if peer.get_available_packet_count() > 0:
 		var packet = peer.get_packet()
 		if packet == null:
@@ -296,8 +308,11 @@ func ice_candidate_created(mid_name, index_name, sdp_name, id: int):
 	peer.put_packet(JSON.stringify(message).to_utf8_buffer())
 
 func connectToServer(ip, port):
-	peer.create_client("ws://" + ip + ":" + str(port))
-	print("Started Client")
+	var err = peer.create_client("ws://" + ip + ":" + str(port))
+	if err != OK:
+		print("Failed to create WebSocket client: ", err)
+		return
+	print("Connecting to signaling server at ws://" + ip + ":" + str(port))
 
 @rpc("any_peer", "call_local")
 func start_game():
@@ -315,7 +330,7 @@ func start_game():
 	get_tree().root.add_child(scene)
 
 func create_lobby() -> bool:
-	if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
+	if not is_websocket_connected:
 		print("Not connected to server yet! Please wait...")
 		return false
 	
@@ -334,7 +349,7 @@ func create_lobby() -> bool:
 	return true
 
 func join_lobby(lobbyId: String) -> bool:
-	if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
+	if not is_websocket_connected:
 		print("Not connected to server yet! Please wait...")
 		return false
 	

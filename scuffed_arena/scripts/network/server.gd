@@ -27,6 +27,7 @@ var game_port_range_start = 7000  # For actual game connections
 var peer = WebSocketMultiplayerPeer.new()
 var users = {}
 var lobbies = {}  # Multiple lobbies support
+var LOBBY_ID = ""
 var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMMNOPQRSTUVWXYZ1234567890"
 var ext_ip
 
