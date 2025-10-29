@@ -8,7 +8,10 @@ extends Control
 func _ready() -> void:
 	Server.player_joined.connect(_on_players_updated)
 	Server.player_left.connect(_on_players_updated)
-	IpAddress.text = IP.get_local_addresses()[1]
+	for ip in IP.get_local_addresses():
+		if ip.contains("."):
+			IpAddress.text = ip
+			break
 	ExtIpAddress.text = Server.ext_ip
 
 func _on_host_game_button_down() -> void:
@@ -28,8 +31,8 @@ func _on_start_game_button_down() -> void:
 
 func _on_players_updated():
 	$VBoxContainer2/PlayerCount.text = "Players Connected: " + str(Server.users.size()) + "/8"
-	if Server.lobby:
-		$VBoxContainer2/LobbyCount.text = "Players in Lobby: " + str(Server.lobby.Players.size()) + "/8"
+	if !Server.lobbies.is_empty():
+		$VBoxContainer2/LobbyCount.text = "Players in Lobby: " + str(Server.lobbies[0].Players.size()) + "/8"
 
 func _on_ip_address_text_changed(new_text: String) -> void:
 	HostGame.disabled = new_text.is_empty()
