@@ -1,7 +1,8 @@
-[gd_scene load_steps=36 format=3 uid="uid://d225n5jsld3ee"]
+[gd_scene load_steps=37 format=3 uid="uid://d225n5jsld3ee"]
 
-[ext_resource type="Script" uid="uid://crdvxqiodives" path="res://scripts/skelly.gd" id="1_v6fml"]
+[ext_resource type="Script" uid="uid://vtuupe16u0os" path="res://scripts/skelly.gd" id="1_v6fml"]
 [ext_resource type="Texture2D" uid="uid://dxh7qahqmw73q" path="res://assets/skele_walk.png" id="2_kne1u"]
+[ext_resource type="AudioStream" uid="uid://c6rh3t2g8a6rh" path="res://assets/walking sound.mp3" id="3_qhqgy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e80uo"]
 size = Vector2(106, 160)
@@ -274,3 +275,8 @@ texture = SubResource("GradientTexture2D_d6rpx")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_v6fml")
+
+[node name="AudioStreamPlayer_Walking" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_qhqgy")
+volume_db = 15.0
+bus = &"SFX"

@@ -11,6 +11,7 @@ extends player_class
 
 @onready var main = get_tree().get_root().get_node("Main")
 @onready var attack = load("res://scenes/gem.tscn")
+@onready var WalkingAudio = $AudioStreamPlayer_Walking
 
 @export var shoot_cooldown : float = 0.5  # Time before gem respawns
 
@@ -125,8 +126,11 @@ func _process(_delta):
 		if dir:
 			direction = dir
 			velocity = direction * speed
+			if !WalkingAudio.playing:
+				WalkingAudio.play()
 		else:
 			velocity = Vector2.ZERO
+			WalkingAudio.stop()
 
 		if velocity.length() > 0:
 			velocity = velocity.normalized() * speed

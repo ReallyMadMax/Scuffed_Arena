@@ -11,5 +11,5 @@ script = ExtResource("1_sugp2")
 
 [node name="AudioStreamPlayer-BGM" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_sugp2")
-volume_db = -17.651
+volume_db = -30.0
 bus = &"Music"
