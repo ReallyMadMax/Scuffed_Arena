@@ -33,7 +33,7 @@ func _ready():
 	var http = HTTPRequest.new()
 	add_child(http)
 	http.request_completed.connect(_on_http_request_completed)
-	http.request("https://api.ipify.org")
+	http.request("https://ipv4.icanhazip.com")
 
 func _on_http_request_completed(_result:int, response_code:int, _headers:PackedStringArray, body:PackedByteArray) -> void:
 	if response_code == 200:
