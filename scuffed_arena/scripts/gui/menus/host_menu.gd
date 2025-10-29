@@ -32,7 +32,7 @@ func _on_start_game_button_down() -> void:
 func _on_players_updated():
 	$VBoxContainer2/PlayerCount.text = "Players Connected: " + str(Server.users.size()) + "/8"
 	if !Server.lobbies.is_empty():
-		$VBoxContainer2/LobbyCount.text = "Players in Lobby: " + str(Server.lobbies.size()) + "/8"
+		$VBoxContainer2/LobbyCount.text = "Players in Lobby: " + str(Server.lobbies[0].Players.size()) + "/8"
 
 func _on_ip_address_text_changed(new_text: String) -> void:
 	HostGame.disabled = new_text.is_empty()
