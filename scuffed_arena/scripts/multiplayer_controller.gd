@@ -15,7 +15,11 @@ extends Control
 
 var peer
 var use_hole_punching = false
-var hole_punch_wrapper : UDPHolePunchWrapper
+var rendezvous_host: RendezvousHost
+var rendezvous_client: RendezvousClient
+
+# Track connected peer IDs for multi-client support
+var peer_id_map: Dictionary = {}  # ENet ID -> Rendezvous ID
 
 func _ready():
 	multiplayer.peer_connected.connect(player_connected)
@@ -82,19 +86,19 @@ func _on_stun_button_pressed() -> void:
 	await get_tree().create_timer(3.0).timeout
 	
 	if StunRequest.public_ip and StunRequest.public_port:
-		status_label.text = "Your IP: %s:%d\nShare this with peer!" % [StunRequest.public_ip, StunRequest.public_port]
+		status_label.text = "Your IP: %s:%d\nShare this with peers!" % [StunRequest.public_ip, StunRequest.public_port]
 		
 		# Enable hole punch mode
-		host_button.text = "Host (Hole Punch)"
-		join_button.text = "Join (Hole Punch)"
+		host_button.text = "Host (Rendezvous)"
+		join_button.text = "Join (Rendezvous)"
 		
-		# Show peer IP/Port inputs
+		# Show peer IP/Port inputs only for joining
 		if peer_ip_input:
-			peer_ip_input.visible = true
-			peer_ip_input.placeholder_text = "Peer's Public IP"
+			peer_ip_input.visible = false  # Host doesn't need to enter anything
+			peer_ip_input.placeholder_text = "Host's Public IP"
 		if peer_port_input:
-			peer_port_input.visible = true
-			peer_port_input.placeholder_text = "Peer's Public Port"
+			peer_port_input.visible = false
+			peer_port_input.placeholder_text = "Host's Public Port"
 	else:
 		status_label.text = "STUN request failed!"
 		use_hole_punching = false
@@ -103,7 +107,7 @@ func _on_stun_button_pressed() -> void:
 
 func _on_host_button_down() -> void:
 	if use_hole_punching:
-		_host_with_hole_punch()
+		_host_with_rendezvous()
 	else:
 		_host_local()
 
@@ -122,33 +126,27 @@ func _host_local():
 	status_label.text = "Hosting on port " + str(port)
 	send_player_info(line_edit.text, multiplayer.get_unique_id())
 
-func _host_with_hole_punch():
-	var peer_ip = peer_ip_input.text if peer_ip_input else ""
-	var peer_port_str = peer_port_input.text if peer_port_input else ""
+func _host_with_rendezvous():
+	status_label.text = "Starting rendezvous host..."
 	
-	if peer_ip.is_empty() or peer_port_str.is_empty():
-		status_label.text = "Please enter peer's IP and port!"
-		return
+	# Create rendezvous host
+	rendezvous_host = RendezvousHost.new()
+	add_child(rendezvous_host)
 	
-	var peer_port_val = peer_port_str.to_int()
+	# Connect signals
+	rendezvous_host.peer_discovered.connect(_on_peer_discovered)
+	rendezvous_host.peer_ready.connect(_on_peer_ready)
 	
-	status_label.text = "Establishing hole punch as host..."
-	
-	# First establish UDP hole punch
-	hole_punch_wrapper = UDPHolePunchWrapper.new()
-	add_child(hole_punch_wrapper)
-	
-	var success = await hole_punch_wrapper.connect_to_peer(StunRequest.udp, peer_ip, peer_port_val)
+	# Start listening for peers
+	var success = rendezvous_host.start_listening(StunRequest.udp)
 	
 	if !success:
-		status_label.text = "Hole punch failed!"
+		status_label.text = "Failed to start host!"
 		return
 	
-	# Now create ENet server on the same port
-	await get_tree().create_timer(0.5).timeout  # Small delay
-	
+	# Create ENet server
 	peer = ENetMultiplayerPeer.new()
-	var error = peer.create_server(StunRequest.local_port, 2)
+	var error = peer.create_server(StunRequest.local_port, 8)
 	if error != OK:
 		print("Cannot create ENet server: " + str(error))
 		status_label.text = "Cannot create server: " + str(error)
@@ -157,14 +155,24 @@ func _host_with_hole_punch():
 	peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
 	multiplayer.set_multiplayer_peer(peer)
 	
-	status_label.text = "Hole punch successful! Hosting..."
+	status_label.text = "Hosting (Rendezvous)!\nWaiting for peers..."
 	send_player_info(line_edit.text, multiplayer.get_unique_id())
+	
+	print("Rendezvous host started. Share your IP: %s:%d" % [StunRequest.public_ip, StunRequest.public_port])
+
+func _on_peer_discovered(peer_id: int, peer_ip: String, peer_port: int):
+	print("Peer discovered: ID=%d IP=%s:%d" % [peer_id, peer_ip, peer_port])
+	status_label.text = "Peer discovered! ID: %d\nWaiting for connection..." % peer_id
+
+func _on_peer_ready(peer_id: int):
+	print("Peer %d is ready and connected!" % peer_id)
+	status_label.text = "Peer %d connected!\nTotal peers: %d" % [peer_id, rendezvous_host.get_peer_count()]
 
 # === Modified Join Function ===
 
 func _on_join_button_down() -> void:
 	if use_hole_punching:
-		_join_with_hole_punch()
+		_join_with_rendezvous()
 	else:
 		_join_local()
 
@@ -176,33 +184,57 @@ func _join_local():
 	multiplayer.set_multiplayer_peer(peer)
 	status_label.text = "Connecting to " + Address + ":" + str(port)
 
-func _join_with_hole_punch():
-	var peer_ip = peer_ip_input.text if peer_ip_input else ""
-	var peer_port_str = peer_port_input.text if peer_port_input else ""
+func _join_with_rendezvous():
+	# Show inputs for host IP/port
+	if peer_ip_input:
+		peer_ip_input.visible = true
+	if peer_port_input:
+		peer_port_input.visible = true
 	
-	if peer_ip.is_empty() or peer_port_str.is_empty():
-		status_label.text = "Please enter peer's IP and port!"
+	var host_ip = peer_ip_input.text if peer_ip_input else ""
+	var host_port_str = peer_port_input.text if peer_port_input else ""
+	
+	if host_ip.is_empty() or host_port_str.is_empty():
+		status_label.text = "Please enter host's IP and port!"
 		return
 	
-	var peer_port_val = peer_port_str.to_int()
+	var host_port_val = host_port_str.to_int()
 	
-	status_label.text = "Establishing hole punch as client..."
+	status_label.text = "Discovering host..."
 	
-	# First establish UDP hole punch
-	hole_punch_wrapper = UDPHolePunchWrapper.new()
-	add_child(hole_punch_wrapper)
+	# Create rendezvous client
+	rendezvous_client = RendezvousClient.new()
+	add_child(rendezvous_client)
 	
-	var success = await hole_punch_wrapper.connect_to_peer(StunRequest.udp, peer_ip, peer_port_val)
+	# Connect signals
+	rendezvous_client.id_assigned.connect(_on_id_assigned)
+	rendezvous_client.connection_ready.connect(_on_client_ready)
+	rendezvous_client.connection_failed.connect(_on_client_failed)
+	
+	# Discover host
+	var success = await rendezvous_client.discover_host(StunRequest.udp, host_ip, host_port_val)
 	
 	if !success:
-		status_label.text = "Hole punch failed!"
+		status_label.text = "Failed to connect to host!"
 		return
+
+func _on_id_assigned(peer_id: int):
+	print("Assigned ID by host: %d" % peer_id)
+	status_label.text = "Assigned ID: %d\nEstablishing connection..." % peer_id
+
+func _on_client_ready():
+	print("Connection ready! Creating ENet client...")
+	status_label.text = "Punching complete! Connecting via ENet..."
 	
-	# Now create ENet client to connect through the punched hole
-	await get_tree().create_timer(0.5).timeout  # Small delay
+	var host_ip = peer_ip_input.text
+	var host_port_val = peer_port_input.text.to_int()
 	
+	# Small delay before ENet
+	await get_tree().create_timer(0.5).timeout
+	
+	# Now create ENet client
 	peer = ENetMultiplayerPeer.new()
-	var error = peer.create_client(peer_ip, peer_port_val, 0, 0, 0, StunRequest.local_port)
+	var error = peer.create_client(host_ip, host_port_val, 0, 0, 0, StunRequest.local_port)
 	if error != OK:
 		print("Cannot create ENet client: " + str(error))
 		status_label.text = "Cannot create client: " + str(error)
@@ -211,7 +243,10 @@ func _join_with_hole_punch():
 	peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
 	multiplayer.set_multiplayer_peer(peer)
 	
-	status_label.text = "Hole punch successful! Connecting..."
+	status_label.text = "Connected to host!"
+
+func _on_client_failed():
+	status_label.text = "Failed to connect!"
 
 func _on_start_game_button_down() -> void:
 	start_game.rpc()
