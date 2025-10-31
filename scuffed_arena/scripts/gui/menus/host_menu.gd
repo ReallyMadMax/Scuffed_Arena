@@ -16,24 +16,7 @@ func _on_host_game_button_down() -> void:
 
 func host_game(ip:String) -> void:
 	# Auto-start C# signaling server
-	print("[HostMenu] Starting signaling server...")
-	var server_started = await Server.start_signaling_server()
-
-	if not server_started:
-		print("[HostMenu] ERROR: Failed to start signaling server!")
-		print("[HostMenu] Make sure .NET SDK is installed and SignalingServer project exists")
-		return
-
-	# Use localhost if not specified otherwise
-	if ip.is_empty() or ip == "127.0.0.1" or ip.begins_with("192.168"):
-		ip = "ws://localhost"
-		print("[HostMenu] Using local signaling server: " + ip)
-
-	# Start the legacy GDScript server (for backwards compatibility)
-	Server.start_server()
-
-	# Connect to signaling server
-	Client.connectToServer(ip, 6000)
+	Client.connectToServer()
 	while(!Client.create_lobby()):
 		await get_tree().create_timer(1.0).timeout
 	StartGame.disabled = false

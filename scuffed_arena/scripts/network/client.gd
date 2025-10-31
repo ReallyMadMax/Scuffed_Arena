@@ -13,10 +13,17 @@ enum Message {
 	CHECK_IN
 }
 
-var peer:WebSocketMultiplayerPeer = WebSocketMultiplayerPeer.new()
+# Use WebSocketPeer for signaling (not WebSocketMultiplayerPeer)
+var peer:WebSocketPeer = WebSocketPeer.new()
 var client_id:int = 0
 var rtc_peer:WebRTCMultiplayerPeer = WebRTCMultiplayerPeer.new()
 var lobby_id = ""
+
+# RENDER CONFIGURATION
+# Replace this with your Render app URL after deployment
+const RENDER_URL = "wss://scuffedarena-server.onrender.com"
+# Set to true to use Render, false to use local server
+const USE_RENDER = true
 
 func _ready() -> void:
 	multiplayer.connected_to_server.connect(RTCServerConnected)
@@ -37,37 +44,57 @@ func RTCPeerDisconnected(id):
 
 func _process(_delta):
 	peer.poll()
-	if peer.get_available_packet_count() > 0:
-		var packet = peer.get_packet()
-		if packet == null:
-			return
-		
-		var dataString = packet.get_string_from_utf8()
-		var data = JSON.parse_string(dataString)
-		print(data)
-		if data.message == Message.ID:
-			client_id = data.id
-			print("client id: " + str(client_id))
-			connected(client_id)
-		if data.message == Message.USER_CONNECTED:
-			createPeer(data.sender_id)
-		
-		if data.message == Message.JOIN_LOBBY:
-			GameManager.Players = data.players
-			lobby_id = data.lobby_id
-		
-		if data.message == Message.CANDIDATE:
-			if rtc_peer.has_peer(data.org_peer):
-				print("Got candidate " + str(data.org_peer) + "my id is " + str(client_id))
-				rtc_peer.get_peer(data.org_peer).connection.add_ice_candidate(data.mid, data.index, data.sdp)
-		if data.message == Message.OFFER:
-			if rtc_peer.has_peer(data.org_peer):
-				print("Got Offer " + str(data.org_peer) + "my id is " + str(client_id))
-				rtc_peer.get_peer(data.org_peer).connection.set_remote_description("offer", data.data)
-		if data.message == Message.ANSWER:
-			if rtc_peer.has_peer(data.org_peer):
-				print("Got Answer " + str(data.org_peer) + "my id is " + str(client_id))
-				rtc_peer.get_peer(data.org_peer).connection.set_remote_description("answer", data.data)
+	
+	var state = peer.get_ready_state()
+	if state == WebSocketPeer.STATE_OPEN:
+		while peer.get_available_packet_count() > 0:
+			var packet = peer.get_packet()
+			if packet.size() == 0:
+				continue
+			
+			var dataString = packet.get_string_from_utf8()
+			var data = JSON.parse_string(dataString)
+			
+			if data == null:
+				print("[Client] Failed to parse JSON: " + dataString)
+				continue
+			
+			print("[Client] Received: ", data)
+			
+			if data.message == Message.ID:
+				client_id = data.id
+				print("[Client] Assigned client ID: " + str(client_id))
+				connected(client_id)
+			
+			if data.message == Message.USER_CONNECTED:
+				createPeer(data.sender_id)
+			
+			if data.message == Message.JOIN_LOBBY:
+				GameManager.Players = data.players
+				lobby_id = data.lobby_id
+				print("[Client] Joined lobby with " + str(data.players.size()) + " players")
+			
+			if data.message == Message.CANDIDATE:
+				if rtc_peer.has_peer(data.org_peer):
+					print("Got candidate " + str(data.org_peer) + " my id is " + str(client_id))
+					rtc_peer.get_peer(data.org_peer).connection.add_ice_candidate(data.mid, data.index, data.sdp)
+			
+			if data.message == Message.OFFER:
+				if rtc_peer.has_peer(data.org_peer):
+					print("Got Offer " + str(data.org_peer) + " my id is " + str(client_id))
+					rtc_peer.get_peer(data.org_peer).connection.set_remote_description("offer", data.data)
+			
+			if data.message == Message.ANSWER:
+				if rtc_peer.has_peer(data.org_peer):
+					print("Got Answer " + str(data.org_peer) + " my id is " + str(client_id))
+					rtc_peer.get_peer(data.org_peer).connection.set_remote_description("answer", data.data)
+	
+	elif state == WebSocketPeer.STATE_CLOSING:
+		pass
+	elif state == WebSocketPeer.STATE_CLOSED:
+		var code = peer.get_close_code()
+		var reason = peer.get_close_reason()
+		print("[Client] WebSocket closed with code: %d, reason: %s" % [code, reason])
 
 func connected(id:int):
 	rtc_peer.create_mesh(id)
@@ -168,7 +195,7 @@ func send_offer(id:int, data):
 		"lobby" : lobby_id
 	}
 	
-	peer.put_packet(JSON.stringify(message).to_utf8_buffer())
+	send_to_server(message)
 
 func send_answer(id:int, data):
 	var message = {
@@ -179,7 +206,7 @@ func send_answer(id:int, data):
 		"lobby" : lobby_id
 	}
 	
-	peer.put_packet(JSON.stringify(message).to_utf8_buffer())
+	send_to_server(message)
 
 func ice_candidate_created(mid_name, index_name, sdp_name, id:int):
 	print("[WebRTC] ICE candidate created for peer %d (mid: %s)" % [id, mid_name])
@@ -194,19 +221,39 @@ func ice_candidate_created(mid_name, index_name, sdp_name, id:int):
 		"lobby" : lobby_id
 	}
 
-	peer.put_packet(JSON.stringify(message).to_utf8_buffer())
+	send_to_server(message)
 
-func connectToServer(ip, port):
-	# Support both full URLs (ws://... or wss://...) and IP:Port
-	var url = ""
-	if ip.begins_with("ws://") or ip.begins_with("wss://"):
-		url = ip  # Full URL provided (e.g., from ngrok)
+func send_to_server(data: Dictionary):
+	if peer.get_ready_state() == WebSocketPeer.STATE_OPEN:
+		var json_string = JSON.stringify(data)
+		peer.send_text(json_string)
 	else:
-		url = "ws://" + ip + ":" + str(port)  # Traditional IP:Port
+		print("[Client] Cannot send - WebSocket not connected")
 
-	print("[Client] Connecting to signaling server: " + url)
-	peer.create_client(url)
-	print("started Client")
+func connectToServer(ip = "", port = 0):
+	var url = ""
+	
+	if USE_RENDER:
+		# Connect to Render signaling server
+		url = RENDER_URL
+		print("[Client] Connecting to Render signaling server: " + url)
+	else:
+		# Use provided IP/port or fall back to local
+		if ip.begins_with("ws://") or ip.begins_with("wss://"):
+			url = ip  # Full URL provided (e.g., from ngrok)
+		else:
+			if ip == "":
+				ip = "localhost"
+			if port == 0:
+				port = 6000
+			url = "ws://" + ip + ":" + str(port)
+		print("[Client] Connecting to local/custom signaling server: " + url)
+
+	var err = peer.connect_to_url(url)
+	if err != OK:
+		print("[Client] Failed to connect: " + str(err))
+	else:
+		print("[Client] Connection initiated...")
 
 @rpc("any_peer", "call_local")
 func start_game():
@@ -224,12 +271,12 @@ func start_game():
 	get_tree().root.add_child(scene)
 
 func create_lobby() -> bool:
-	if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
-		print("Not connected to server yet! Please wait...")
+	if peer.get_ready_state() != WebSocketPeer.STATE_OPEN:
+		print("[Client] Not connected to signaling server yet!")
 		return false
 	
 	if client_id == 0:
-		print("Waiting for server to assign client ID...")
+		print("[Client] Waiting for server to assign client ID...")
 		return false
 	
 	var message = {
@@ -238,17 +285,17 @@ func create_lobby() -> bool:
 		"name" : "",
 		"lobby_id" : Server.LOBBY_ID
 	}
-	peer.put_packet(JSON.stringify(message).to_utf8_buffer())
-	print("Sent lobby join request")
+	send_to_server(message)
+	print("[Client] Sent lobby create request")
 	return true
 
 func join_lobby(_lobbyId:String) -> bool:
-	if peer.get_connection_status() != MultiplayerPeer.CONNECTION_CONNECTED:
-		print("Not connected to server yet! Please wait...")
+	if peer.get_ready_state() != WebSocketPeer.STATE_OPEN:
+		print("[Client] Not connected to signaling server yet!")
 		return false
 
 	if client_id == 0:
-		print("Waiting for server to assign client ID...")
+		print("[Client] Waiting for server to assign client ID...")
 		return false
 
 	var message = {
@@ -257,8 +304,8 @@ func join_lobby(_lobbyId:String) -> bool:
 		"name" : "",
 		"lobby_id" : Server.LOBBY_ID
 	}
-	peer.put_packet(JSON.stringify(message).to_utf8_buffer())
-	print("Sent lobby join request")
+	send_to_server(message)
+	print("[Client] Sent lobby join request")
 	return true
 
 # Helper functions for readable state names
