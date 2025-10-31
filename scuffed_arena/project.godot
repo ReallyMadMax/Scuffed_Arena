@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Scuffed_Arena"
 run/main_scene="uid://k0b7d88pg0p1"
-config/features=PackedStringArray("4.5", "C#", "Forward Plus")
+config/features=PackedStringArray("4.5", "Forward Plus")
 
 [autoload]
 
@@ -22,8 +22,8 @@ Server="*res://scripts/network/server.gd"
 
 [display]
 
-window/size/viewport_width=1920
-window/size/viewport_height=1080
+window/size/viewport_width=1700
+window/size/viewport_height=900
 window/stretch/scale=3.0
 
 [dotnet]

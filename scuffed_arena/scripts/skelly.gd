@@ -138,3 +138,7 @@ func _process(_delta):
 
 		move_and_slide()
 		update_animation_parameters()
+		
+func collect(item):
+	print("skelly collect")
+	inv.insert(item)
