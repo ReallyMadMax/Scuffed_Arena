@@ -14,3 +14,6 @@ func add_player(id:int, player_name:String):
 		"index" : Players.size(),
 	}
 	return Players[id]
+
+func remove_player(id:int):
+	Players.erase(id)

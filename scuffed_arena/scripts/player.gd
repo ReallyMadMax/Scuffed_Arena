@@ -6,18 +6,17 @@ func _init():
 
 func _ready():
 	animation_tree.active = true
-	print(4)
-	"""
+	
 	$MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
 	if str(name).to_int() != multiplayer.get_unique_id():
 		remove_child($Camera2D)
-	"""
+	
 	
 func _process(_delta):
-	"""
+	
 	if $MultiplayerSynchronizer.get_multiplayer_authority() != multiplayer.get_unique_id():
 		return
-	"""
+	
 	if not Engine.is_editor_hint():
 		var dir = Input.get_vector("move_left", "move_right", "move_up", "move_down").normalized();
 		if dir:
@@ -32,6 +31,10 @@ func _process(_delta):
 		move_and_slide()
 		update_animation_parameters()
 
+func player():
+	pass
+
 func collect(item):
-	print(1)
+	print("player collect")
 	inv.insert(item)
+	

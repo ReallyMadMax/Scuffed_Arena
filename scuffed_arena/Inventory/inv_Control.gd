@@ -10,9 +10,8 @@ func _ready():
 	update_slots()
 
 func update_slots():
-	print(0)
 	for i in range(min(inv.slots.size(), slots.size())):
-		print(2)
+		print("update ", i+1)
 		slots[i].update(inv.slots[i])
 
 func _process(_delta):

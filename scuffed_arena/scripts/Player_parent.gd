@@ -11,6 +11,8 @@ extends CharacterBody2D
 @export var dash_cd = 5
 
 @onready var animation_tree : AnimationTree = $AnimationTree
+# Load the Ability script as a resource so that it can be used in sub player characters
+@onready var Ability = preload("res://scripts/ability.gd")
 
 var direction : Vector2
 
@@ -34,3 +36,14 @@ func update_animation_parameters():
 	animation_tree["parameters/Idle/blend_position"] = direction
 	animation_tree["parameters/Move/blend_position"] = direction
 	animation_tree["parameters/Attack/blend_position"] = direction
+
+@rpc("any_peer", "call_local")
+func take_damage(amount: int):
+	health -= amount
+	print("Player took ", amount, " damage. Health: ", health)
+	if health <= 0:
+		die()
+
+func die():
+	print("Player died!")
+	# Add death logic here (respawn, game over, etc.)
