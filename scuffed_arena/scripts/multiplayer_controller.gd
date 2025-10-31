@@ -3,19 +3,19 @@ extends Control
 @export var Address = "127.0.0.1"
 @export var port = 6000
 
-# UI Elements (add these to your scene)
-@onready var line_edit = $LineEdit
-@onready var host_button = $HostButton
-@onready var join_button = $JoinButton
-@onready var start_game_button = $StartGameButton
-@onready var stun_button = $StunButton  # New button for STUN request
-@onready var peer_ip_input = $PeerIPInput  # Input for peer's public IP
-@onready var peer_port_input = $PeerPortInput  # Input for peer's public port
-@onready var status_label = $StatusLabel  # Shows connection status
+# UI Elements
+@onready var line_edit = $Username
+@onready var host_button = $Host
+@onready var join_button = $Join
+@onready var start_game_button = $StartGame
+@onready var stun_button = $StunButton
+@onready var peer_ip_input = $Address
+@onready var peer_port_input = $Port
+@onready var status_label = $StatusLabel
 
 var peer
-var use_hole_punching = false  # Toggle between local and hole punching
-var multiplayer_peer_custom : HolePunchedMultiplayerPeer
+var use_hole_punching = false
+var hole_punch_wrapper : UDPHolePunchWrapper
 
 func _ready():
 	multiplayer.peer_connected.connect(player_connected)
@@ -78,7 +78,7 @@ func _on_stun_button_pressed() -> void:
 	# Make STUN request
 	StunRequest.initiate_stun_request()
 	
-	# Wait for STUN to complete (you'll need to add a signal to StunRequest)
+	# Wait for STUN to complete
 	await get_tree().create_timer(3.0).timeout
 	
 	if StunRequest.public_ip and StunRequest.public_port:
@@ -134,18 +134,31 @@ func _host_with_hole_punch():
 	
 	status_label.text = "Establishing hole punch as host..."
 	
-	# Create custom multiplayer peer
-	multiplayer_peer_custom = HolePunchedMultiplayerPeer.new()
-	multiplayer_peer_custom.setup_connection(StunRequest.udp, peer_ip, peer_port_val, true)
+	# First establish UDP hole punch
+	hole_punch_wrapper = UDPHolePunchWrapper.new()
+	add_child(hole_punch_wrapper)
 	
-	var success = await multiplayer_peer_custom.start_handshake()
+	var success = await hole_punch_wrapper.connect_to_peer(StunRequest.udp, peer_ip, peer_port_val)
 	
-	if success:
-		multiplayer.set_multiplayer_peer(multiplayer_peer_custom)
-		status_label.text = "Hole punch successful! Hosting..."
-		send_player_info(line_edit.text, multiplayer.get_unique_id())
-	else:
+	if !success:
 		status_label.text = "Hole punch failed!"
+		return
+	
+	# Now create ENet server on the same port
+	await get_tree().create_timer(0.5).timeout  # Small delay
+	
+	peer = ENetMultiplayerPeer.new()
+	var error = peer.create_server(StunRequest.local_port, 2)
+	if error != OK:
+		print("Cannot create ENet server: " + str(error))
+		status_label.text = "Cannot create server: " + str(error)
+		return
+	
+	peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
+	multiplayer.set_multiplayer_peer(peer)
+	
+	status_label.text = "Hole punch successful! Hosting..."
+	send_player_info(line_edit.text, multiplayer.get_unique_id())
 
 # === Modified Join Function ===
 
@@ -175,17 +188,30 @@ func _join_with_hole_punch():
 	
 	status_label.text = "Establishing hole punch as client..."
 	
-	# Create custom multiplayer peer
-	multiplayer_peer_custom = HolePunchedMultiplayerPeer.new()
-	multiplayer_peer_custom.setup_connection(StunRequest.udp, peer_ip, peer_port_val, false)
+	# First establish UDP hole punch
+	hole_punch_wrapper = UDPHolePunchWrapper.new()
+	add_child(hole_punch_wrapper)
 	
-	var success = await multiplayer_peer_custom.start_handshake()
+	var success = await hole_punch_wrapper.connect_to_peer(StunRequest.udp, peer_ip, peer_port_val)
 	
-	if success:
-		multiplayer.set_multiplayer_peer(multiplayer_peer_custom)
-		status_label.text = "Hole punch successful! Connected as client..."
-	else:
+	if !success:
 		status_label.text = "Hole punch failed!"
+		return
+	
+	# Now create ENet client to connect through the punched hole
+	await get_tree().create_timer(0.5).timeout  # Small delay
+	
+	peer = ENetMultiplayerPeer.new()
+	var error = peer.create_client(peer_ip, peer_port_val, 0, 0, 0, StunRequest.local_port)
+	if error != OK:
+		print("Cannot create ENet client: " + str(error))
+		status_label.text = "Cannot create client: " + str(error)
+		return
+	
+	peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
+	multiplayer.set_multiplayer_peer(peer)
+	
+	status_label.text = "Hole punch successful! Connecting..."
 
 func _on_start_game_button_down() -> void:
 	start_game.rpc()
