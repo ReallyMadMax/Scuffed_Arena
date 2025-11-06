@@ -1,14 +1,14 @@
-[gd_scene load_steps=36 format=3 uid="uid://d225n5jsld3ee"]
+[gd_scene load_steps=36 format=3 uid="uid://cn7m85f2pn1o4"]
 
-[ext_resource type="Script" uid="uid://crdvxqiodives" path="res://scripts/skelly.gd" id="1_v6fml"]
+[ext_resource type="Script" uid="uid://c3mgpoivd8ecd" path="res://scripts/skelly.gd" id="1_v6fml"]
 [ext_resource type="Texture2D" uid="uid://dxh7qahqmw73q" path="res://assets/skele_walk.png" id="2_kne1u"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e80uo"]
 size = Vector2(106, 160)
 
 [sub_resource type="Animation" id="Animation_efxa6"]
-length = 0.66667503
-loop_mode = 2
+length = 0.58334166
+loop_mode = 1
 step = 0.083333336
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -17,10 +17,22 @@ tracks/0/path = NodePath("Sprite2D:frame_coords")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0.083333336, 0.16666667, 0.25, 0.33333334, 0.4166667, 0.5, 0.5833334),
+"times": PackedFloat32Array(0, 0.083333336, 0.16666666, 0.25, 0.33333334, 0.41666666, 0.50000006),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0), Vector2i(3, 0), Vector2i(4, 0), Vector2i(5, 0), Vector2i(6, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("gem_point:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-47, -50)]
 }
 
 [sub_resource type="Animation" id="Animation_5vw27"]
@@ -55,6 +67,18 @@ tracks/0/keys = {
 "update": 1,
 "values": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0), Vector2i(3, 0), Vector2i(4, 0), Vector2i(5, 0), Vector2i(6, 0), Vector2i(7, 0), Vector2i(8, 0), Vector2i(9, 0)]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("gem_point:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.083333336, 0.16666667, 0.25, 0.33333334, 0.41666666, 0.5, 0.5833333, 0.6666667, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-47, -50), Vector2(-47, -58), Vector2(-46, -66), Vector2(-46, -74), Vector2(-46, -82), Vector2(-45, -90), Vector2(-45, -83), Vector2(-46, -76), Vector2(-46, -68), Vector2(-46, -61)]
+}
 
 [sub_resource type="Animation" id="Animation_h2yge"]
 resource_name = "move_left"
@@ -72,6 +96,18 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0), Vector2i(3, 0), Vector2i(4, 0), Vector2i(5, 0), Vector2i(6, 0), Vector2i(7, 0), Vector2i(8, 0), Vector2i(9, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("gem_point:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.083333336, 0.16666667, 0.25, 0.33333334, 0.41666666, 0.5, 0.5833333, 0.6666667, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-47, -50), Vector2(-47, -58), Vector2(-46, -66), Vector2(-46, -74), Vector2(-46, -82), Vector2(-45, -90), Vector2(-45, -83), Vector2(-46, -76), Vector2(-46, -68), Vector2(-46, -61)]
 }
 
 [sub_resource type="Animation" id="Animation_1bvp3"]
@@ -91,6 +127,18 @@ tracks/0/keys = {
 "update": 1,
 "values": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0), Vector2i(3, 0), Vector2i(4, 0), Vector2i(5, 0), Vector2i(6, 0), Vector2i(7, 0), Vector2i(8, 0), Vector2i(9, 0)]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("gem_point:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.083333336, 0.16666667, 0.25, 0.33333334, 0.41666666, 0.5, 0.5833333, 0.6666667, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-47, -50), Vector2(-47, -58), Vector2(-46, -66), Vector2(-46, -74), Vector2(-46, -82), Vector2(-45, -90), Vector2(-45, -83), Vector2(-46, -76), Vector2(-46, -68), Vector2(-46, -61)]
+}
 
 [sub_resource type="Animation" id="Animation_7mycd"]
 resource_name = "move_up"
@@ -108,6 +156,18 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0), Vector2i(3, 0), Vector2i(4, 0), Vector2i(5, 0), Vector2i(6, 0), Vector2i(7, 0), Vector2i(8, 0), Vector2i(9, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("gem_point:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.083333336, 0.16666667, 0.25, 0.33333334, 0.41666666, 0.5, 0.5833333, 0.6666667, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-47, -50), Vector2(-47, -58), Vector2(-46, -66), Vector2(-46, -74), Vector2(-46, -82), Vector2(-45, -90), Vector2(-45, -83), Vector2(-46, -76), Vector2(-46, -68), Vector2(-46, -61)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_dg77c"]
@@ -238,6 +298,9 @@ properties/2/replication_mode = 1
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_v6fml")
 speed = 250
+
+[node name="gem_point" type="Node2D" parent="."]
+position = Vector2(-47, -50)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
