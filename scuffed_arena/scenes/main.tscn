@@ -1,20 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://dw1g4o7udjcs0"]
+[gd_scene load_steps=3 format=3 uid="uid://dw1g4o7udjcs0"]
 
 [ext_resource type="Script" uid="uid://cnp45t15lxk5c" path="res://scripts/main.gd" id="1_sugp2"]
 [ext_resource type="PackedScene" uid="uid://duihfy8h7tcnu" path="res://scenes/map.tscn" id="1_tbgi4"]
-[ext_resource type="PackedScene" uid="uid://dr2blaib6a3r2" path="res://Inventory/Items/Item1/sword_1.tscn" id="3_jyhfs"]
-[ext_resource type="PackedScene" uid="uid://c3jw60mm3voxq" path="res://Inventory/Items/Item 2/sword_2.tscn" id="4_tbgi4"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_sugp2")
 
 [node name="Map" parent="." instance=ExtResource("1_tbgi4")]
-
-[node name="Sword_1" parent="." instance=ExtResource("3_jyhfs")]
-position = Vector2(177, 257)
-
-[node name="Sword_2" parent="." instance=ExtResource("3_jyhfs")]
-position = Vector2(116, 164)
-
-[node name="sword_2" parent="." instance=ExtResource("4_tbgi4")]
-position = Vector2(240, 156)
+position = Vector2(36, 9)

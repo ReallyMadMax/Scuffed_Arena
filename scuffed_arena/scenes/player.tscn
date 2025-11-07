@@ -1,31 +1,9 @@
-[gd_scene load_steps=44 format=3 uid="uid://d225n5jsld3ee"]
+[gd_scene load_steps=38 format=3 uid="uid://cn7m85f2pn1o4"]
 
 [ext_resource type="Script" uid="uid://c3mgpoivd8ecd" path="res://scripts/skelly.gd" id="1_v6fml"]
+[ext_resource type="Resource" uid="uid://bn0yy8sjb35qn" path="res://Inventory/playerInv.tres" id="2_dqkch"]
 [ext_resource type="Texture2D" uid="uid://dxh7qahqmw73q" path="res://assets/skele_walk.png" id="2_kne1u"]
-[ext_resource type="Script" uid="uid://d3g2dpk3uyvqa" path="res://Inventory/inventory.gd" id="2_qlg0r"]
-[ext_resource type="PackedScene" uid="uid://bt13dxl5wqpiw" path="res://Inventory/inv_master.tscn" id="3_qhqgy"]
-[ext_resource type="Script" uid="uid://bnjr1yw2bui8o" path="res://Inventory/Inv_slot.gd" id="3_tuyoq"]
-
-[sub_resource type="Resource" id="Resource_ur7pv"]
-script = ExtResource("3_tuyoq")
-metadata/_custom_type_script = "uid://bnjr1yw2bui8o"
-
-[sub_resource type="Resource" id="Resource_qlg0r"]
-script = ExtResource("3_tuyoq")
-metadata/_custom_type_script = "uid://bnjr1yw2bui8o"
-
-[sub_resource type="Resource" id="Resource_tuyoq"]
-script = ExtResource("3_tuyoq")
-metadata/_custom_type_script = "uid://bnjr1yw2bui8o"
-
-[sub_resource type="Resource" id="Resource_fjrip"]
-script = ExtResource("3_tuyoq")
-metadata/_custom_type_script = "uid://bnjr1yw2bui8o"
-
-[sub_resource type="Resource" id="Resource_smehm"]
-script = ExtResource("2_qlg0r")
-slots = Array[ExtResource("3_tuyoq")]([SubResource("Resource_ur7pv"), SubResource("Resource_qlg0r"), SubResource("Resource_tuyoq"), SubResource("Resource_fjrip")])
-metadata/_custom_type_script = "uid://d3g2dpk3uyvqa"
+[ext_resource type="PackedScene" path="res://Inventory/inv_master.tscn" id="3_qhqgy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e80uo"]
 size = Vector2(58.5, 61)
@@ -261,7 +239,7 @@ properties/2/replication_mode = 1
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_v6fml")
-inv = SubResource("Resource_smehm")
+inv = ExtResource("2_dqkch")
 speed = 250
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

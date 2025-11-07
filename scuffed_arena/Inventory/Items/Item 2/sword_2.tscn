@@ -1,25 +1,26 @@
-[gd_scene load_steps=5 format=3 uid="uid://c3jw60mm3voxq"]
+[gd_scene load_steps=5 format=3 uid="uid://b1loyu86fvicx"]
 
-[ext_resource type="Script" uid="uid://dvcyuqujsquud" path="res://Inventory/Items/Item 2/sword_2.gd" id="1_dh1ur"]
+[ext_resource type="Script" uid="uid://3f4drbtrtk4i" path="res://Inventory/Items/Item 2/sword_2.gd" id="1_dh1ur"]
 [ext_resource type="Resource" uid="uid://r0xef3sviqtx" path="res://Inventory/Items/Item 2/sword_2.tres" id="2_ei8tc"]
-[ext_resource type="Texture2D" uid="uid://cfvk3eqemrlev" path="res://assets/Icons/Iicon_32_04.png" id="2_lukom"]
+[ext_resource type="Texture2D" uid="uid://cspk4vwa75jvd" path="res://assets/bow.png" id="3_lukom"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dh1ur"]
-size = Vector2(32.85714, 32.85714)
+size = Vector2(48.57144, 42.857155)
 
 [node name="sword_2" type="Node2D"]
 script = ExtResource("1_dh1ur")
 item = ExtResource("2_ei8tc")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_lukom")
+position = Vector2(4.7683716e-07, -1)
+scale = Vector2(0.6333333, 0.5483871)
+texture = ExtResource("3_lukom")
 
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(-5.9604645e-08, 5.9604645e-08)
-scale = Vector2(0.35, 0.35)
+position = Vector2(0.5000005, -0.4999999)
+scale = Vector2(0.3499999, 0.3499999)
 shape = SubResource("RectangleShape2D_dh1ur")
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
