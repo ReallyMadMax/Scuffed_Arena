@@ -11,5 +11,9 @@ func _on_area_2d_body_entered(body):
 		print("sword 2")
 		player_in_area = true
 		player = body
+		player.shoot_cooldown -= 0.09
+		if player.shoot_cooldown <= 0:
+			player.shoot_cooldown = 0.005
+		print(player.shoot_cooldown)
 		player.collect(item)
 		self.queue_free()

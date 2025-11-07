@@ -1,9 +1,9 @@
-[gd_scene load_steps=38 format=3 uid="uid://d225n5jsld3ee"]
+[gd_scene load_steps=38 format=3 uid="uid://cn7m85f2pn1o4"]
 
 [ext_resource type="Script" uid="uid://c3mgpoivd8ecd" path="res://scripts/skelly.gd" id="1_v6fml"]
 [ext_resource type="Resource" uid="uid://bn0yy8sjb35qn" path="res://Inventory/playerInv.tres" id="2_dqkch"]
 [ext_resource type="Texture2D" uid="uid://dxh7qahqmw73q" path="res://assets/skele_walk.png" id="2_kne1u"]
-[ext_resource type="PackedScene" uid="uid://bt13dxl5wqpiw" path="res://Inventory/inv_master.tscn" id="3_qhqgy"]
+[ext_resource type="PackedScene" path="res://Inventory/inv_master.tscn" id="3_qhqgy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e80uo"]
 size = Vector2(58.5, 61)
