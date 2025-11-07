@@ -58,6 +58,9 @@ layout_mode = 2
 [node name="LobbyErrorMsg" type="Label" parent="HBoxContainer/Control"]
 layout_mode = 2
 
+[node name="LobbyCount" type="Label" parent="HBoxContainer/Control"]
+layout_mode = 2
+
 [node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer"]
 layout_mode = 2
 
@@ -66,3 +69,4 @@ custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 
 [connection signal="pressed" from="HBoxContainer/Control/StartBox/JoinLobby" to="." method="_on_join_lobby_pressed"]
+[connection signal="text_changed" from="HBoxContainer/Control/StartBox/LobbyCode" to="." method="_on_lobby_code_text_changed"]

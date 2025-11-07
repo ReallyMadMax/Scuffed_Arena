@@ -4,6 +4,10 @@ extends Control
 @onready var HostGame = $VBoxContainer/HostGame
 @onready var LobbyID = $VBoxContainer/LobbyID
 
+func _ready():
+	Client.player_connected.connect(_on_player_joined)
+	Client.lobby_joined.connect(_on_lobby_created)
+
 func host_game() -> void:
 	# Auto-start C# signaling server
 	Client.connectToServer()
@@ -20,5 +24,8 @@ func _on_start_game_button_down() -> void:
 	Client.start_game.rpc()
 	queue_free()
 
-func _on_ip_address_text_changed(new_text: String) -> void:
-	HostGame.disabled = new_text.is_empty()
+func _on_lobby_created(id:String):
+	LobbyID.text = id
+
+func _on_player_joined(id:int):
+	$VBoxContainer2/PlayerCount.text = "Player count " + str(GameManager.Players.size()) + "/8"

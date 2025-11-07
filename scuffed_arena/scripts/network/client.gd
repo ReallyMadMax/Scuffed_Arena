@@ -1,5 +1,8 @@
 extends Node
 
+signal player_connected(id:int)
+signal lobby_joined(id:String)
+
 enum Message {
 	ID,
 	JOIN,
@@ -18,6 +21,8 @@ var peer:WebSocketPeer = WebSocketPeer.new()
 var client_id:int = 0
 var rtc_peer:WebRTCMultiplayerPeer = WebRTCMultiplayerPeer.new()
 var lobby_id = ""
+var _last_state = WebSocketPeer.STATE_CLOSED
+var _close_logged = false
 
 # RENDER CONFIGURATION
 # Replace this with your Render app URL after deployment
@@ -46,56 +51,73 @@ func _process(_delta):
 	peer.poll()
 	
 	var state = peer.get_ready_state()
-	if state == WebSocketPeer.STATE_OPEN:
-		while peer.get_available_packet_count() > 0:
-			var packet = peer.get_packet()
-			if packet.size() == 0:
-				continue
-			
-			var dataString = packet.get_string_from_utf8()
-			var data = JSON.parse_string(dataString)
-			
-			if data == null:
-				print("[Client] Failed to parse JSON: " + dataString)
-				continue
-			
-			print("[Client] Received: ", data)
-			
-			if data.message == Message.ID:
-				client_id = data.id
+	
+	# Detect state changes
+	if state != _last_state:
+		_last_state = state
+		_close_logged = false
+		
+		if state == WebSocketPeer.STATE_OPEN:
+			print("[Client] WebSocket connection established")
+	
+	if state == WebSocketPeer.STATE_CLOSING:
+		if !_close_logged:
+			print("[Client] WebSocket closing...")
+			_close_logged = true
+	elif state == WebSocketPeer.STATE_CLOSED:
+		if !_close_logged:
+			var code = peer.get_close_code()
+			var reason = peer.get_close_reason()
+			print("[Client] WebSocket closed with code: %d, reason: %s" % [code, reason])
+			_close_logged = true
+	elif state != WebSocketPeer.STATE_OPEN:
+		return
+
+	while peer.get_available_packet_count() > 0:
+		var packet = peer.get_packet()
+		if packet.size() == 0:
+			continue
+		
+		var dataString = packet.get_string_from_utf8()
+		var data = JSON.parse_string(dataString)
+		
+		if data == null:
+			print("[Client] Failed to parse JSON: " + dataString)
+			continue
+		
+		print("[Client] Received: ", data)
+		
+		match data.message as Message:
+			Message.ID:
+				client_id = int(data.id)
 				print("[Client] Assigned client ID: " + str(client_id))
 				connected(client_id)
 			
-			if data.message == Message.USER_CONNECTED:
+			Message.USER_CONNECTED:
 				createPeer(data.sender_id)
 			
-			if data.message == Message.JOIN_LOBBY:
+			Message.JOIN_LOBBY:
 				GameManager.Players = data.players
 				lobby_id = data.lobby_id
 				print("[Client] Joined lobby with " + str(data.players.size()) + " players")
+				player_connected.emit(client_id)
+				lobby_joined.emit(lobby_id)
 			
-			if data.message == Message.CANDIDATE:
+			Message.CANDIDATE:
 				if rtc_peer.has_peer(data.org_peer):
 					print("Got candidate " + str(data.org_peer) + " my id is " + str(client_id))
 					rtc_peer.get_peer(data.org_peer).connection.add_ice_candidate(data.mid, data.index, data.sdp)
 			
-			if data.message == Message.OFFER:
+			Message.OFFER:
 				if rtc_peer.has_peer(data.org_peer):
 					print("Got Offer " + str(data.org_peer) + " my id is " + str(client_id))
 					rtc_peer.get_peer(data.org_peer).connection.set_remote_description("offer", data.data)
 			
-			if data.message == Message.ANSWER:
+			Message.ANSWER:
 				if rtc_peer.has_peer(data.org_peer):
 					print("Got Answer " + str(data.org_peer) + " my id is " + str(client_id))
 					rtc_peer.get_peer(data.org_peer).connection.set_remote_description("answer", data.data)
-	
-	elif state == WebSocketPeer.STATE_CLOSING:
-		pass
-	elif state == WebSocketPeer.STATE_CLOSED:
-		var code = peer.get_close_code()
-		var reason = peer.get_close_reason()
-		print("[Client] WebSocket closed with code: %d, reason: %s" % [code, reason])
-		await get_tree().create_timer(1).timeout
+
 
 func connected(id:int):
 	rtc_peer.create_mesh(id)
@@ -232,6 +254,10 @@ func send_to_server(data: Dictionary):
 		print("[Client] Cannot send - WebSocket not connected")
 
 func connectToServer(ip = "", port = 0):
+	# Reset state tracking
+	_last_state = peer.get_ready_state()
+	_close_logged = false
+	
 	var url = ""
 	
 	if USE_RENDER:
@@ -256,6 +282,11 @@ func connectToServer(ip = "", port = 0):
 	else:
 		print("[Client] Connection initiated...")
 
+func disconnect_from_server():
+	if peer.get_ready_state() == WebSocketPeer.STATE_OPEN or peer.get_ready_state() == WebSocketPeer.STATE_CONNECTING:
+		peer.close()
+		print("[Client] Disconnecting from server...")
+
 @rpc("any_peer", "call_local")
 func start_game():
 	print("Loading main scene...")
@@ -274,7 +305,7 @@ func start_game():
 func generate_lobby_id(length:int) -> String:
 	var id = ""
 	for i in range(length):
-		id += str(i)
+		id += str(randi_range(0, 9))
 	return id
 
 func create_lobby() -> bool:
@@ -286,14 +317,15 @@ func create_lobby() -> bool:
 		print("[Client] Waiting for server to assign client ID...")
 		return false
 	
+	var new_lobby_id = generate_lobby_id(6)
 	var message = {
 		"id" : client_id,
 		"message" : Message.CREATE_LOBBY,
 		"name" : "gay monkey",
-		"lobby_id" : generate_lobby_id(6)
+		"lobby_id" : new_lobby_id
 	}
 	send_to_server(message)
-	print("[Client] Sent lobby create request")
+	print("[Client] Sent lobby create request " + new_lobby_id)
 	return true
 
 func join_lobby(new_lobby_id:String) -> bool:
