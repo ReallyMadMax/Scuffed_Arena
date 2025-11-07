@@ -9,7 +9,7 @@ func _ready() -> void:
 
 func start_client(id:String) -> void:
 	if not id:
-		id = Server.LOBBY_ID
+		id = "012345"
 	
 	while(!Client.join_lobby(id)):
 		await get_tree().create_timer(1.0).timeout
