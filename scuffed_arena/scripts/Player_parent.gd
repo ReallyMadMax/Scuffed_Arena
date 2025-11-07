@@ -6,6 +6,7 @@ signal player_died(player_id: int)
 
 @export var speed = 300
 @export var max_health = 1000
+@export var current_health = max_health
 @export var basic_attack_cd = 1
 @export var heavy_attack_cd = 5
 @export var block_cd = 10
@@ -16,7 +17,6 @@ signal player_died(player_id: int)
 @onready var Ability = preload("res://scripts/ability.gd")
 
 var direction : Vector2
-var current_health : int
 var is_dead : bool = false
 var death_count : int = 0  # Track number of deaths
 var healthbar_bg : ColorRect  # Background bar
