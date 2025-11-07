@@ -36,29 +36,17 @@ grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-
-[node name="HostGame" type="Button" parent="VBoxContainer/HBoxContainer"]
+[node name="HostGame" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Host Game"
-
-[node name="IpAddress" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-placeholder_text = "Local IP Address"
-
-[node name="ExtIpAddress" type="LineEdit" parent="VBoxContainer"]
-layout_mode = 2
-placeholder_text = "External IP Address"
-editable = false
-deselect_on_focus_loss_enabled = false
-select_all_on_focus = true
 
 [node name="StartGame" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 disabled = true
 text = "Start Game"
+
+[node name="LobbyID" type="Label" parent="VBoxContainer"]
+layout_mode = 2
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -82,7 +70,5 @@ layout_mode = 2
 text = "Players in Lobby: 0/8"
 horizontal_alignment = 2
 
-[connection signal="button_down" from="VBoxContainer/HBoxContainer/HostGame" to="." method="_on_host_game_button_down"]
-[connection signal="text_changed" from="VBoxContainer/HBoxContainer/IpAddress" to="." method="_on_ip_address_text_changed"]
-[connection signal="text_submitted" from="VBoxContainer/HBoxContainer/IpAddress" to="." method="host_game"]
+[connection signal="button_down" from="VBoxContainer/HostGame" to="." method="_on_host_game_button_down"]
 [connection signal="button_down" from="VBoxContainer/StartGame" to="." method="_on_start_game_button_down"]

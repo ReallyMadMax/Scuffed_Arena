@@ -95,6 +95,7 @@ func _process(_delta):
 		var code = peer.get_close_code()
 		var reason = peer.get_close_reason()
 		print("[Client] WebSocket closed with code: %d, reason: %s" % [code, reason])
+		await get_tree().create_timer(1).timeout
 
 func connected(id:int):
 	rtc_peer.create_mesh(id)
@@ -270,6 +271,12 @@ func start_game():
 	print("Adding main scene to tree...")
 	get_tree().root.add_child(scene)
 
+func generate_lobby_id(length:int) -> String:
+	var id = ""
+	for i in range(length):
+		id += str(i)
+	return id
+
 func create_lobby() -> bool:
 	if peer.get_ready_state() != WebSocketPeer.STATE_OPEN:
 		print("[Client] Not connected to signaling server yet!")
@@ -282,14 +289,14 @@ func create_lobby() -> bool:
 	var message = {
 		"id" : client_id,
 		"message" : Message.CREATE_LOBBY,
-		"name" : "",
-		"lobby_id" : Server.LOBBY_ID
+		"name" : "gay monkey",
+		"lobby_id" : generate_lobby_id(6)
 	}
 	send_to_server(message)
 	print("[Client] Sent lobby create request")
 	return true
 
-func join_lobby(_lobbyId:String) -> bool:
+func join_lobby(new_lobby_id:String) -> bool:
 	if peer.get_ready_state() != WebSocketPeer.STATE_OPEN:
 		print("[Client] Not connected to signaling server yet!")
 		return false
@@ -302,7 +309,7 @@ func join_lobby(_lobbyId:String) -> bool:
 		"id" : client_id,
 		"message" : Message.JOIN_LOBBY,
 		"name" : "",
-		"lobby_id" : Server.LOBBY_ID
+		"lobby_id" : new_lobby_id
 	}
 	send_to_server(message)
 	print("[Client] Sent lobby join request")
