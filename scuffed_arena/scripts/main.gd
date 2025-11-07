@@ -1,6 +1,10 @@
 extends Node
 
 @export var PlayerScene : PackedScene
+
+@onready var musicAudioStreamBG = $"AudioStreamPlayer-BGM"
+var backgroundMusicOn = true
+
 @export var respawn_time : float = 3.0  # Time in seconds before respawn
 @export var spawn_radius : float = 400.0  # Random spawn radius around spawn point
 
@@ -35,6 +39,16 @@ func _ready():
 			print("Player spawned at: ", spawn.global_position)
 		else:
 			print("WARNING: No PlayerSpawnPoint found!")
+
+func _process(delta):
+	update_music_stats()
+
+func update_music_stats():
+	if backgroundMusicOn:
+		if !musicAudioStreamBG.playing:
+			musicAudioStreamBG.play()
+	else: 
+		musicAudioStreamBG.stop()
 
 func _on_player_died(player_id: int):
 	print("Main scene received death signal for player ", player_id)
