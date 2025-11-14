@@ -1,5 +1,5 @@
 #@tool
-extends player_class
+extends Player
 
 # who is skelly???
 

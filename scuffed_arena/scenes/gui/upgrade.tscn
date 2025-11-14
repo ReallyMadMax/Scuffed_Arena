@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://cnmx76xy5nhvb"]
+[gd_scene load_steps=0 format=3 uid="uid://cnmx76xy5nhvb"]
 
 [node name="Upgrade" type="PanelContainer"]
 custom_minimum_size = Vector2(350, 0)

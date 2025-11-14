@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dedk5ppwv14pq"]
 
-[ext_resource type="PackedScene" uid="uid://cnmx76xy5nhvb" path="res://scenes/upgrade.tscn" id="1_72j7o"]
+[ext_resource type="PackedScene" uid="uid://cnmx76xy5nhvb" path="res://scenes/gui/upgrade.tscn" id="1_72j7o"]
 
 [node name="UpgradeMenu" type="MarginContainer"]
 anchors_preset = 15

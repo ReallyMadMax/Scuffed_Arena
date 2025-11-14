@@ -1,29 +1,48 @@
-#@tool
-extends player_class
+@abstract
+class_name Player
+extends CharacterBody2D
 
-func _init():
-	speed = 350
+@export var speed = 300
+@export var health = 1000
+@export var basic_attack_cd = 1
+@export var heavy_attack_cd = 5
+@export var block_cd = 10
+@export var dash_cd = 5
 
-func _ready():
-	animation_tree.active = true
-	$MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
-	if str(name).to_int() != multiplayer.get_unique_id():
-		remove_child($Camera2D)
+@onready var animation_tree : AnimationTree = $AnimationTree
+# Load the Ability script as a resource so that it can be used in sub player characters
+@onready var Ability = preload("res://scripts/ability.gd")
 
-func _process(_delta):
-	if $MultiplayerSynchronizer.get_multiplayer_authority() != multiplayer.get_unique_id():
-		return
+var direction : Vector2
 
-	if not Engine.is_editor_hint():
-		var dir = Input.get_vector("move_left", "move_right", "move_up", "move_down").normalized();
-		if dir:
-			direction = dir
-			velocity = direction * speed
-		else:
-			velocity = Vector2.ZERO
+@abstract
+# initialize basic vars here
+func _init() 
 
-		if velocity.length() > 0:
-			velocity = velocity.normalized() * speed
+func update_animation_parameters():
+	if (velocity == Vector2.ZERO):
+		animation_tree["parameters/conditions/is_idle"] = true
+		animation_tree["parameters/conditions/is_moving"] = false
+	else:
+		animation_tree["parameters/conditions/is_idle"] = false
+		animation_tree["parameters/conditions/is_moving"] = true
+	
+	if Input.is_action_just_pressed("attack"):
+		animation_tree["parameters/conditions/attack"] = true
+	else:
+		animation_tree["parameters/conditions/attack"] = false
+	
+	animation_tree["parameters/Idle/blend_position"] = direction
+	animation_tree["parameters/Move/blend_position"] = direction
+	animation_tree["parameters/Attack/blend_position"] = direction
 
-		move_and_slide()
-		update_animation_parameters()
+@rpc("any_peer", "call_local")
+func take_damage(amount: int):
+	health -= amount
+	print("Player took ", amount, " damage. Health: ", health)
+	if health <= 0:
+		die()
+
+func die():
+	print("Player died!")
+	# Add death logic here (respawn, game over, etc.)

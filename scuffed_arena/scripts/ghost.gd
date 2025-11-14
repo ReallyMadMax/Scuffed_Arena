@@ -13,7 +13,7 @@ var player: Node2D = null
 
 func _init():
 	speed = 150
-	
+
 func _ready():
 	player = get_node("../Player")
 	# Scale the enemy by 1.5x
