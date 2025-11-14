@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://cnmx76xy5nhvb"]
+
+[node name="Upgrade" type="PanelContainer"]
+custom_minimum_size = Vector2(350, 0)
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_right = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="ColorRect" parent="."]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer"]
+layout_mode = 2
+color = Color(0.32172796, 0.32172796, 0.32172796, 1)
+
+[node name="Container" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Type" type="Label" parent="MarginContainer/Container"]
+layout_mode = 2
+
+[node name="UpgradeIcon" type="TextureRect" parent="MarginContainer/Container"]
+custom_minimum_size = Vector2(100, 300)
+layout_mode = 2
+
+[node name="UpgradeName" type="Label" parent="MarginContainer/Container"]
+layout_mode = 2
+text = "UPGRADE"
+horizontal_alignment = 1
+
+[node name="UpgradeDescription" type="RichTextLabel" parent="MarginContainer/Container"]
+layout_mode = 2
+size_flags_vertical = 3
+fit_content = true
+scroll_active = false
