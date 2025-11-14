@@ -15,6 +15,8 @@ signal player_died(player_id: int)
 @onready var animation_tree : AnimationTree = $AnimationTree
 # Load the Ability script as a resource so that it can be used in sub player characters
 @onready var Ability = preload("res://scripts/ability.gd")
+# Load the hit particles scene
+@onready var HitParticles = preload("res://scenes/hit_particles.tscn")
 
 var direction : Vector2
 var is_dead : bool = false
@@ -103,9 +105,40 @@ func take_damage(amount: int):
 	current_health -= amount
 	print("Player ", name, " took ", amount, " damage. Health: ", current_health, "/", max_health)
 	update_healthbar()
+
+	# Spawn hit particles based on damage amount
+	spawn_hit_particles(amount)
+
 	if current_health <= 0:
 		print("Health reached 0, calling die()")
 		die()
+
+func spawn_hit_particles(damage: int):
+	# Instantiate the particle system
+	var particles = HitParticles.instantiate()
+
+	# Add to parent (the game world) so particles persist even if player moves/dies
+	get_parent().add_child(particles)
+
+	# Position at player's current position
+	particles.global_position = global_position
+
+	# Scale particle count based on damage (minimum 10, scales up with damage)
+	# Formula: base 10 particles + 1 particle per 10 damage
+	var particle_count = int(clamp(10 + (damage / 10.0), 10, 100))
+	particles.amount = particle_count
+
+	# Scale particle velocity based on damage for more impact on bigger hits
+	var velocity_multiplier = clamp(1.0 + (damage / 200.0), 1.0, 2.5)
+	particles.initial_velocity_min = 100.0 * velocity_multiplier
+	particles.initial_velocity_max = 200.0 * velocity_multiplier
+
+	# Emit the particles
+	particles.emitting = true
+
+	# Auto-cleanup after particles finish (lifetime + some buffer)
+	await get_tree().create_timer(particles.lifetime + 0.5).timeout
+	particles.queue_free()
 
 @rpc("any_peer", "call_local")
 func die():
