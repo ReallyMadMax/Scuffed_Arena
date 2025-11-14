@@ -31,7 +31,7 @@ func _ready():
 		else:
 			print("WARNING: No PlayerSpawnPoint found!")
 
-func _process(delta):
+func _process(_delta):
 	update_music_stats()
 
 func update_music_stats():
