@@ -31,6 +31,7 @@ func _init():
 	"""
 
 func _ready():
+	super._ready()  # Call parent to duplicate inventory
 	# Create the visual gem that sits on the wand
 	# Load a gem instance to get its sprite frames
 	var temp_gem = attack.instantiate()
@@ -138,7 +139,3 @@ func _process(_delta):
 
 		move_and_slide()
 		update_animation_parameters()
-		
-func collect(item):
-	print("skelly collect")
-	inv.insert(item)

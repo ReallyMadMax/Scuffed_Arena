@@ -18,7 +18,12 @@ var direction : Vector2
 
 @abstract
 # initialize basic vars here
-func _init() 
+func _init()
+
+func _ready():
+	# Duplicate the inventory resource so each player has their own instance
+	if inv:
+		inv = inv.duplicate(true) 
 
 func update_animation_parameters():
 	if (velocity == Vector2.ZERO):
@@ -47,3 +52,9 @@ func take_damage(amount: int):
 func die():
 	print("Player died!")
 	# Add death logic here (respawn, game over, etc.)
+
+@rpc("any_peer", "call_local")
+func collect(item_path: String):
+	print("player collect")
+	var item = load(item_path)
+	inv.insert(item)

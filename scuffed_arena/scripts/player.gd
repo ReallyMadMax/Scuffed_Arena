@@ -5,8 +5,9 @@ func _init():
 	speed = 350
 
 func _ready():
+	super._ready()  # Call parent to duplicate inventory
 	animation_tree.active = true
-	
+
 	$MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
 	if str(name).to_int() != multiplayer.get_unique_id():
 		remove_child($Camera2D)
@@ -34,7 +35,3 @@ func _process(_delta):
 func player():
 	pass
 
-func collect(item):
-	print("player collect")
-	inv.insert(item)
-	
