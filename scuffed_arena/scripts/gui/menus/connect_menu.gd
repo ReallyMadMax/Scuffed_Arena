@@ -25,5 +25,5 @@ func _on_join_lobby_pressed() -> void:
 func _on_lobby_code_text_changed(new_text: String) -> void:
 	JoinLobby.disabled = new_text.is_empty()
 
-func _on_player_joined(id:int):
+func _on_player_joined(_id:int):
 	$HBoxContainer/Control/LobbyCount.text = "Player count " + str(GameManager.Players.size()) + "/8"

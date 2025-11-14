@@ -27,5 +27,5 @@ func _on_start_game_button_down() -> void:
 func _on_lobby_created(id:String):
 	LobbyID.text = id
 
-func _on_player_joined(id:int):
+func _on_player_joined(_id:int):
 	$VBoxContainer2/PlayerCount.text = "Player count " + str(GameManager.Players.size()) + "/8"

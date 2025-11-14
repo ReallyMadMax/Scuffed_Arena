@@ -35,7 +35,7 @@ func _ready() -> void:
 	multiplayer.peer_connected.connect(RTCPeerConnected)
 	multiplayer.peer_disconnected.connect(RTCPeerDisconnected)
 
-func RTCServerConnected(_id):
+func RTCServerConnected():
 	print("server conected")
 	pass
 
