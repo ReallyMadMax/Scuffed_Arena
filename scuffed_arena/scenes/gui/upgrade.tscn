@@ -2,24 +2,34 @@
 
 [ext_resource type="Script" uid="uid://b0r2r383tv4s7" path="res://scripts/gui/upgrade_container.gd" id="1_2xus2"]
 
-[node name="Upgrade" type="PanelContainer"]
+[node name="Upgrade" type="Button"]
 custom_minimum_size = Vector2(350, 0)
 anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -60.0
-offset_right = 60.0
+offset_left = -175.0
+offset_right = 175.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_2xus2")
 
 [node name="Control" type="ColorRect" parent="."]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.28731483, 0.5585625, 0.7156522, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
@@ -49,3 +59,6 @@ layout_mode = 2
 size_flags_vertical = 3
 fit_content = true
 scroll_active = false
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
+[connection signal="pressed" from="." to="." method="_on_pressed"]

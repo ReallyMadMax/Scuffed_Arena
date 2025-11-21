@@ -2,8 +2,8 @@
 
 [ext_resource type="Material" uid="uid://drtvyoj37w1g3" path="res://assets/materials/fog_of_war_mask.tres" id="1_dqkch"]
 [ext_resource type="Script" uid="uid://c3mgpoivd8ecd" path="res://scripts/skelly.gd" id="1_v6fml"]
-[ext_resource type="Texture2D" uid="uid://dxh7qahqmw73q" path="res://assets/images/skele_walk.png" id="2_kne1u"]
-[ext_resource type="AudioStream" uid="uid://widafhnp2uen" path="res://assets/sounds/walking sound.mp3" id="3_qhqgy"]
+[ext_resource type="Texture2D" uid="uid://b0lxrrshlxi0o" path="res://assets/images/skele_walk.png" id="2_kne1u"]
+[ext_resource type="AudioStream" uid="uid://cya3k33g1gjfx" path="res://assets/sounds/walking sound.mp3" id="3_qhqgy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e80uo"]
 size = Vector2(106, 160)

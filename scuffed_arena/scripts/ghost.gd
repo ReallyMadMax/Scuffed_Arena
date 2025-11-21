@@ -1,5 +1,5 @@
 @tool
-extends player_class
+extends Player
 
 # Enemy properties
 @export var detection_range: float = 300.0

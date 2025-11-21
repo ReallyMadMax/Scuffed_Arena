@@ -1,5 +1,5 @@
-class_name SpeedBoost
 extends Upgrade
+class_name SpeedBoostUpgrade
 
 @export var quantity:float
 

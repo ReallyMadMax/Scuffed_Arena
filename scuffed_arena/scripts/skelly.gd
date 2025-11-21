@@ -47,21 +47,6 @@ func _ready():
 	temp_gem.queue_free()  # Clean up the temporary gem
 	#animation_tree.active = true
 
-	# Only run multiplayer authority checks when in multiplayer mode
-	if multiplayer.has_multiplayer_peer():
-		var my_id = str(name).to_int()
-		print("Setting authority - Node name: ", name, " -> ID: ", my_id, " | My multiplayer ID: ", multiplayer.get_unique_id())
-		$MultiplayerSynchronizer.set_multiplayer_authority(my_id)
-		if my_id != multiplayer.get_unique_id():
-			print("Removing camera - not my character")
-			remove_child($Camera2D)
-			remove_child($PointLight2D)
-			$Sprite2D.material = load("res://assets/materials/fog_of_war_mask.tres")
-		else:
-			print("This is MY character - keeping camera and control")
-			light_mask = 1
-			visibility_layer = 1
-	
 func shoot():
 	if not can_shoot:
 		return
