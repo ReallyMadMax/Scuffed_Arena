@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="Upgrade" load_steps=2 format=3 uid="uid://mfy7aafbpgbe"]
+[gd_resource type="Resource" script_class="SpeedBoost" load_steps=2 format=3 uid="uid://mfy7aafbpgbe"]
 
-[ext_resource type="Script" uid="uid://bea0jj6hbvd0x" path="res://scripts/upgrades/upgrade.gd" id="1_ck57s"]
+[ext_resource type="Script" uid="uid://bh2nac3k14bej" path="res://scripts/upgrades/speed_boost.gd" id="1_rpsxo"]
 
 [resource]
-script = ExtResource("1_ck57s")
-metadata/_custom_type_script = "uid://bea0jj6hbvd0x"
+script = ExtResource("1_rpsxo")
+metadata/_custom_type_script = "uid://bh2nac3k14bej"

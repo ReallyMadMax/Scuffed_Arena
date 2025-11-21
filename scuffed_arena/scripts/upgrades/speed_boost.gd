@@ -1,5 +1,5 @@
-@tool
-extends UpgradeEffect
+class_name SpeedBoost
+extends Upgrade
 
 @export var quantity:float
 
