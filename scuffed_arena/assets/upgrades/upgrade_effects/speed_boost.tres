@@ -4,4 +4,7 @@
 
 [resource]
 script = ExtResource("1_rpsxo")
+quantity = 0.1
+name = "Speed Boost"
+description = "Increase speed by 10%"
 metadata/_custom_type_script = "uid://bh2nac3k14bej"

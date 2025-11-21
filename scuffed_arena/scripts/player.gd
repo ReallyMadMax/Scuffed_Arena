@@ -11,7 +11,7 @@ extends CharacterBody2D
 
 @onready var animation_tree : AnimationTree = $AnimationTree
 # Load the Ability script as a resource so that it can be used in sub player characters
-@onready var Ability = preload("res://scripts/ability.gd")
+@onready var ability = preload("res://scripts/ability.gd")
 
 var direction : Vector2
 
