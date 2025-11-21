@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://dw1g4o7udjcs0"]
+[gd_scene load_steps=5 format=3 uid="uid://dw1g4o7udjcs0"]
 
-[ext_resource type="Script" uid="uid://6pvqn8abtd88" path="res://scripts/main.gd" id="1_sugp2"]
+[ext_resource type="Script" uid="uid://cnp45t15lxk5c" path="res://scripts/main.gd" id="1_sugp2"]
 [ext_resource type="PackedScene" uid="uid://duihfy8h7tcnu" path="res://scenes/map.tscn" id="1_tbgi4"]
-[ext_resource type="AudioStream" uid="uid://k5uhiy6713yx" path="res://assets/scuffed arena combat music test.mp3" id="3_sugp2"]
+[ext_resource type="AudioStream" uid="uid://bct1et1kltfq3" path="res://assets/sounds/scuffed arena combat music test.mp3" id="3_sugp2"]
+[ext_resource type="PackedScene" uid="uid://dkuysuskp3vvn" path="res://scenes/ghost.tscn" id="4_jyhfs"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_sugp2")
@@ -12,4 +13,6 @@ script = ExtResource("1_sugp2")
 [node name="AudioStreamPlayer-BGM" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_sugp2")
 volume_db = -30.0
-bus = &"Music"
+
+[node name="Ghost" parent="." instance=ExtResource("4_jyhfs")]
+position = Vector2(363, 467)

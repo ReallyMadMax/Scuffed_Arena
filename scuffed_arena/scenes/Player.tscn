@@ -1,8 +1,9 @@
-[gd_scene load_steps=37 format=3 uid="uid://d225n5jsld3ee"]
+[gd_scene load_steps=38 format=3 uid="uid://d225n5jsld3ee"]
 
-[ext_resource type="Script" uid="uid://vtuupe16u0os" path="res://scripts/skelly.gd" id="1_v6fml"]
-[ext_resource type="Texture2D" uid="uid://dxh7qahqmw73q" path="res://assets/skele_walk.png" id="2_kne1u"]
-[ext_resource type="AudioStream" uid="uid://c6rh3t2g8a6rh" path="res://assets/walking sound.mp3" id="3_qhqgy"]
+[ext_resource type="Material" uid="uid://drtvyoj37w1g3" path="res://assets/materials/fog_of_war_mask.tres" id="1_dqkch"]
+[ext_resource type="Script" uid="uid://c3mgpoivd8ecd" path="res://scripts/skelly.gd" id="1_v6fml"]
+[ext_resource type="Texture2D" uid="uid://dxh7qahqmw73q" path="res://assets/images/skele_walk.png" id="2_kne1u"]
+[ext_resource type="AudioStream" uid="uid://widafhnp2uen" path="res://assets/sounds/walking sound.mp3" id="3_qhqgy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e80uo"]
 size = Vector2(106, 160)
@@ -214,16 +215,17 @@ transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition
 graph_offset = Vector2(-47, -40)
 
 [sub_resource type="Gradient" id="Gradient_tbgi4"]
-colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_d6rpx"]
 gradient = SubResource("Gradient_tbgi4")
-width = 256
-height = 256
+width = 512
+height = 512
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.5, 0)
 metadata/_snap_enabled = true
+metadata/_snap_count = 2
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_v6fml"]
 properties/0/path = NodePath(".:position")
@@ -237,6 +239,9 @@ properties/2/spawn = true
 properties/2/replication_mode = 1
 
 [node name="Player" type="CharacterBody2D"]
+light_mask = 2
+visibility_layer = 2
+material = ExtResource("1_dqkch")
 script = ExtResource("1_v6fml")
 speed = 250
 
@@ -270,6 +275,7 @@ parameters/Move/blend_position = Vector2(0, 0)
 zoom = Vector2(0.5, 0.5)
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
+range_item_cull_mask = 3
 shadow_enabled = true
 texture = SubResource("GradientTexture2D_d6rpx")
 
@@ -279,4 +285,3 @@ replication_config = SubResource("SceneReplicationConfig_v6fml")
 [node name="AudioStreamPlayer_Walking" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("3_qhqgy")
 volume_db = 15.0
-bus = &"SFX"

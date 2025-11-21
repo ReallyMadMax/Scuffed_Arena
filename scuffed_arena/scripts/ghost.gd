@@ -15,7 +15,7 @@ func _init():
 	speed = 150
 
 func _ready():
-	player = get_node("../Player")
+	#player = get_node("../Player")
 	# Scale the enemy by 1.5x
 	scale = Vector2(1.5, 1.5)
 

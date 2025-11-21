@@ -55,8 +55,12 @@ func _ready():
 		if my_id != multiplayer.get_unique_id():
 			print("Removing camera - not my character")
 			remove_child($Camera2D)
+			remove_child($PointLight2D)
+			$Sprite2D.material = load("res://assets/materials/fog_of_war_mask.tres")
 		else:
 			print("This is MY character - keeping camera and control")
+			light_mask = 1
+			visibility_layer = 1
 	
 func shoot():
 	if not can_shoot:
