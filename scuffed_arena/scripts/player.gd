@@ -5,6 +5,7 @@ extends CharacterBody2D
 signal death
 #signal damage_taken
 
+
 @export var speed = 300
 @export var health = 1000
 @export var basic_attack_cd = 1
@@ -20,17 +21,27 @@ var direction : Vector2
 
 var upgrades:Array = []
 
-func _ready() -> void:
-	# Only run multiplayer authority checks when in multiplayer mode
-	if multiplayer.has_multiplayer_peer():
-		var my_id = str(name).to_int()
-		print("Setting authority - Node name: ", name, " -> ID: ", my_id, " | My multiplayer ID: ", multiplayer.get_unique_id())
-		$MultiplayerSynchronizer.set_multiplayer_authority(my_id)
-		if my_id != multiplayer.get_unique_id():
-			print("Removing camera - not my character")
-			remove_child($Camera2D)
-			remove_child($PointLight2D)
-			$Sprite2D.material = load("res://assets/materials/fog_of_war_mask.tres")
+func _ready():
+	super._ready()  # Call parent _ready to initialize current_health
+	animation_tree.active = true
+	$MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
+	if str(name).to_int() != multiplayer.get_unique_id():
+		remove_child($Camera2D)
+
+	# Don't process input if player is dead
+	if is_dead:
+		return
+
+	if not Engine.is_editor_hint():
+		# Test keybind: Press 'g' to damage yourself
+		if Input.is_action_just_pressed("test"):
+			print("Test key pressed! Dealing damage...")
+			take_damage(250)  # Deal 250 damage to self
+
+		var dir = Input.get_vector("move_left", "move_right", "move_up", "move_down").normalized();
+		if dir:
+			direction = dir
+			velocity = direction * speed
 		else:
 			print("This is MY character - keeping camera and control")
 			light_mask = 1
