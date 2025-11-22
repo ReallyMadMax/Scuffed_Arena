@@ -18,7 +18,6 @@ config/features=PackedStringArray("4.5", "C#", "Forward Plus")
 
 GameManager="*res://scripts/game_manager.gd"
 Client="*res://scripts/network/client.gd"
-Server="res://scripts/network/server.gd"
 UpgradeManager="*res://scripts/upgrades/upgrade_manager.gd"
 
 [display]

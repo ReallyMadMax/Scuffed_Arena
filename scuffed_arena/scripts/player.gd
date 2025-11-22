@@ -2,12 +2,11 @@
 class_name Player
 extends CharacterBody2D
 
-signal death
-#signal damage_taken
-
+signal player_died(player_id: int)
 
 @export var speed = 300
-@export var health = 1000
+@export var max_health = 1000
+@export var current_health = max_health
 @export var basic_attack_cd = 1
 @export var heavy_attack_cd = 5
 @export var block_cd = 10
@@ -16,37 +15,66 @@ signal death
 @onready var animation_tree : AnimationTree = $AnimationTree
 # Load the Ability script as a resource so that it can be used in sub player characters
 @onready var ability = preload("res://scripts/ability.gd")
+# Load the hit particles scene
+@onready var HitParticles = preload("res://scenes/hit_particles.tscn")
 
 var direction : Vector2
+var is_dead : bool = false
+var death_count : int = 0  # Track number of deaths
+var healthbar_bg : ColorRect  # Background bar
+var healthbar_fg : ColorRect  # Foreground health bar
+var death_counter_label : Label  # Death counter display
 
 var upgrades:Array = []
 
 func _ready():
-	super._ready()  # Call parent _ready to initialize current_health
-	animation_tree.active = true
-	$MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
-	if str(name).to_int() != multiplayer.get_unique_id():
-		remove_child($Camera2D)
+	# Initialize current_health after export vars are set
+	current_health = max_health
 
-	# Don't process input if player is dead
-	if is_dead:
-		return
+	# Create healthbar using ColorRect for precise control
+	# Background bar (dark gray)
+	healthbar_bg = ColorRect.new()
+	healthbar_bg.size = Vector2(64, 4)
+	healthbar_bg.position = Vector2(-32, 82)  # Moved down 10 pixels
+	healthbar_bg.color = Color(0.2, 0.2, 0.2, 0.8)
+	add_child(healthbar_bg)
 
-	if not Engine.is_editor_hint():
-		# Test keybind: Press 'g' to damage yourself
-		if Input.is_action_just_pressed("test"):
-			print("Test key pressed! Dealing damage...")
-			take_damage(250)  # Deal 250 damage to self
+	# Foreground bar (health - starts green)
+	healthbar_fg = ColorRect.new()
+	healthbar_fg.size = Vector2(64, 4)
+	healthbar_fg.position = Vector2(-32, 82)  # Moved down 10 pixels
+	healthbar_fg.color = Color(0.0, 1.0, 0.0, 1.0)
+	add_child(healthbar_fg)
 
-		var dir = Input.get_vector("move_left", "move_right", "move_up", "move_down").normalized();
-		if dir:
-			direction = dir
-			velocity = direction * speed
+	# Create death counter label (to the right of health bar)
+	death_counter_label = Label.new()
+	death_counter_label.position = Vector2(36, 70)  # Right of health bar, aligned vertically
+	death_counter_label.add_theme_font_size_override("font_size", 20)
+	death_counter_label.add_theme_color_override("font_color", Color(1.0, 0.3, 0.3, 1.0))  # Light red
+	death_counter_label.visible = false  # Hidden initially
+	add_child(death_counter_label)
+
+func update_healthbar():
+	if healthbar_fg:
+		# Calculate health percentage and update bar width
+		var health_percent = float(current_health) / float(max_health)
+		healthbar_fg.size.x = 64 * health_percent
+
+		# Change color based on health percentage
+		if health_percent > 0.6:
+			healthbar_fg.color = Color(0.0, 1.0, 0.0, 1.0)  # Green
+		elif health_percent > 0.3:
+			healthbar_fg.color = Color(1.0, 1.0, 0.0, 1.0)  # Yellow
 		else:
-			print("This is MY character - keeping camera and control")
-			light_mask = 1
-			visibility_layer = 1
-			GameManager.client_player = self
+			healthbar_fg.color = Color(1.0, 0.0, 0.0, 1.0)  # Red
+
+func update_death_counter():
+	if death_counter_label:
+		if death_count > 0:
+			death_counter_label.text = str(death_count)
+			death_counter_label.visible = true
+		else:
+			death_counter_label.visible = false 
 
 func update_animation_parameters():
 	if (velocity == Vector2.ZERO):
@@ -65,24 +93,100 @@ func update_animation_parameters():
 	animation_tree["parameters/Move/blend_position"] = direction
 	animation_tree["parameters/Attack/blend_position"] = direction
 
-func hit(source: Player):
-	source.on_hit(self)
-
 @rpc("any_peer", "call_local")
 func take_damage(amount: int, source: Player):
-	health -= amount
-	print("Player took ", amount, " damage. Health: ", health)
+	print("take_damage called with amount: ", amount, " | is_dead: ", is_dead, " | current_health: ", current_health)
+	if is_dead:
+		print("Player is already dead, ignoring damage")
+		return
+
+	current_health -= amount
+	print("Player ", name, " took ", amount, " damage. Health: ", current_health, "/", max_health)
+	update_healthbar()
+
+	# Spawn hit particles based on damage amount
+	spawn_hit_particles(amount)
+
 	for upgrade in upgrades:
 		upgrade.on_damage_taken(self, amount, source)
-	if health <= 0:
+	if current_health <= 0:
+		print("Health reached 0, calling die()")
 		die(source)
+
+func spawn_hit_particles(damage: int):
+	# Instantiate the particle system
+	var particles = HitParticles.instantiate()
+
+	# Add to parent (the game world) so particles persist even if player moves/dies
+	get_parent().add_child(particles)
+
+	# Position at player's current position
+	particles.global_position = global_position
+
+	# Scale particle count based on damage (minimum 10, scales up with damage)
+	# Formula: base 10 particles + 1 particle per 10 damage
+	var particle_count = int(clamp(10 + (damage / 10.0), 10, 100))
+	particles.amount = particle_count
+
+	# Scale particle velocity based on damage for more impact on bigger hits
+	var velocity_multiplier = clamp(1.0 + (damage / 200.0), 1.0, 2.5)
+	particles.initial_velocity_min = 100.0 * velocity_multiplier
+	particles.initial_velocity_max = 200.0 * velocity_multiplier
+
+	# Emit the particles
+	particles.emitting = true
+
+	# Auto-cleanup after particles finish (lifetime + some buffer)
+	await get_tree().create_timer(particles.lifetime + 0.5).timeout
+	particles.queue_free()
 
 @rpc("any_peer", "call_local")
 func die(source: Player):
-	print("Player died!")
-	death.emit(self)
+	if is_dead:
+		return
+
+	is_dead = true
+	current_health = 0
+	velocity = Vector2.ZERO
+
+	# Increment death counter
+	death_count += 1
+	update_death_counter()
+
+	# Hide the player visually
+	visible = false
+	if healthbar_bg:
+		healthbar_bg.visible = false
+	if healthbar_fg:
+		healthbar_fg.visible = false
+	if death_counter_label:
+		death_counter_label.visible = false
+
+	print("Player ", name, " died! Emitting death signal...")
+
+	# Emit signal to main scene to handle respawn timing
+	var player_id = int(name)
+	player_died.emit(player_id)
 	source.on_kill(self)
-	# Add death logic here (respawn, game over, etc.)
+
+@rpc("any_peer", "call_local")
+func respawn():
+	print("Player ", name, " respawning...")
+	is_dead = false
+	current_health = max_health
+	visible = true
+
+	# Show and update healthbar
+	if healthbar_bg:
+		healthbar_bg.visible = true
+	if healthbar_fg:
+		healthbar_fg.visible = true
+		update_healthbar()
+
+	# Update death counter visibility (only show if > 0)
+	update_death_counter()
+
+	print("Player ", name, " respawned at ", global_position, " with ", current_health, " health")
 
 # happens on every instance of damage dealth
 func on_damage_dealt(damage: float) -> void:

@@ -32,6 +32,7 @@ func _ready():
 
 		# Connect death signal
 		currentPlayer.player_died.connect(_on_player_died)
+		GameManager.client_player = currentPlayer
 
 		var spawn = get_tree().get_nodes_in_group("PlayerSpawnPoint").get(0)
 		if spawn:
@@ -51,6 +52,7 @@ func update_music_stats():
 		musicAudioStreamBG.stop()
 
 func _on_player_died(player_id: int):
+	GameManager._on_client_death()
 	print("Main scene received death signal for player ", player_id)
 
 	# Clean up any existing timer for this player

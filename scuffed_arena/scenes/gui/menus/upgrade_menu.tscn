@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://dedk5ppwv14pq"]
+[gd_scene load_steps=2 format=3 uid="uid://dedk5ppwv14pq"]
 
-[ext_resource type="PackedScene" uid="uid://cnmx76xy5nhvb" path="res://scenes/gui/upgrade.tscn" id="1_72j7o"]
-[ext_resource type="Script" uid="uid://b0invpbixc06n" path="res://scripts/gui/menus/upgrade_menu.gd" id="1_hgtwh"]
+[ext_resource type="Script" uid="uid://cqot0j0ooaakj" path="res://scripts/gui/menus/upgrade_menu.gd" id="1_hgtwh"]
 
 [node name="UpgradeMenu" type="Control"]
 layout_mode = 3
@@ -45,15 +44,6 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
 theme_override_constants/separation = 100
-
-[node name="Upgrade" parent="MarginContainer/VBoxContainer/UpgradeContainer" instance=ExtResource("1_72j7o")]
-layout_mode = 2
-
-[node name="Upgrade2" parent="MarginContainer/VBoxContainer/UpgradeContainer" instance=ExtResource("1_72j7o")]
-layout_mode = 2
-
-[node name="Upgrade3" parent="MarginContainer/VBoxContainer/UpgradeContainer" instance=ExtResource("1_72j7o")]
-layout_mode = 2
 
 [node name="TimerBar" type="ProgressBar" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 30)

@@ -17,7 +17,7 @@ func _on_client_death():
 	
 	# show the upgrade menu
 	var upgrade_menu = upgrade_menu_scene.instantiate()
-	get_tree().add_child(upgrade_menu)
+	get_tree().root.add_child(upgrade_menu)
 	client_death.emit()
 
 func spawn_client():

@@ -13,10 +13,10 @@ func apply(_player: Player) -> void:
 func remove(_player: Player) -> void:
 	pass
 
-func on_damage_taken(_player: Player, _damage: float) -> void:
+func on_damage_taken(_player: Player, _damage: float, _enemy: Player) -> void:
 	pass
 
-func on_damage_dealt(_player: Player, _damage: float) -> void:
+func on_damage_dealt(_player: Player, _damage: float, _enemy: Player) -> void:
 	pass
 
 func on_kill(_player: Player, _enemy: Player) -> void:

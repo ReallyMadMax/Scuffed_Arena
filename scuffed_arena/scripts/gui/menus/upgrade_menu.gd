@@ -1,4 +1,4 @@
-extends MarginContainer
+extends Control
 
 var UPGRADE_COUNT:int = 3
 
@@ -6,6 +6,7 @@ var UPGRADE_COUNT:int = 3
 @onready var upgrade_scene:PackedScene = load("res://scenes/gui/upgrade.tscn")
 
 func _ready() -> void:
+	print("initializing upgrade menu")
 	for i in range(UPGRADE_COUNT):
 		var rand = randi() % UpgradeManager.Upgrades.size()
 		var upgrade_button:UpgradeButton = upgrade_scene.instantiate()
@@ -15,7 +16,7 @@ func _ready() -> void:
 		upgrade_button.upgrade = UpgradeManager.Upgrades[rand]
 
 func _process(_delta: float) -> void:
-	$VBoxContainer/TimerBar.value = $Timer.time_left * 100 / $Timer.wait_time
+	$MarginContainer/VBoxContainer/TimerBar.value = $Timer.time_left * 100 / $Timer.wait_time
 
 func _on_complete() -> void:
 	GameManager.spawn_client()

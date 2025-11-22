@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://txksal0o5q1p" path="res://scripts/ghost.gd" id="1_6attn"]
 [ext_resource type="Material" uid="uid://drtvyoj37w1g3" path="res://assets/materials/fog_of_war_mask.tres" id="1_bbnym"]
-[ext_resource type="Texture2D" uid="uid://mut5mk6nu3cq" path="res://assets/images/Sprite Sheet/Sword.png" id="2_obmiq"]
+[ext_resource type="Texture2D" path="res://assets/Sprite Sheet/Sword.png" id="2_obmiq"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_p0uf5"]
 atlas = ExtResource("2_obmiq")
@@ -19,6 +19,10 @@ region = Rect2(256, 256, 64, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_3ittg"]
 atlas = ExtResource("2_obmiq")
 region = Rect2(384, 256, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yl51g"]
+atlas = ExtResource("2_obmiq")
+region = Rect2(1152, 256, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6jpmw"]
 atlas = ExtResource("2_obmiq")
@@ -39,10 +43,6 @@ region = Rect2(896, 256, 64, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_gpdgq"]
 atlas = ExtResource("2_obmiq")
 region = Rect2(1024, 256, 64, 64)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_yl51g"]
-atlas = ExtResource("2_obmiq")
-region = Rect2(1152, 256, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vbenq"]
 atlas = ExtResource("2_obmiq")
@@ -136,6 +136,9 @@ animations = [{
 "texture": SubResource("AtlasTexture_3ittg")
 }, {
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_yl51g")
+}, {
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_6jpmw")
 }, {
 "duration": 1.0,
@@ -149,9 +152,6 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_gpdgq")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_yl51g")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_vbenq")
@@ -233,7 +233,14 @@ visibility_layer = 2
 material = ExtResource("1_bbnym")
 scale = Vector2(1.5, 1.5)
 script = ExtResource("1_6attn")
+detection_range = null
+stop_distance = null
 speed = 150
+max_health = null
+basic_attack_cd = null
+heavy_attack_cd = null
+block_cd = null
+dash_cd = null
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 light_mask = 2
