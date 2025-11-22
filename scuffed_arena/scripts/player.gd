@@ -3,7 +3,7 @@ class_name Player
 extends CharacterBody2D
 
 signal death
-signal damage_taken
+#signal damage_taken
 
 @export var speed = 300
 @export var health = 1000

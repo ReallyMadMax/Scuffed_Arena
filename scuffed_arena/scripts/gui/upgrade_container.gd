@@ -1,4 +1,5 @@
-extends PanelContainer
+extends Button
+class_name UpgradeButton
 
 @export var upgrade:Upgrade
 

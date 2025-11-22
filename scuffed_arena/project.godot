@@ -18,7 +18,8 @@ config/features=PackedStringArray("4.5", "C#", "Forward Plus")
 
 GameManager="*res://scripts/game_manager.gd"
 Client="*res://scripts/network/client.gd"
-Server="*res://scripts/network/server.gd"
+Server="res://scripts/network/server.gd"
+UpgradeManager="*res://scripts/upgrades/upgrade_manager.gd"
 
 [display]
 
@@ -29,6 +30,18 @@ window/stretch/scale=3.0
 [dotnet]
 
 project/assembly_name="Scuffed_Arena"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot_resource_groups/plugin.cfg")
+
+[global_group]
+
+upgrades_resources="upgrade_resources"
+
+[godot_resource_groups]
+
+auto_rebuild=true
 
 [input]
 

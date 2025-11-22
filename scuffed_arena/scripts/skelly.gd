@@ -124,9 +124,7 @@ func _process(_delta):
 		if velocity.length() > 0:
 			velocity = velocity.normalized() * speed
 
-		var atk = Input.is_action_just_pressed("attack")
-
-		if atk:
+		if Input.is_action_just_pressed("attack"):
 			shoot()
 
 		move_and_slide()
