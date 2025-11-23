@@ -1,5 +1,4 @@
-@tool
-extends Player
+extends CharacterBody2D
 
 # Enemy properties
 @export var detection_range: float = 300.0
@@ -10,6 +9,8 @@ extends Player
 
 # Player reference
 var player: Node2D = null
+var speed:int
+var direction
 
 func _init():
 	speed = 150

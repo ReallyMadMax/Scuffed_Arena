@@ -3,6 +3,7 @@ extends Node
 @export var PlayerScene : PackedScene
 
 @onready var musicAudioStreamBG = $"AudioStreamPlayer-BGM"
+@onready var HUD = $HUD
 var backgroundMusicOn = true
 
 @export var respawn_time : float = 3.0  # Time in seconds before respawn
@@ -14,6 +15,7 @@ var respawn_timers : Dictionary = {}
 func _ready():
 	print("Main scene _ready() called!")
 	print("Main scene ready - GameManager.Players: ", GameManager.Players)
+	GameManager.HUD = HUD
 
 	# Load player scene if not set in inspector
 	if PlayerScene == null:

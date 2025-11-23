@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="KillStreakUpgrade" load_steps=3 format=3 uid="uid://3iit1g0y5nyl"]
 
-[ext_resource type="Texture2D" uid="uid://uwheknh0ofc3" path="res://assets/images/Icons/dagger.png" id="1_0ydbg"]
-[ext_resource type="Script" uid="uid://dxqgi4jc7nl0x" path="res://scripts/upgrades/kill_streak.gd" id="1_8ww0b"]
+[ext_resource type="Texture2D" uid="uid://bk8hvr4qvefla" path="res://assets/images/Icons/dagger.png" id="1_0ydbg"]
+[ext_resource type="Script" uid="uid://c6opoxfebu50w" path="res://scripts/upgrades/kill_streak.gd" id="1_8ww0b"]
 
 [resource]
 script = ExtResource("1_8ww0b")
@@ -10,4 +10,3 @@ duration = 2.0
 name = "Kill Streak"
 description = "Get a short 10% speed boost after killing an enemy"
 icon = ExtResource("1_0ydbg")
-metadata/_custom_type_script = "uid://dxqgi4jc7nl0x"

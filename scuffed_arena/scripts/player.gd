@@ -204,3 +204,10 @@ func on_hit(enemy: Player) -> void:
 
 func add_upgrade(upgrade:Upgrade) -> void:
 	upgrades.append(upgrade)
+	upgrade.apply(self)
+
+func remove_upgrade(upgrade:Upgrade) -> Upgrade:
+	# TODO: make this remove the one we actually want
+	upgrades.remove_at(0)
+	upgrade.remove(self)
+	return upgrade

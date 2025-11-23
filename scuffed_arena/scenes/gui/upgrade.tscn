@@ -39,22 +39,40 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 color = Color(0.10983334, 0.29016006, 0.44027793, 1)
 
-[node name="Container" type="VBoxContainer" parent="MarginContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Container" type="VBoxContainer" parent="MarginContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="Type" type="Label" parent="MarginContainer/Container"]
+[node name="Type" type="Label" parent="MarginContainer/MarginContainer/Container"]
 layout_mode = 2
 
-[node name="UpgradeIcon" type="TextureRect" parent="MarginContainer/Container"]
-custom_minimum_size = Vector2(100, 300)
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/MarginContainer/Container"]
+custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
 
-[node name="UpgradeName" type="Label" parent="MarginContainer/Container"]
+[node name="UpgradeIcon" type="TextureRect" parent="MarginContainer/MarginContainer/Container/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+expand_mode = 3
+
+[node name="UpgradeName" type="Label" parent="MarginContainer/MarginContainer/Container"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "UPGRADE"
 horizontal_alignment = 1
 
-[node name="UpgradeDescription" type="RichTextLabel" parent="MarginContainer/Container"]
+[node name="UpgradeDescription" type="RichTextLabel" parent="MarginContainer/MarginContainer/Container"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 fit_content = true
