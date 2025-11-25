@@ -1,5 +1,5 @@
 #@tool
-extends player_class
+extends Player
 
 # who is skelly???
 
@@ -10,11 +10,12 @@ extends player_class
 # idle, walk, attack, heavy attack, dash, block, hit, death
 
 @onready var main = get_tree().get_root().get_node("Main")
-@onready var attack = load("res://scenes/gem.tscn")
+@onready var attack:PackedScene = load("res://scenes/gem.tscn")
 @onready var WalkingAudio = $AudioStreamPlayer_Walking
 
 @export var shoot_cooldown : float = 0.5  # Time before gem respawns
 
+var gem_point : Node2D  # Gem attachment point
 var wand_gem : AnimatedSprite2D  # The visual gem on the wand
 var can_shoot : bool = true
 
@@ -32,46 +33,42 @@ func _init():
 	"""
 
 func _ready():
+	super._ready()  # Call parent _ready to initialize current_health
+
+	# Get gem_point reference after super._ready()
+	gem_point = get_node("gem_point")
+
 	# Create the visual gem that sits on the wand
 	# Load a gem instance to get its sprite frames
+	if not attack:
+		attack = load("res://scenes/gem.tscn")
 	var temp_gem = attack.instantiate()
 	var gem_sprite = temp_gem.get_node("AnimatedSprite2D")
 
 	wand_gem = AnimatedSprite2D.new()
 	wand_gem.sprite_frames = gem_sprite.sprite_frames
 	wand_gem.scale = Vector2(0.25, 0.25)
-	wand_gem.position = Vector2(-48, -64)  # Same offset as spawn position
-	add_child(wand_gem)
+	wand_gem.z_index = 1  # Render on top of player sprite
+
+	# Get the gem texture size to calculate bottom alignment
+	# The gem sprite is 128x128, scaled to 0.25, so 32x32 pixels
+	# To align bottom to gem_point, offset by half height upward
+	wand_gem.position = Vector2(0, -16)  # Move up by half the scaled height (32/2)
+
+	gem_point.add_child(wand_gem)
 	wand_gem.play("spin")  # Start playing the spin animation
 
 	temp_gem.queue_free()  # Clean up the temporary gem
 	#animation_tree.active = true
 
-	# Only run multiplayer authority checks when in multiplayer mode
-	if multiplayer.has_multiplayer_peer():
-		var my_id = str(name).to_int()
-		print("Setting authority - Node name: ", name, " -> ID: ", my_id, " | My multiplayer ID: ", multiplayer.get_unique_id())
-		$MultiplayerSynchronizer.set_multiplayer_authority(my_id)
-		if my_id != multiplayer.get_unique_id():
-			print("Removing camera - not my character")
-			remove_child($Camera2D)
-			remove_child($PointLight2D)
-			$Sprite2D.material = load("res://assets/materials/fog_of_war_mask.tres")
-		else:
-			print("This is MY character - keeping camera and control")
-			light_mask = 1
-			visibility_layer = 1
-	
 func shoot():
-	if not can_shoot:
+	if not can_shoot or is_dead:
 		return
 
 	var mouse_position = get_global_mouse_position()
 
-	# Offset to spawn from top-left of character (adjust offset values as needed)
-	var spawn_offset = Vector2(-64, -64)
-	var rotated_offset = spawn_offset.rotated(rotation)
-	var actual_spawn_position = global_position + rotated_offset
+	# Use gem_point's global position as spawn point
+	var actual_spawn_position = gem_point.global_position
 
 	# Calculate direction from the actual spawn position to mouse
 	var direction_to_mouse = actual_spawn_position.direction_to(mouse_position)
@@ -113,6 +110,23 @@ func _on_gem_respawn():
 	var tween = create_tween()
 	tween.tween_property(wand_gem, "scale", Vector2(0.25, 0.25), 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
+# Override parent die() to reset wand gem state
+func die(source:Player):
+	super.die(source)
+	# Reset shooting state on death
+	can_shoot = false
+	if wand_gem:
+		wand_gem.visible = false
+
+# Override parent respawn() to restore wand gem
+func respawn():
+	super.respawn()
+	# Restore shooting ability on respawn
+	can_shoot = true
+	if wand_gem:
+		wand_gem.visible = true
+		wand_gem.scale = Vector2(0.25, 0.25)
+
 
 func _process(_delta):
 	# Only check authority in multiplayer mode
@@ -121,7 +135,16 @@ func _process(_delta):
 			# This is not our character, don't process input
 			return
 
+	# Don't process input if player is dead
+	if is_dead:
+		return
+
 	if not Engine.is_editor_hint():
+		# Test keybind: Press 'g' to damage yourself
+		if Input.is_action_just_pressed("test"):
+			print("Test key pressed! Dealing damage...")
+			take_damage(250, self)  # Deal 250 damage to self
+
 		# Keep the wand gem animation playing
 		if wand_gem and wand_gem.visible and not wand_gem.is_playing():
 			wand_gem.play("spin")
@@ -139,9 +162,7 @@ func _process(_delta):
 		if velocity.length() > 0:
 			velocity = velocity.normalized() * speed
 
-		var atk = Input.is_action_just_pressed("attack")
-
-		if atk:
+		if Input.is_action_just_pressed("attack"):
 			shoot()
 
 		move_and_slide()

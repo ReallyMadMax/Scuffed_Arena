@@ -292,8 +292,9 @@ func start_game():
 	print("Loading main scene...")
 	var scene = load("res://scenes/main.tscn").instantiate()
 
-	# List of autoload singletons to keep (don't delete these!)
-	var autoloads = ["GameManager", "Client", "Server"]
+	# List of autoload singletons to keep (don't delete these!) fuck
+	# We probably need to change this so that it doesn't need to be modified every time a new singleton is added
+	var autoloads = ["GameManager", "UpgradeManager", "Client"]
 
 	for child in get_tree().root.get_children():
 		if child.name not in autoloads:
