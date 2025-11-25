@@ -206,20 +206,19 @@ func _process(_delta):
 			# If no aim input for 1 second, rotate back to 0 degrees
 			if time_since_last_aim > 1.0:
 				wand_gem.global_rotation = lerp_angle(wand_gem.global_rotation, 0.0, 0.1)
-			else:
-				var target_pos : Vector2
-				if using_controller_aim and aim_direction.length() > 0.1:
-					# Point towards controller aim direction
-					target_pos = gem_point.global_position + (aim_direction.normalized() * 100)
-				else:
-					# Point towards mouse
-					target_pos = get_global_mouse_position()
-
-				# Calculate angle and smoothly rotate the gem
+			elif using_controller_aim and aim_direction.length() > 0.1:
+				# Actively aiming with controller
+				var target_pos = gem_point.global_position + (aim_direction.normalized() * 100)
 				var angle_to_target = gem_point.global_position.angle_to_point(target_pos)
-				# Add 90 degrees to match visual orientation
 				var visual_offset = deg_to_rad(90)
 				wand_gem.global_rotation = lerp_angle(wand_gem.global_rotation, angle_to_target + PI + visual_offset, 0.2)
+			elif not using_controller_aim:
+				# Using mouse - only track mouse when not using controller
+				var target_pos = get_global_mouse_position()
+				var angle_to_target = gem_point.global_position.angle_to_point(target_pos)
+				var visual_offset = deg_to_rad(90)
+				wand_gem.global_rotation = lerp_angle(wand_gem.global_rotation, angle_to_target + PI + visual_offset, 0.2)
+			# else: Using controller but not actively aiming - hold last rotation until timer expires
 
 		var atk = Input.is_action_just_pressed("attack")
 
