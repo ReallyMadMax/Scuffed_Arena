@@ -6,17 +6,47 @@ extends Node
 @onready var HUD = $HUD
 var backgroundMusicOn = true
 
-@export var respawn_time : float = 3.0  # Time in seconds before respawn
+@export var respawn_time : float = 5.0  # Time in seconds before respawn
 @export var spawn_radius : float = 400.0  # Random spawn radius around spawn point
 
 # Dictionary to track respawn timers: player_id -> Timer
 var respawn_timers : Dictionary = {}
 # Track when player died for instant respawn logic
 var death_time : float = 0.0
+# Countdown label for respawn timer
+var countdown_label : Label = null
+
+func _create_countdown_label():
+	"""Create the countdown label for respawn timer"""
+	countdown_label = Label.new()
+	countdown_label.name = "RespawnCountdown"
+	countdown_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	countdown_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+
+	# Position in center of screen
+	countdown_label.anchor_left = 0.5
+	countdown_label.anchor_top = 0.5
+	countdown_label.anchor_right = 0.5
+	countdown_label.anchor_bottom = 0.5
+	countdown_label.offset_left = -200
+	countdown_label.offset_top = -50
+	countdown_label.offset_right = 200
+	countdown_label.offset_bottom = 50
+
+	# Style the label
+	countdown_label.add_theme_font_size_override("font_size", 72)
+	# Color will be randomized each time countdown is shown
+
+	countdown_label.visible = false
+	HUD.add_child(countdown_label)
 
 func _perform_respawn(player_node: Node2D):
 	"""Helper function to handle the actual respawn logic"""
 	print("Performing respawn for player...")
+
+	# Hide countdown
+	if countdown_label:
+		countdown_label.visible = false
 
 	# Find a valid spawn position (not colliding with anything)
 	var spawn_position = _find_valid_spawn_position(player_node)
@@ -45,18 +75,41 @@ func _on_client_spawn():
 			print("Instant respawn (3+ seconds elapsed)")
 			_perform_respawn(player_node)
 		else:
-			# Wait the remaining time before respawning
+			# Show countdown and wait the remaining time before respawning
 			var remaining_time = respawn_time - time_since_death
 			print("Waiting ", remaining_time, " seconds before respawn")
-			await get_tree().create_timer(remaining_time).timeout
+			await _show_countdown(remaining_time)
 			_perform_respawn(player_node)
 	else:
 		print("ERROR: Could not find client player to respawn!")
+
+func _show_countdown(duration: float):
+	"""Display countdown timer in center of screen"""
+	if not countdown_label:
+		return
+
+	# Set random color each time countdown appears
+	countdown_label.modulate = Color(randf(), randf(), randf(), 1.0)
+
+	countdown_label.visible = true
+	var elapsed = 0.0
+
+	while elapsed < duration:
+		var remaining = duration - elapsed
+		# Show countdown with milliseconds (e.g., 2.9, 2.8, 2.7...)
+		countdown_label.text = "%.1f" % remaining
+		await get_tree().create_timer(0.1).timeout  # Update every 0.1 seconds for smooth countdown
+		elapsed += 0.1
+
+	countdown_label.visible = false
 
 func _ready():
 	print("Main scene _ready() called!")
 	print("Main scene ready - GameManager.Players: ", GameManager.Players)
 	GameManager.HUD = HUD
+
+	# Create countdown label for respawn timer
+	_create_countdown_label()
 
 	# Connect to client_spawn signal to respawn after upgrade selection
 	GameManager.client_spawn.connect(_on_client_spawn)
