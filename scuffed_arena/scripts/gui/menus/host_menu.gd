@@ -8,6 +8,20 @@ func _ready() -> void:
 	Server.player_joined.connect(_on_players_updated)
 	Server.player_left.connect(_on_players_updated)
 	IpAddress.text = IP.get_local_addresses()[1]
+	# Set initial focus for controller navigation
+	HostGame.grab_focus()
+
+func _input(event):
+	# Handle back navigation with controller B button or ESC
+	if event.is_action_pressed("ui_cancel"):
+		go_back()
+
+func go_back():
+	# Only allow going back if we haven't started hosting yet
+	if StartGame.disabled:
+		var scene = load("res://scenes/gui/menus/start_menu.tscn").instantiate()
+		get_tree().root.add_child(scene)
+		queue_free()
 
 func _on_host_game_button_down() -> void:
 	host_game(IpAddress.text)
