@@ -18,6 +18,9 @@ extends player_class
 var gem_point : Node2D  # Gem attachment point
 var wand_gem : AnimatedSprite2D  # The visual gem on the wand
 var can_shoot : bool = true
+var aim_direction : Vector2 = Vector2.ZERO  # Current aim direction from controller
+var using_controller_aim : bool = false  # Whether we're using controller or mouse
+var time_since_last_aim : float = 0.0  # Time since last aim input
 
 func _init():
 	speed = 400
@@ -74,20 +77,30 @@ func shoot():
 	if not can_shoot or is_dead:
 		return
 
-	var mouse_position = get_global_mouse_position()
+	# Determine target position based on input method
+	var target_position : Vector2
+	if using_controller_aim and aim_direction.length() > 0.1:
+		# Controller aiming: use aim direction to create a target point
+		target_position = global_position + (aim_direction.normalized() * 1000)
+	else:
+		# Mouse aiming: use mouse cursor position
+		target_position = get_global_mouse_position()
 
 	# Use gem_point's global position as spawn point
 	var actual_spawn_position = gem_point.global_position
 
-	# Calculate direction from the actual spawn position to mouse
-	var direction_to_mouse = actual_spawn_position.direction_to(mouse_position)
-	var angle_to_mouse = direction_to_mouse.angle()
+	# Calculate direction from the actual spawn position to target
+	var direction_to_target = actual_spawn_position.direction_to(target_position)
+	var angle_to_target = direction_to_target.angle()
 
 	# Get the actual global rotation of the wand gem before we shoot it
+	# Remove the visual offset if using controller aim so projectile starts at correct angle
 	var wand_angle = wand_gem.global_rotation
+	if using_controller_aim and aim_direction.length() > 0.1:
+		wand_angle += deg_to_rad(90)
 
 	# Spawn on all clients via RPC
-	spawn_projectile.rpc(angle_to_mouse, actual_spawn_position, wand_angle, str(name).to_int())
+	spawn_projectile.rpc(angle_to_target, actual_spawn_position, wand_angle, str(name).to_int())
 
 	# Hide the wand gem and start cooldown
 	wand_gem.visible = false
@@ -158,6 +171,23 @@ func _process(_delta):
 		if wand_gem and wand_gem.visible and not wand_gem.is_playing():
 			wand_gem.play("spin")
 
+		# Read right analog stick for aiming (axis 2 = right stick horizontal, axis 3 = right stick vertical)
+		var aim_x = Input.get_joy_axis(0, JOY_AXIS_RIGHT_X)
+		var aim_y = Input.get_joy_axis(0, JOY_AXIS_RIGHT_Y)
+		aim_direction = Vector2(aim_x, aim_y)
+
+		# Detect if we're using controller for aiming
+		if aim_direction.length() > 0.1:
+			using_controller_aim = true
+			time_since_last_aim = 0.0  # Reset timer when aiming
+		else:
+			time_since_last_aim += _delta  # Increment timer when not aiming
+
+		# Check if mouse moved to switch back to mouse aiming
+		if Input.get_last_mouse_velocity().length() > 0:
+			using_controller_aim = false
+			time_since_last_aim = 0.0  # Reset timer when using mouse
+
 		var dir = Input.get_vector("move_left", "move_right", "move_up", "move_down").normalized();
 		if dir:
 			direction = dir
@@ -170,6 +200,26 @@ func _process(_delta):
 
 		if velocity.length() > 0:
 			velocity = velocity.normalized() * speed
+
+		# Rotate wand gem to point at target (mouse or controller aim)
+		if wand_gem and wand_gem.visible:
+			# If no aim input for 1 second, rotate back to 0 degrees
+			if time_since_last_aim > 1.0:
+				wand_gem.global_rotation = lerp_angle(wand_gem.global_rotation, 0.0, 0.1)
+			else:
+				var target_pos : Vector2
+				if using_controller_aim and aim_direction.length() > 0.1:
+					# Point towards controller aim direction
+					target_pos = gem_point.global_position + (aim_direction.normalized() * 100)
+				else:
+					# Point towards mouse
+					target_pos = get_global_mouse_position()
+
+				# Calculate angle and smoothly rotate the gem
+				var angle_to_target = gem_point.global_position.angle_to_point(target_pos)
+				# Add 90 degrees to match visual orientation
+				var visual_offset = deg_to_rad(90)
+				wand_gem.global_rotation = lerp_angle(wand_gem.global_rotation, angle_to_target + PI + visual_offset, 0.2)
 
 		var atk = Input.is_action_just_pressed("attack")
 

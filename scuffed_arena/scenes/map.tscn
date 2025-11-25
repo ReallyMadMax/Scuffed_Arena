@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=4 uid="uid://duihfy8h7tcnu"]
 
-[ext_resource type="TileSet" uid="uid://c42eh2qkpnl16" path="res://scenes/tileset.tres" id="1_4xfga"]
+[ext_resource type="TileSet" path="res://assets/tilesets/tileset.tres" id="1_4xfga"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_4xfga"]
 light_mode = 1
