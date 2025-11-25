@@ -1,0 +1,82 @@
+[gd_scene load_steps=2 format=3 uid="uid://cnmx76xy5nhvb"]
+
+[ext_resource type="Script" uid="uid://drn08gx3iqwr0" path="res://scripts/gui/upgrade_container.gd" id="1_2xus2"]
+
+[node name="Upgrade" type="Button"]
+custom_minimum_size = Vector2(350, 0)
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -175.0
+offset_right = 175.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_2xus2")
+
+[node name="Control" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.28731483, 0.5585625, 0.7156522, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer"]
+layout_mode = 2
+color = Color(0.10983334, 0.29016006, 0.44027793, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Container" type="VBoxContainer" parent="MarginContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Type" type="Label" parent="MarginContainer/MarginContainer/Container"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/MarginContainer/Container"]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="UpgradeIcon" type="TextureRect" parent="MarginContainer/MarginContainer/Container/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+expand_mode = 3
+
+[node name="UpgradeName" type="Label" parent="MarginContainer/MarginContainer/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UPGRADE"
+horizontal_alignment = 1
+
+[node name="UpgradeDescription" type="RichTextLabel" parent="MarginContainer/MarginContainer/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+fit_content = true
+scroll_active = false
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
+[connection signal="pressed" from="." to="." method="_on_pressed"]

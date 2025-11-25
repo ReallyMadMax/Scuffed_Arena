@@ -40,22 +40,25 @@ layout_mode = 2
 [node name="StartBox" type="HBoxContainer" parent="HBoxContainer/Control"]
 layout_mode = 2
 
-[node name="StartClient" type="Button" parent="HBoxContainer/Control/StartBox"]
+[node name="JoinLobby" type="Button" parent="HBoxContainer/Control/StartBox"]
 layout_mode = 2
 disabled = true
-text = "start client
+text = "Join Lobby
 "
 
-[node name="IpAddress" type="LineEdit" parent="HBoxContainer/Control/StartBox"]
+[node name="LobbyCode" type="LineEdit" parent="HBoxContainer/Control/StartBox"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "IP address"
+placeholder_text = "Lobby Code"
 
 [node name="ClientErrorMsg" type="Label" parent="HBoxContainer/Control"]
 layout_mode = 2
 
 [node name="LobbyErrorMsg" type="Label" parent="HBoxContainer/Control"]
+layout_mode = 2
+
+[node name="LobbyCount" type="Label" parent="HBoxContainer/Control"]
 layout_mode = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer"]
@@ -65,6 +68,5 @@ layout_mode = 2
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 
-[connection signal="button_down" from="HBoxContainer/Control/StartBox/StartClient" to="." method="_on_start_client_button_down"]
-[connection signal="text_changed" from="HBoxContainer/Control/StartBox/IpAddress" to="." method="_on_ip_address_text_changed"]
-[connection signal="text_submitted" from="HBoxContainer/Control/StartBox/IpAddress" to="." method="start_client"]
+[connection signal="pressed" from="HBoxContainer/Control/StartBox/JoinLobby" to="." method="_on_join_lobby_pressed"]
+[connection signal="text_changed" from="HBoxContainer/Control/StartBox/LobbyCode" to="." method="_on_lobby_code_text_changed"]

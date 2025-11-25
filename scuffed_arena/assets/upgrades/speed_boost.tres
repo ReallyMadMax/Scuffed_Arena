@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SpeedBoostUpgrade" load_steps=3 format=3 uid="uid://mfy7aafbpgbe"]
+
+[ext_resource type="Script" uid="uid://pekkce8pe3qw" path="res://scripts/upgrades/speed_boost.gd" id="1_rpsxo"]
+[ext_resource type="Texture2D" uid="uid://dau4dk3ac25ye" path="res://assets/images/Icons/clock_1584892.png" id="1_vlkk8"]
+
+[resource]
+script = ExtResource("1_rpsxo")
+quantity = 1.1
+name = "Speed Boost"
+description = "Increase speed by 10%"
+icon = ExtResource("1_vlkk8")

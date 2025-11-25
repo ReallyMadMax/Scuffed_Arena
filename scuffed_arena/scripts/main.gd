@@ -3,6 +3,7 @@ extends Node
 @export var PlayerScene : PackedScene
 
 @onready var musicAudioStreamBG = $"AudioStreamPlayer-BGM"
+@onready var HUD = $HUD
 var backgroundMusicOn = true
 
 @export var respawn_time : float = 3.0  # Time in seconds before respawn
@@ -14,6 +15,7 @@ var respawn_timers : Dictionary = {}
 func _ready():
 	print("Main scene _ready() called!")
 	print("Main scene ready - GameManager.Players: ", GameManager.Players)
+	GameManager.HUD = HUD
 
 	# Load player scene if not set in inspector
 	if PlayerScene == null:
@@ -32,6 +34,7 @@ func _ready():
 
 		# Connect death signal
 		currentPlayer.player_died.connect(_on_player_died)
+		GameManager.client_player = currentPlayer
 
 		var spawn = get_tree().get_nodes_in_group("PlayerSpawnPoint").get(0)
 		if spawn:
@@ -40,7 +43,7 @@ func _ready():
 		else:
 			print("WARNING: No PlayerSpawnPoint found!")
 
-func _process(delta):
+func _process(_delta):
 	update_music_stats()
 
 func update_music_stats():
@@ -51,6 +54,7 @@ func update_music_stats():
 		musicAudioStreamBG.stop()
 
 func _on_player_died(player_id: int):
+	GameManager._on_client_death()
 	print("Main scene received death signal for player ", player_id)
 
 	# Clean up any existing timer for this player

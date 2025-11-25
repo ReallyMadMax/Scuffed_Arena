@@ -1,5 +1,5 @@
 #@tool
-extends player_class
+extends Player
 
 # who is skelly???
 
@@ -10,7 +10,7 @@ extends player_class
 # idle, walk, attack, heavy attack, dash, block, hit, death
 
 @onready var main = get_tree().get_root().get_node("Main")
-@onready var attack = load("res://scenes/gem.tscn")
+@onready var attack:PackedScene = load("res://scenes/gem.tscn")
 @onready var WalkingAudio = $AudioStreamPlayer_Walking
 
 @export var shoot_cooldown : float = 0.5  # Time before gem respawns
@@ -43,6 +43,8 @@ func _ready():
 
 	# Create the visual gem that sits on the wand
 	# Load a gem instance to get its sprite frames
+	if not attack:
+		attack = load("res://scenes/gem.tscn")
 	var temp_gem = attack.instantiate()
 	var gem_sprite = temp_gem.get_node("AnimatedSprite2D")
 
@@ -62,17 +64,6 @@ func _ready():
 	temp_gem.queue_free()  # Clean up the temporary gem
 	#animation_tree.active = true
 
-	# Only run multiplayer authority checks when in multiplayer mode
-	if multiplayer.has_multiplayer_peer():
-		var my_id = str(name).to_int()
-		print("Setting authority - Node name: ", name, " -> ID: ", my_id, " | My multiplayer ID: ", multiplayer.get_unique_id())
-		$MultiplayerSynchronizer.set_multiplayer_authority(my_id)
-		if my_id != multiplayer.get_unique_id():
-			print("Removing camera - not my character")
-			remove_child($Camera2D)
-		else:
-			print("This is MY character - keeping camera and control")
-	
 func shoot():
 	if not can_shoot or is_dead:
 		return
@@ -133,8 +124,8 @@ func _on_gem_respawn():
 	tween.tween_property(wand_gem, "scale", Vector2(0.25, 0.25), 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 # Override parent die() to reset wand gem state
-func die():
-	super.die()
+func die(source:Player):
+	super.die(source)
 	# Reset shooting state on death
 	can_shoot = false
 	if wand_gem:
@@ -165,7 +156,7 @@ func _process(_delta):
 		# Test keybind: Press 'g' to damage yourself
 		if Input.is_action_just_pressed("test"):
 			print("Test key pressed! Dealing damage...")
-			take_damage(250)  # Deal 250 damage to self
+			take_damage(250, self)  # Deal 250 damage to self
 
 		# Keep the wand gem animation playing
 		if wand_gem and wand_gem.visible and not wand_gem.is_playing():

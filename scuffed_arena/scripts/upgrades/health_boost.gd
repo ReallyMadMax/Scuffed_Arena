@@ -1,0 +1,2 @@
+extends Upgrade
+class_name HealthBoostUpgrade

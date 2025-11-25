@@ -1,5 +1,4 @@
-@tool
-extends player_class
+extends CharacterBody2D
 
 # Enemy properties
 @export var detection_range: float = 300.0
@@ -10,12 +9,14 @@ extends player_class
 
 # Player reference
 var player: Node2D = null
+var speed:int
+var direction
 
 func _init():
 	speed = 150
-	
+
 func _ready():
-	player = get_node("../Player")
+	#player = get_node("../Player")
 	# Scale the enemy by 1.5x
 	scale = Vector2(1.5, 1.5)
 
