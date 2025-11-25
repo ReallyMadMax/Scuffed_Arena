@@ -11,11 +11,55 @@ var backgroundMusicOn = true
 
 # Dictionary to track respawn timers: player_id -> Timer
 var respawn_timers : Dictionary = {}
+# Track when player died for instant respawn logic
+var death_time : float = 0.0
+
+func _perform_respawn(player_node: Node2D):
+	"""Helper function to handle the actual respawn logic"""
+	print("Performing respawn for player...")
+
+	# Find a valid spawn position (not colliding with anything)
+	var spawn_position = _find_valid_spawn_position(player_node)
+
+	if spawn_position != Vector2.ZERO:
+		player_node.global_position = spawn_position
+		# Call respawn via RPC
+		player_node.respawn.rpc()
+		print("Player respawned at position: ", spawn_position)
+	else:
+		print("ERROR: Could not find valid spawn position")
+
+func _on_client_spawn():
+	# Called when player selects an upgrade
+	print("_on_client_spawn called - respawning player...")
+
+	# Use the client player from GameManager
+	var player_node = GameManager.client_player
+	if player_node and player_node.has_method("respawn"):
+		# Check if 3 seconds have passed since death
+		var time_since_death = Time.get_ticks_msec() / 1000.0 - death_time
+		print("Time since death: ", time_since_death, " seconds")
+
+		if time_since_death >= respawn_time:
+			# Instant respawn
+			print("Instant respawn (3+ seconds elapsed)")
+			_perform_respawn(player_node)
+		else:
+			# Wait the remaining time before respawning
+			var remaining_time = respawn_time - time_since_death
+			print("Waiting ", remaining_time, " seconds before respawn")
+			await get_tree().create_timer(remaining_time).timeout
+			_perform_respawn(player_node)
+	else:
+		print("ERROR: Could not find client player to respawn!")
 
 func _ready():
 	print("Main scene _ready() called!")
 	print("Main scene ready - GameManager.Players: ", GameManager.Players)
 	GameManager.HUD = HUD
+
+	# Connect to client_spawn signal to respawn after upgrade selection
+	GameManager.client_spawn.connect(_on_client_spawn)
 
 	# Load player scene if not set in inspector
 	if PlayerScene == null:
@@ -56,45 +100,10 @@ func update_music_stats():
 func _on_player_died(player_id: int):
 	GameManager._on_client_death()
 	print("Main scene received death signal for player ", player_id)
+	print("Player will respawn after selecting an upgrade")
 
-	# Clean up any existing timer for this player
-	if respawn_timers.has(player_id):
-		respawn_timers[player_id].queue_free()
-		respawn_timers.erase(player_id)
-
-	# Create new respawn timer
-	var timer = Timer.new()
-	timer.wait_time = respawn_time
-	timer.one_shot = true
-	timer.timeout.connect(_on_respawn_timer_timeout.bind(player_id))
-	add_child(timer)
-	respawn_timers[player_id] = timer
-	timer.start()
-
-	print("Started respawn timer for player ", player_id, " - respawning in ", respawn_time, " seconds")
-
-func _on_respawn_timer_timeout(player_id: int):
-	print("Respawn timer expired for player ", player_id, ", calling respawn...")
-
-	# Find the player node
-	var player_node = get_node_or_null(str(player_id))
-	if player_node and player_node.has_method("respawn"):
-		# Find a valid spawn position (not colliding with anything)
-		var spawn_position = _find_valid_spawn_position(player_node)
-
-		if spawn_position != Vector2.ZERO:
-			player_node.global_position = spawn_position
-			# Call respawn via RPC
-			player_node.respawn.rpc()
-		else:
-			print("ERROR: Could not find valid spawn position for player ", player_id)
-	else:
-		print("ERROR: Could not find player node ", player_id, " to respawn!")
-
-	# Clean up timer
-	if respawn_timers.has(player_id):
-		respawn_timers[player_id].queue_free()
-		respawn_timers.erase(player_id)
+	# Track death time for instant respawn logic
+	death_time = Time.get_ticks_msec() / 1000.0
 
 func _find_valid_spawn_position(player_node: Node2D) -> Vector2:
 	var spawn_point = get_tree().get_nodes_in_group("PlayerSpawnPoint")
