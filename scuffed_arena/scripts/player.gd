@@ -18,6 +18,7 @@ signal player_died(player_id: int)
 # Load the hit particles scene
 @onready var HitParticles = preload("res://scenes/hit_particles.tscn")
 
+var id : int
 var direction : Vector2
 var is_dead : bool = false
 var death_count : int = 0  # Track number of deaths
@@ -94,7 +95,7 @@ func update_animation_parameters():
 	animation_tree["parameters/Attack/blend_position"] = direction
 
 @rpc("any_peer", "call_local")
-func take_damage(amount: int, source: Player):
+func take_damage(amount: int, source: int):
 	print("take_damage called with amount: ", amount, " | is_dead: ", is_dead, " | current_health: ", current_health)
 	if is_dead:
 		print("Player is already dead, ignoring damage")
@@ -141,7 +142,7 @@ func spawn_hit_particles(damage: int):
 	particles.queue_free()
 
 @rpc("any_peer", "call_local")
-func die(source: Player):
+func die(source_id: int):
 	if is_dead:
 		return
 
@@ -167,6 +168,7 @@ func die(source: Player):
 	# Emit signal to main scene to handle respawn timing
 	var player_id = int(name)
 	player_died.emit(player_id)
+	var source:Player = get_node("/root/Main/" + str(source_id))
 	source.on_kill(self)
 
 @rpc("any_peer", "call_local")

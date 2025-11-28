@@ -126,16 +126,20 @@ func _ready():
 		print("Spawning player with ID: ", player_id)
 		var currentPlayer:Player = PlayerScene.instantiate()
 		currentPlayer.name = str(player_id)
-		currentPlayer.set_multiplayer_authority(player_id)
 		print("Player node name set to: ", currentPlayer.name)
 		add_child(currentPlayer)
 
+		currentPlayer.set_multiplayer_authority(player_id)
+		if player_id == multiplayer.get_unique_id():
+			GameManager.client_player = currentPlayer
+		else:
+			currentPlayer.get_node("Camera2D").queue_free()
 		# Connect death signal
+			
 		if currentPlayer.has_signal("player_died"):
 			currentPlayer.player_died.connect(_on_player_died)
 		else:
 			push_error("Signal not found on player!")
-		GameManager.client_player = currentPlayer
 
 		var spawn = get_tree().get_nodes_in_group("PlayerSpawnPoint").get(0)
 		if spawn:

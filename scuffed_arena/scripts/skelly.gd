@@ -37,7 +37,7 @@ func _init():
 
 func _ready():
 	super._ready()  # Call parent _ready to initialize current_health
-
+	
 	# Get gem_point reference after super._ready()
 	gem_point = get_node("gem_point")
 
@@ -124,7 +124,7 @@ func _on_gem_respawn():
 	tween.tween_property(wand_gem, "scale", Vector2(0.25, 0.25), 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 # Override parent die() to reset wand gem state
-func die(source:Player):
+func die(source:int):
 	super.die(source)
 	# Reset shooting state on death
 	can_shoot = false
@@ -156,7 +156,7 @@ func _process(_delta):
 		# Test keybind: Press 'g' to damage yourself
 		if Input.is_action_just_pressed("test"):
 			print("Test key pressed! Dealing damage...")
-			take_damage(250, self)  # Deal 250 damage to self
+			take_damage(250, id)  # Deal 250 damage to self
 
 		# Keep the wand gem animation playing
 		if wand_gem and wand_gem.visible and not wand_gem.is_playing():

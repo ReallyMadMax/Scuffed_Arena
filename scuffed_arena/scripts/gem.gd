@@ -80,7 +80,7 @@ func _physics_process(_delta):
 			# Don't damage the player who shot this projectile
 			if collider.name != str(shooter_id):
 				# Deal damage via RPC to work with multiplayer
-				collider.take_damage.rpc(damage)
+				collider.take_damage.rpc(damage, shooter_id)
 				queue_free()  # Despawn the projectile
 				return
 

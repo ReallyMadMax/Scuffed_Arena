@@ -1,8 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://o8hoysea3o7i"]
 
-[ext_resource type="Script" uid="uid://c3mgpoivd8ecd" path="res://scripts/skelly.gd" id="1_5nkx5"]
+[ext_resource type="Script" uid="uid://cbcd4n0sok6fn" path="res://scripts/skelly.gd" id="1_5nkx5"]
 [ext_resource type="Texture2D" uid="uid://c6pkcduhijnpc" path="res://assets/images/Sprite-godot.webp" id="2_twhyi"]
-
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_twhyi"]
 radius = 17.0
