@@ -124,13 +124,17 @@ func _ready():
 	for i in GameManager.Players:
 		var player_id = int(GameManager.Players[i].id)
 		print("Spawning player with ID: ", player_id)
-		var currentPlayer = PlayerScene.instantiate()
+		var currentPlayer:Player = PlayerScene.instantiate()
 		currentPlayer.name = str(player_id)
+		currentPlayer.set_multiplayer_authority(player_id)
 		print("Player node name set to: ", currentPlayer.name)
 		add_child(currentPlayer)
 
 		# Connect death signal
-		currentPlayer.player_died.connect(_on_player_died)
+		if currentPlayer.has_signal("player_died"):
+			currentPlayer.player_died.connect(_on_player_died)
+		else:
+			push_error("Signal not found on player!")
 		GameManager.client_player = currentPlayer
 
 		var spawn = get_tree().get_nodes_in_group("PlayerSpawnPoint").get(0)

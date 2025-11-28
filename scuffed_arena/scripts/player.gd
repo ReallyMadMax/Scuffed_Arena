@@ -1,6 +1,6 @@
 @abstract
-class_name Player
 extends CharacterBody2D
+class_name Player
 
 signal player_died(player_id: int)
 
