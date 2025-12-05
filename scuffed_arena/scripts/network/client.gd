@@ -20,7 +20,7 @@ enum Message {
 var peer:WebSocketPeer = WebSocketPeer.new()
 var client_id:int = 0
 var rtc_peer:WebRTCMultiplayerPeer = WebRTCMultiplayerPeer.new()
-var lobby_id = ""
+var lobby:Lobby
 var _last_state = WebSocketPeer.STATE_CLOSED
 var _close_logged = false
 
@@ -97,11 +97,12 @@ func _process(_delta):
 				createPeer(data.sender_id)
 			
 			Message.JOIN_LOBBY:
-				GameManager.Players = data.players
-				lobby_id = data.lobby_id
+				lobby = Lobby.new(data.lobby_id)
+				lobby.Players = data.players
+				
 				print("[Client] Joined lobby with " + str(data.players.size()) + " players")
 				player_connected.emit(client_id)
-				lobby_joined.emit(lobby_id)
+				lobby_joined.emit(lobby.id)
 			
 			Message.CANDIDATE:
 				if rtc_peer.has_peer(data.org_peer):
@@ -215,7 +216,7 @@ func send_offer(id:int, data):
 		"org_peer" : client_id,
 		"message" : Message.OFFER,
 		"data" : data,
-		"lobby" : lobby_id
+		"lobby" : lobby.id
 	}
 	
 	send_to_server(message)
@@ -226,7 +227,7 @@ func send_answer(id:int, data):
 		"org_peer" : client_id,
 		"message" : Message.ANSWER,
 		"data" : data,
-		"lobby" : lobby_id
+		"lobby" : lobby.id
 	}
 	
 	send_to_server(message)
@@ -241,7 +242,7 @@ func ice_candidate_created(mid_name, index_name, sdp_name, id:int):
 		"mid" : mid_name,
 		"index" : index_name,
 		"sdp" : sdp_name,
-		"lobby" : lobby_id
+		"lobby" : lobby.id
 	}
 
 	send_to_server(message)
@@ -289,7 +290,6 @@ func disconnect_from_server():
 
 @rpc("any_peer", "call_local")
 func start_game():
-	print("Loading main scene...")
 	var scene = load("res://scenes/main.tscn").instantiate()
 
 	# List of autoload singletons to keep (don't delete these!) fuck
@@ -300,7 +300,6 @@ func start_game():
 		if child.name not in autoloads:
 			child.queue_free()
 
-	print("Adding main scene to tree...")
 	get_tree().root.add_child(scene)
 
 func generate_lobby_id(length:int) -> String:

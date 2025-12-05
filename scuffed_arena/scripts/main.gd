@@ -1,11 +1,14 @@
 extends Node
 
+signal game_over
+
 @export var PlayerScene : PackedScene
 
 @onready var musicAudioStreamBG = $"AudioStreamPlayer-BGM"
 @onready var HUD = $HUD
 var backgroundMusicOn = true
 
+@export var game_time : float = 120 # Time in seconds before the game ends
 @export var respawn_time : float = 3.0  # Time in seconds before respawn
 @export var spawn_radius : float = 400.0  # Random spawn radius around spawn point
 
@@ -13,16 +16,16 @@ var backgroundMusicOn = true
 var respawn_timers : Dictionary = {}
 
 func _ready():
-	print("Main scene _ready() called!")
-	print("Main scene ready - GameManager.Players: ", GameManager.Players)
+	# Start the game time
+	var game_over_timer:Timer = Timer.new()
+	game_over_timer.timeout.connect(game_over.emit)
+	game_over_timer.start(game_time)
+	
 	GameManager.HUD = HUD
 
 	# Load player scene if not set in inspector
 	if PlayerScene == null:
-		print("PlayerScene not set in inspector, loading manually...")
 		PlayerScene = load("res://scenes/player.tscn")
-
-	print("PlayerScene: ", PlayerScene)
 
 	for i in GameManager.Players:
 		var player_id = int(GameManager.Players[i].id)

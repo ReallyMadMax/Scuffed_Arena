@@ -1,19 +1,18 @@
 extends RefCounted
 class_name Lobby
 
-var HostId : int
+var id : int
 var Players : Dictionary = {}
 
-func _init(id:int):
-	HostId = id
+func _init(_id:int):
+	id = _id
 
-func add_player(id:int, player_name:String):
-	Players[id] = {
+func add_player(player_id:int, player_name:String):
+	Players[player_id] = {
 		"name" : player_name,
-		"id" : id,
-		"index" : Players.size(),
+		"id" : player_id,
 	}
 	return Players[id]
 
-func remove_player(id:int):
-	Players.erase(id)
+func remove_player(player_id:int):
+	Players.erase(player_id)

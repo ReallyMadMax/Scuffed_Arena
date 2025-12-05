@@ -14,7 +14,7 @@ signal player_died(player_id: int)
 
 @onready var animation_tree : AnimationTree = $AnimationTree
 # Load the Ability script as a resource so that it can be used in sub player characters
-@onready var ability = preload("res://scripts/ability.gd")
+@onready var ability = preload("res://scripts/characters/ability.gd")
 # Load the hit particles scene
 @onready var HitParticles = preload("res://scenes/hit_particles.tscn")
 
@@ -26,6 +26,8 @@ var healthbar_fg : ColorRect  # Foreground health bar
 var death_counter_label : Label  # Death counter display
 
 var upgrades:Array = []
+
+var id:int = 0
 
 func _ready():
 	# Initialize current_health after export vars are set

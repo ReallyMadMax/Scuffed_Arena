@@ -1,7 +1,8 @@
 [gd_scene load_steps=27 format=3 uid="uid://cqrtk0v26y2jo"]
 
-[ext_resource type="Script" uid="uid://txksal0o5q1p" path="res://scripts/ghost.gd" id="1_6attn"]
-[ext_resource type="Texture2D" uid="uid://mut5mk6nu3cq" path="res://assets/images/Sprite Sheet/Sword.png" id="2_obmiq"]
+[ext_resource type="Script" uid="uid://txksal0o5q1p" path="res://scripts/characters/ghost.gd" id="1_6attn"]
+[ext_resource type="Texture2D" uid="uid://ciuwjyly1pl0l" path="res://assets/images/Sprite Sheet/Sword.png" id="2_obmiq"]
+
 
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xtt71"]

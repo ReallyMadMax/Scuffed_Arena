@@ -16,5 +16,5 @@ volume_db = -30.0
 
 [node name="Ghost" parent="." instance=ExtResource("4_jyhfs")]
 position = Vector2(363, 467)
-
-[node name="HUD" type="CanvasLayer" parent="."]
+detection_range = 300.0
+stop_distance = 30.0

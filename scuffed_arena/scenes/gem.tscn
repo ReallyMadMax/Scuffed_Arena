@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://ytdmbdh0fya0"]
 
-[ext_resource type="Script" uid="uid://dfhl0k4oont6k" path="res://scripts/gem.gd" id="1_mpwtx"]
+[ext_resource type="Script" uid="uid://dfhl0k4oont6k" path="res://scripts/characters/gem.gd" id="1_mpwtx"]
 [ext_resource type="Texture2D" uid="uid://bvfakfr3lp1gi" path="res://assets/images/gem_idle.png" id="2_bhq7q"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_mpwtx"]

@@ -1,7 +1,7 @@
 [gd_scene load_steps=38 format=3 uid="uid://cwgeuffptj8a3"]
 
 [ext_resource type="Material" uid="uid://drtvyoj37w1g3" path="res://assets/materials/fog_of_war_mask.tres" id="1_dqkch"]
-[ext_resource type="Script" uid="uid://c3mgpoivd8ecd" path="res://scripts/skelly.gd" id="1_v6fml"]
+[ext_resource type="Script" uid="uid://c3mgpoivd8ecd" path="res://scripts/characters/skelly.gd" id="1_v6fml"]
 [ext_resource type="Texture2D" uid="uid://cm0d0exvji3vr" path="res://assets/images/skele_walk.png" id="2_kne1u"]
 [ext_resource type="AudioStream" uid="uid://cnsyj1sylht64" path="res://assets/sounds/walking sound.mp3" id="3_qhqgy"]
 
