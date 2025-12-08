@@ -30,6 +30,12 @@ var upgrades:Array = []
 var id:int = 0
 
 func _ready():
+	if multiplayer.has_multiplayer_peer():
+		if id == multiplayer.get_unique_id():
+			GameManager.client_id = id
+		else:
+			$Camera2D.queue_free()
+	
 	# Initialize current_health after export vars are set
 	current_health = max_health
 
@@ -96,7 +102,7 @@ func update_animation_parameters():
 	animation_tree["parameters/Attack/blend_position"] = direction
 
 @rpc("any_peer", "call_local")
-func take_damage(amount: int, source: Player):
+func take_damage(amount: int, source_id: int):
 	print("take_damage called with amount: ", amount, " | is_dead: ", is_dead, " | current_health: ", current_health)
 	if is_dead:
 		print("Player is already dead, ignoring damage")
@@ -110,10 +116,10 @@ func take_damage(amount: int, source: Player):
 	spawn_hit_particles(amount)
 
 	for upgrade in upgrades:
-		upgrade.on_damage_taken(self, amount, source)
+		upgrade.on_damage_taken(self, amount, GameManager.Players[source_id])
 	if current_health <= 0:
 		print("Health reached 0, calling die()")
-		die(source)
+		die(source_id)
 
 func spawn_hit_particles(damage: int):
 	# Instantiate the particle system
@@ -143,7 +149,7 @@ func spawn_hit_particles(damage: int):
 	particles.queue_free()
 
 @rpc("any_peer", "call_local")
-func die(source: Player):
+func die(source_id: int):
 	if is_dead:
 		return
 
@@ -167,13 +173,13 @@ func die(source: Player):
 	print("Player ", name, " died! Emitting death signal...")
 
 	# Emit signal to main scene to handle respawn timing
-	var player_id = int(name)
-	player_died.emit(player_id)
-	source.on_kill(self)
+	player_died.emit(id)
+	GameManager.Players[source_id].on_kill(id)
 
 @rpc("any_peer", "call_local")
-func respawn():
+func respawn(spawn_position:Vector2):
 	print("Player ", name, " respawning...")
+	global_position = spawn_position
 	is_dead = false
 	current_health = max_health
 	visible = true
@@ -188,6 +194,7 @@ func respawn():
 	# Update death counter visibility (only show if > 0)
 	update_death_counter()
 
+	
 	print("Player ", name, " respawned at ", global_position, " with ", current_health, " health")
 
 # happens on every instance of damage dealth
@@ -195,14 +202,14 @@ func on_damage_dealt(damage: float) -> void:
 	for upgrade in upgrades:
 		upgrade.on_damage_dealt(self, damage)
 
-func on_kill(enemy: Player) -> void:
+func on_kill(enemy_id: int) -> void:
 	for upgrade in upgrades:
-		upgrade.on_kill(self, enemy)
+		upgrade.on_kill(self, GameManager.Players[enemy_id])
 
 # happens the first time you hit someone
-func on_hit(enemy: Player) -> void:
+func on_hit(enemy_id: int) -> void:
 	for upgrade in upgrades:
-		upgrade.on_hit(self, enemy)
+		upgrade.on_hit(self, GameManager.Players[enemy_id])
 
 func add_upgrade(upgrade:Upgrade) -> void:
 	upgrades.append(upgrade)

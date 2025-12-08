@@ -16,3 +16,7 @@ func add_player(player_id:int, player_name:String):
 
 func remove_player(player_id:int):
 	Players.erase(player_id)
+
+func add_players_to_game():
+	for info in Players.values():
+		GameManager.add_player.rpc(info["id"], info["name"], "shit")

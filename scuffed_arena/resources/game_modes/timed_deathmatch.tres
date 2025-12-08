@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="TimedDeathmatch" load_steps=2 format=3 uid="uid://vnx4n2egmnpo"]
+
+[ext_resource type="Script" uid="uid://ds7qr7h4fbl5r" path="res://scripts/game/timed_deathmatch.gd" id="1_dele7"]
+
+[resource]
+script = ExtResource("1_dele7")
+metadata/_custom_type_script = "uid://ds7qr7h4fbl5r"

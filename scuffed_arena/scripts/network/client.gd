@@ -1,7 +1,7 @@
 extends Node
 
 signal player_connected(id:int)
-signal lobby_joined(id:String)
+signal lobby_joined(id:int)
 
 enum Message {
 	ID,
@@ -97,7 +97,7 @@ func _process(_delta):
 				createPeer(data.sender_id)
 			
 			Message.JOIN_LOBBY:
-				lobby = Lobby.new(data.lobby_id)
+				lobby = Lobby.new(int(data.lobby_id))
 				lobby.Players = data.players
 				
 				print("[Client] Joined lobby with " + str(data.players.size()) + " players")
@@ -287,20 +287,6 @@ func disconnect_from_server():
 	if peer.get_ready_state() == WebSocketPeer.STATE_OPEN or peer.get_ready_state() == WebSocketPeer.STATE_CONNECTING:
 		peer.close()
 		print("[Client] Disconnecting from server...")
-
-@rpc("any_peer", "call_local")
-func start_game():
-	var scene = load("res://scenes/main.tscn").instantiate()
-
-	# List of autoload singletons to keep (don't delete these!) fuck
-	# We probably need to change this so that it doesn't need to be modified every time a new singleton is added
-	var autoloads = ["GameManager", "UpgradeManager", "Client"]
-
-	for child in get_tree().root.get_children():
-		if child.name not in autoloads:
-			child.queue_free()
-
-	get_tree().root.add_child(scene)
 
 func generate_lobby_id(length:int) -> String:
 	var id = ""

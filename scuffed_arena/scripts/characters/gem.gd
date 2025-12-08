@@ -42,7 +42,7 @@ func _ready():
 	collision_mask = 1   # Collides with player layer (adjust if needed)
 
 	# Add collision exception for the shooter so the bullet passes through them
-	var shooter = get_node("/root/Main/" + str(shooter_id))
+	var shooter = GameManager.Players[shooter_id]
 	if shooter:
 		add_collision_exception_with(shooter)
 
@@ -78,9 +78,9 @@ func _physics_process(_delta):
 		# Check if we hit a player
 		if collider is Player:
 			# Don't damage the player who shot this projectile
-			if collider.name != str(shooter_id):
+			if collider.id != shooter_id:
 				# Deal damage via RPC to work with multiplayer
-				collider.take_damage.rpc(damage)
+				collider.take_damage.rpc(damage, shooter_id)
 				queue_free()  # Despawn the projectile
 				return
 

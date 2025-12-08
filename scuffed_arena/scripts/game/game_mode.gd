@@ -1,13 +1,13 @@
 @abstract
-extends Node
+extends Resource
 class_name GameMode
 
 signal game_over
-signal spawn_player(player_id:int)
 
 # group of all the maps that can be played in this mode
 var available_maps:ResourceGroup
 var winner_id:int
+var active_map:Map
 
 func _game_over():
 	set_winner()
@@ -28,5 +28,5 @@ func get_winner() -> int:
 func on_player_death(player_id:int)
 
 # will have to delegate the spawn points to the map script
-func on_player_spawn(player_id:int):
-	spawn_player.emit(player_id)
+@abstract
+func on_player_spawn(player_id:int) -> void

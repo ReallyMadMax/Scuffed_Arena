@@ -13,4 +13,4 @@ var upgrade:Upgrade:
 		upgrade_icon.texture = upgrade.icon
 
 func _on_pressed() -> void:
-	GameManager.client_player.add_upgrade(upgrade)
+	GameManager.Players[GameManager.client_id].add_upgrade(upgrade)

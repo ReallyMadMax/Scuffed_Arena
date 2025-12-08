@@ -4,8 +4,7 @@
 
 [resource]
 script = ExtResource("1_wcdtx")
-base_folder = "res://assets/upgrades"
+base_folder = "res://resources/upgrades"
 includes = Array[String](["*"])
 excludes = Array[String](["upgrade_group.tres"])
-paths = Array[String](["res://assets/upgrades/kill_streak.tres", "res://assets/upgrades/speed_boost.tres"])
-metadata/_custom_type_script = "uid://0y8sqthm3r3y"
+paths = Array[String](["res://resources/upgrades/kill_streak.tres", "res://resources/upgrades/speed_boost.tres"])

@@ -78,7 +78,7 @@ func shoot():
 	var wand_angle = wand_gem.global_rotation
 
 	# Spawn on all clients via RPC
-	spawn_projectile.rpc(angle_to_mouse, actual_spawn_position, wand_angle, str(name).to_int())
+	spawn_projectile.rpc(angle_to_mouse, actual_spawn_position, wand_angle, id)
 
 	# Hide the wand gem and start cooldown
 	wand_gem.visible = false
@@ -111,16 +111,16 @@ func _on_gem_respawn():
 	tween.tween_property(wand_gem, "scale", Vector2(0.25, 0.25), 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 # Override parent die() to reset wand gem state
-func die(source:Player):
-	super.die(source)
+func die(source_id:int):
+	super.die(source_id)
 	# Reset shooting state on death
 	can_shoot = false
 	if wand_gem:
 		wand_gem.visible = false
 
 # Override parent respawn() to restore wand gem
-func respawn():
-	super.respawn()
+func respawn(spawn_position:Vector2):
+	super.respawn(spawn_position)
 	# Restore shooting ability on respawn
 	can_shoot = true
 	if wand_gem:
@@ -143,7 +143,7 @@ func _process(_delta):
 		# Test keybind: Press 'g' to damage yourself
 		if Input.is_action_just_pressed("test"):
 			print("Test key pressed! Dealing damage...")
-			take_damage(250, self)  # Deal 250 damage to self
+			take_damage.rpc(250, id)  # Deal 250 damage to self
 
 		# Keep the wand gem animation playing
 		if wand_gem and wand_gem.visible and not wand_gem.is_playing():

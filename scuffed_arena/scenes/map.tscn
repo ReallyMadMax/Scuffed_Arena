@@ -1,12 +1,15 @@
-[gd_scene load_steps=3 format=4 uid="uid://duihfy8h7tcnu"]
+[gd_scene load_steps=4 format=4 uid="uid://duihfy8h7tcnu"]
 
 [ext_resource type="TileSet" uid="uid://c42eh2qkpnl16" path="res://assets/tilesets/tileset.tres" id="1_4xfga"]
+[ext_resource type="Script" uid="uid://letwm2r7d7gj" path="res://scripts/maps/map_1.gd" id="1_paxxb"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_4xfga"]
 light_mode = 1
 
 [node name="Map" type="Node2D"]
+z_index = -1
 texture_filter = 1
+script = ExtResource("1_paxxb")
 
 [node name="Floor" type="TileMapLayer" parent="."]
 position = Vector2(-540, -303)
