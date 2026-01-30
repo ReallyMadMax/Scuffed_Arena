@@ -108,8 +108,13 @@ func take_damage(amount: int, source: int):
 	# Spawn hit particles based on damage amount
 	spawn_hit_particles(amount)
 
+	# Convert source ID to Player object for upgrades
+	var source_player: Player = null
+	if has_node("/root/Main/" + str(source)):
+		source_player = get_node("/root/Main/" + str(source))
+
 	for upgrade in upgrades:
-		upgrade.on_damage_taken(self, amount, source)
+		upgrade.on_damage_taken(self, amount, source_player)
 	if current_health <= 0:
 		print("Health reached 0, calling die()")
 		die(source)
@@ -168,8 +173,11 @@ func die(source_id: int):
 	# Emit signal to main scene to handle respawn timing
 	var player_id = int(name)
 	player_died.emit(player_id)
-	var source:Player = get_node("/root/Main/" + str(source_id))
-	source.on_kill(self)
+
+	# Only credit the kill if there's a valid killer (not suicide)
+	if source_id != player_id and has_node("/root/Main/" + str(source_id)):
+		var source:Player = get_node("/root/Main/" + str(source_id))
+		source.on_kill(self)
 
 @rpc("any_peer", "call_local")
 func respawn():

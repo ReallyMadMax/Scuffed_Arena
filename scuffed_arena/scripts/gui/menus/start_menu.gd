@@ -20,9 +20,15 @@ func _on_join_game_button_down() -> void:
 
 
 func _on_testing_mode_pressed() -> void:
-	var id = 0
+	# Create a basic multiplayer peer for testing (host mode)
+	var peer = ENetMultiplayerPeer.new()
+	peer.create_server(6000)  # Port doesn't matter for local testing
+	multiplayer.multiplayer_peer = peer
+
+	# Use the actual multiplayer unique ID (will be 1 for host)
+	var id = multiplayer.get_unique_id()
 	var player_name = "test"
-	GameManager.Players[id] = {
+	GameManager.Players[str(id)] = {
 		"id": id,
 		"name": player_name
 	};

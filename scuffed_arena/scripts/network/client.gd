@@ -289,8 +289,8 @@ func disconnect_from_server():
 
 @rpc("any_peer", "call_local")
 func start_game():
-	print("Loading main scene...")
-	var scene = load("res://scenes/main.tscn").instantiate()
+	print("Loading character select scene...")
+	var scene = load("res://scenes/gui/menus/character_select.tscn").instantiate()
 
 	# List of autoload singletons to keep (don't delete these!) fuck
 	# We probably need to change this so that it doesn't need to be modified every time a new singleton is added
@@ -300,7 +300,7 @@ func start_game():
 		if child.name not in autoloads:
 			child.queue_free()
 
-	print("Adding main scene to tree...")
+	print("Adding character select scene to tree...")
 	get_tree().root.add_child(scene)
 
 func generate_lobby_id(length:int) -> String:

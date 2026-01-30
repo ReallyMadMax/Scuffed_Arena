@@ -116,24 +116,46 @@ func _ready():
 
 	# Load player scene if not set in inspector
 	if PlayerScene == null:
-		print("PlayerScene not set in inspector, loading manually...")
-		PlayerScene = load("res://scenes/player.tscn")
+		print("PlayerScene not set in inspector, will load based on character selection...")
 
 	print("PlayerScene: ", PlayerScene)
 
 	for i in GameManager.Players:
 		var player_id = int(GameManager.Players[i].id)
 		print("Spawning player with ID: ", player_id)
-		var currentPlayer:Player = PlayerScene.instantiate()
+
+		# Get the character selection for this player
+		var selected_character = GameManager.Players[i].get("character", "skele")
+		var character_scene_path = ""
+
+		match selected_character:
+			"skele":
+				character_scene_path = "res://scenes/characters/Skele/player.tscn"
+			"orc":
+				character_scene_path = "res://scenes/characters/orc.tscn"
+			_:
+				# Default to skele if character not found
+				character_scene_path = "res://scenes/characters/Skele/player.tscn"
+
+		print("Loading character: %s from %s" % [selected_character, character_scene_path])
+		var character_scene = load(character_scene_path)
+		var currentPlayer:Player = character_scene.instantiate()
 		currentPlayer.name = str(player_id)
 		print("Player node name set to: ", currentPlayer.name)
 		add_child(currentPlayer)
 
 		currentPlayer.set_multiplayer_authority(player_id)
+
+		# Also set authority on MultiplayerSynchronizer if it exists
+		if currentPlayer.has_node("MultiplayerSynchronizer"):
+			currentPlayer.get_node("MultiplayerSynchronizer").set_multiplayer_authority(player_id)
+			print("Set MultiplayerSynchronizer authority for player %d" % player_id)
+
 		if player_id == multiplayer.get_unique_id():
 			GameManager.client_player = currentPlayer
 		else:
-			currentPlayer.get_node("Camera2D").queue_free()
+			if currentPlayer.has_node("Camera2D"):
+				currentPlayer.get_node("Camera2D").queue_free()
 		# Connect death signal
 			
 		if currentPlayer.has_signal("player_died"):

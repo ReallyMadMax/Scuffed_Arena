@@ -10,7 +10,7 @@ extends Player
 # idle, walk, attack, heavy attack, dash, block, hit, death
 
 @onready var main = get_tree().get_root().get_node("Main")
-@onready var attack:PackedScene = load("res://scenes/gem.tscn")
+@onready var attack:PackedScene = load("res://scenes/characters/Skele/gem.tscn")
 @onready var WalkingAudio = $AudioStreamPlayer_Walking
 
 @export var shoot_cooldown : float = 0.5  # Time before gem respawns
@@ -44,7 +44,7 @@ func _ready():
 	# Create the visual gem that sits on the wand
 	# Load a gem instance to get its sprite frames
 	if not attack:
-		attack = load("res://scenes/gem.tscn")
+		attack = load("res://scenes/characters/Skele/gem.tscn")
 	var temp_gem = attack.instantiate()
 	var gem_sprite = temp_gem.get_node("AnimatedSprite2D")
 
@@ -156,7 +156,7 @@ func _process(_delta):
 		# Test keybind: Press 'g' to damage yourself
 		if Input.is_action_just_pressed("test"):
 			print("Test key pressed! Dealing damage...")
-			take_damage(250, id)  # Deal 250 damage to self
+			take_damage(250, int(name))  # Deal 250 damage to self (use node name as ID)
 
 		# Keep the wand gem animation playing
 		if wand_gem and wand_gem.visible and not wand_gem.is_playing():
