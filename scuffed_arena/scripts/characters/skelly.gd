@@ -1,0 +1,220 @@
+#@tool
+extends Player
+
+# who is skelly???
+
+# ranged mage, root skill shot, small crystal projectiles.
+# pretty squishy
+
+# what animations do we need?:
+# idle, walk, attack, heavy attack, dash, block, hit, death
+
+@onready var main = get_tree().get_root().get_node("Main")
+@onready var attack:PackedScene = load("res://scenes/gem.tscn")
+@onready var WalkingAudio = $AudioStreamPlayer_Walking
+
+@export var shoot_cooldown : float = 0.5  # Time before gem respawns
+
+var gem_point : Node2D  # Gem attachment point
+var wand_gem : AnimatedSprite2D  # The visual gem on the wand
+var can_shoot : bool = true
+var aim_direction : Vector2 = Vector2.ZERO  # Current aim direction from controller
+var using_controller_aim : bool = false  # Whether we're using controller or mouse
+var time_since_last_aim : float = 0.0  # Time since last aim input
+
+func _init():
+	speed = 400
+	# Create a new ability instance
+	"""
+	var my_ability = Ability.new()
+	my_ability.id = "bone_throw"
+	my_ability.display_name = "Bone Throw"
+	my_ability.description = "Throws a bone at the target"
+	my_ability.cooldown = 3.0
+	my_ability.ability_range = 10.0
+	my_ability.damage = 15.0
+	"""
+
+func _ready():
+	super._ready()  # Call parent _ready to initialize current_health
+	
+	# Get gem_point reference after super._ready()
+	gem_point = get_node("gem_point")
+
+	# Create the visual gem that sits on the wand
+	# Load a gem instance to get its sprite frames
+	if not attack:
+		attack = load("res://scenes/gem.tscn")
+	var temp_gem = attack.instantiate()
+	var gem_sprite = temp_gem.get_node("AnimatedSprite2D")
+
+	wand_gem = AnimatedSprite2D.new()
+	wand_gem.sprite_frames = gem_sprite.sprite_frames
+	wand_gem.scale = Vector2(0.25, 0.25)
+	wand_gem.z_index = 1  # Render on top of player sprite
+
+	# Get the gem texture size to calculate bottom alignment
+	# The gem sprite is 128x128, scaled to 0.25, so 32x32 pixels
+	# To align bottom to gem_point, offset by half height upward
+	wand_gem.position = Vector2(0, -16)  # Move up by half the scaled height (32/2)
+
+	gem_point.add_child(wand_gem)
+	wand_gem.play("spin")  # Start playing the spin animation
+
+	temp_gem.queue_free()  # Clean up the temporary gem
+	#animation_tree.active = true
+
+func shoot():
+	if not can_shoot or is_dead:
+		return
+
+	# Determine target position based on input method
+	var target_position : Vector2
+	if using_controller_aim and aim_direction.length() > 0.1:
+		# Controller aiming: use aim direction to create a target point
+		target_position = global_position + (aim_direction.normalized() * 1000)
+	else:
+		# Mouse aiming: use mouse cursor position
+		target_position = get_global_mouse_position()
+
+	# Use gem_point's global position as spawn point
+	var actual_spawn_position = gem_point.global_position
+
+	# Calculate direction from the actual spawn position to target
+	var direction_to_target = actual_spawn_position.direction_to(target_position)
+	var angle_to_target = direction_to_target.angle()
+
+	# Get the actual global rotation of the wand gem before we shoot it
+	# Remove the visual offset if using controller aim so projectile starts at correct angle
+	var wand_angle = wand_gem.global_rotation
+	if using_controller_aim and aim_direction.length() > 0.1:
+		wand_angle += deg_to_rad(90)
+
+	# Spawn on all clients via RPC
+	spawn_projectile.rpc(angle_to_target, actual_spawn_position, wand_angle, str(name).to_int())
+
+	# Hide the wand gem and start cooldown
+	wand_gem.visible = false
+	can_shoot = false
+
+	# Create timer to respawn the gem
+	var timer = Timer.new()
+	timer.wait_time = shoot_cooldown
+	timer.one_shot = true
+	timer.timeout.connect(_on_gem_respawn)
+	add_child(timer)
+	timer.start()
+
+@rpc("any_peer", "call_local")
+func spawn_projectile(dir: float, spawn_pos: Vector2, spawn_rot: float, shooter: int):
+	var instance = attack.instantiate()
+	instance.dir = dir
+	instance.spawn_position = spawn_pos
+	instance.spawn_rotation = spawn_rot
+	instance.shooter_id = shooter
+	main.add_child.call_deferred(instance)
+
+func _on_gem_respawn():
+	wand_gem.visible = true
+	can_shoot = true
+
+	# Animate the gem zooming in from nothing
+	wand_gem.scale = Vector2.ZERO
+	var tween = create_tween()
+	tween.tween_property(wand_gem, "scale", Vector2(0.25, 0.25), 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+# Override parent die() to reset wand gem state
+func die(source:int):
+	super.die(source)
+	# Reset shooting state on death
+	can_shoot = false
+	if wand_gem:
+		wand_gem.visible = false
+
+# Override parent respawn() to restore wand gem
+func respawn():
+	super.respawn()
+	# Restore shooting ability on respawn
+	can_shoot = true
+	if wand_gem:
+		wand_gem.visible = true
+		wand_gem.scale = Vector2(0.25, 0.25)
+
+
+func _process(_delta):
+	# Only check authority in multiplayer mode
+	if multiplayer.has_multiplayer_peer():
+		if $MultiplayerSynchronizer.get_multiplayer_authority() != multiplayer.get_unique_id():
+			# This is not our character, don't process input
+			return
+
+	# Don't process input if player is dead
+	if is_dead:
+		return
+
+	if not Engine.is_editor_hint():
+		# Test keybind: Press 'g' to damage yourself
+		if Input.is_action_just_pressed("test"):
+			print("Test key pressed! Dealing damage...")
+			take_damage(250, id)  # Deal 250 damage to self
+
+		# Keep the wand gem animation playing
+		if wand_gem and wand_gem.visible and not wand_gem.is_playing():
+			wand_gem.play("spin")
+
+		# Read right analog stick for aiming (axis 2 = right stick horizontal, axis 3 = right stick vertical)
+		var aim_x = Input.get_joy_axis(0, JOY_AXIS_RIGHT_X)
+		var aim_y = Input.get_joy_axis(0, JOY_AXIS_RIGHT_Y)
+		aim_direction = Vector2(aim_x, aim_y)
+
+		# Detect if we're using controller for aiming
+		if aim_direction.length() > 0.1:
+			using_controller_aim = true
+			time_since_last_aim = 0.0  # Reset timer when aiming
+		else:
+			time_since_last_aim += _delta  # Increment timer when not aiming
+
+		# Check if mouse moved to switch back to mouse aiming
+		if Input.get_last_mouse_velocity().length() > 0:
+			using_controller_aim = false
+			time_since_last_aim = 0.0  # Reset timer when using mouse
+
+		var dir = Input.get_vector("move_left", "move_right", "move_up", "move_down").normalized();
+		if dir:
+			direction = dir
+			velocity = direction * speed
+			if !WalkingAudio.playing:
+				WalkingAudio.play()
+		else:
+			velocity = Vector2.ZERO
+			WalkingAudio.stop()
+
+		if velocity.length() > 0:
+			velocity = velocity.normalized() * speed
+
+		# Rotate wand gem to point at target (mouse or controller aim)
+		if wand_gem and wand_gem.visible:
+			# If no aim input for 1 second, rotate back to 0 degrees
+			if time_since_last_aim > 1.0:
+				wand_gem.global_rotation = lerp_angle(wand_gem.global_rotation, 0.0, 0.1)
+			elif using_controller_aim and aim_direction.length() > 0.1:
+				# Actively aiming with controller
+				var target_pos = gem_point.global_position + (aim_direction.normalized() * 100)
+				var angle_to_target = gem_point.global_position.angle_to_point(target_pos)
+				var visual_offset = deg_to_rad(90)
+				wand_gem.global_rotation = lerp_angle(wand_gem.global_rotation, angle_to_target + PI + visual_offset, 0.2)
+			elif not using_controller_aim:
+				# Using mouse - only track mouse when not using controller
+				var target_pos = get_global_mouse_position()
+				var angle_to_target = gem_point.global_position.angle_to_point(target_pos)
+				var visual_offset = deg_to_rad(90)
+				wand_gem.global_rotation = lerp_angle(wand_gem.global_rotation, angle_to_target + PI + visual_offset, 0.2)
+			# else: Using controller but not actively aiming - hold last rotation until timer expires
+
+		var atk = Input.is_action_just_pressed("attack")
+
+		if atk:
+			shoot()
+
+		move_and_slide()
+		update_animation_parameters()

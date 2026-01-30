@@ -131,8 +131,8 @@ func _ready():
 		match selected_character:
 			"skele":
 				character_scene_path = "res://scenes/characters/Skele/player.tscn"
-			"orc":
-				character_scene_path = "res://scenes/characters/orc.tscn"
+			"amumu":
+				character_scene_path = "res://scenes/characters/cheap_amumu.tscn"
 			_:
 				# Default to skele if character not found
 				character_scene_path = "res://scenes/characters/Skele/player.tscn"

@@ -46,11 +46,11 @@ func _ready():
 	))
 
 	characters.append(CharacterData.new(
-		"orc",
+		"amumu",
 		"Orc - Melee Warrior",
-		"A brutal orc warrior who excels at close combat. High health and damage, but slower movement.",
-		"res://scenes/characters/orc.tscn",
-		"res://assets/images/skele_idle.PNG",
+		"Poopy amumu.",
+		"res://scenes/characters/cheap_amumu.tscn",
+		"res://assets/images/character/cheap_amumu/walk_down.png",
 		{
 			"Speed": "300",
 			"Range": "Melee",
